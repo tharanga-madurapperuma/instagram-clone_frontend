@@ -12,6 +12,9 @@ import axios from "axios";
 import Data from "../../fetchData";
 
 const Home = () => {
+    // get the user
+    const LOGGED_USER = "U1";
+
     const [posts, setPosts] = useState([]);
     const navigation = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
