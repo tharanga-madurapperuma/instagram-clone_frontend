@@ -1,11 +1,23 @@
-.story_outline{
-    background: linear-gradient(240deg, var(--color-pink), var(--color-orange), var(--color-yellow));
+.story_outline {
+    background: linear-gradient(
+        240deg,
+        var(--color-pink),
+        var(--color-orange),
+        var(--color-yellow)
+    );
     width: 70px;
     height: 70px;
     border-radius: 35px;
 }
 
-.story_image{
+.story_outline_visited {
+    background: rgb(188, 188, 188);
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+}
+
+.story_image {
     width: 93%;
     height: 93%;
     border-radius: 50%;
@@ -14,7 +26,7 @@
     align-items: center;
 }
 
-.story_image img{
+.story_image img {
     width: 93%;
     height: 93%;
     object-fit: cover;
