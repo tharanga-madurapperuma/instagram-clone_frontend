@@ -5,6 +5,7 @@ import ProfileNameIcon from "../../components/profile/ProfileNameIcon";
 import ReactModal from "react-modal";
 import axios from "axios";
 import Data from "../../fetchData";
+import FileResizer from "react-image-file-resizer";
 
 ReactModal.setAppElement("#root");
 
@@ -47,22 +48,27 @@ const CreatePost = ({ open, onClose }) => {
     };
 
     // On change handle for file input
-    const handleOnChange = (e) => {
+    const handleOnChange = async (e) => {
         e.preventDefault();
-        const file = e.target.files[0];
+        const fileUpload = e.target.files[0];
 
-        if (
-            file &&
-            (file.type.startsWith("image/") || file.type.startsWith("video/"))
-        ) {
-            setFile(file);
+        if (fileUpload && fileUpload.type.startsWith("image/")) {
+            // resize the image
+            try {
+                const file = await resizeFile(fileUpload);
+
+                setFile(file);
+            } catch (error) {
+                console.error("Error resizing the file:", error);
+                alert("Failed to resize the image. Please try again.");
+            }
         } else {
             setFile(null);
             alert("Please select image or video file");
         }
     };
 
-    // After create ost button clicked this method happens
+    // After create post button clicked this method happens
     const handleClicked = async () => {
         if (!file) {
             alert("Please select a file");
@@ -104,6 +110,41 @@ const CreatePost = ({ open, onClose }) => {
             alert("Failed to create post. Please try again.");
         }
     };
+
+    // File resizer
+    const resizeFile = (file) =>
+        new Promise((resolve, reject) => {
+            FileResizer.imageFileResizer(
+                file,
+                1000, // Target width
+                1000, // Target height
+                "JPEG", // Output format
+                100, // Quality percentage
+                0, // Rotation (0 degrees)
+                (uri) => {
+                    // Convert Base64 to File
+                    const byteString = atob(uri.split(",")[1]);
+                    const mimeString = uri.split(",")[0].match(/:(.*?);/)[1];
+                    const arrayBuffer = new ArrayBuffer(byteString.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+
+                    for (let i = 0; i < byteString.length; i++) {
+                        uint8Array[i] = byteString.charCodeAt(i);
+                    }
+
+                    const blob = new Blob([uint8Array], { type: mimeString });
+                    const resizedFile = new File([blob], file.name, {
+                        type: mimeString,
+                    });
+
+                    resolve(resizedFile);
+                },
+                "base64", // Output type
+                (error) => {
+                    reject(error);
+                }
+            );
+        });
 
     return (
         <ReactModal
