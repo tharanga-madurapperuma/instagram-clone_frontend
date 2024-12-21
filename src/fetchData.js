@@ -35,6 +35,7 @@ const Data = {
         getAllStories: `${BASE_URL}/getAllStories`,
         getStoryById: `${BASE_URL}/getStoryById/`,
         addStory: `${BASE_URL}/addStory`,
+        markedWatched: `${BASE_URL}/watchedStory/`,
     },
 };
 
