@@ -137,11 +137,11 @@ const Home = () => {
                         <Story story={story} />
                     ))}
                 </div>
-                <div className="feedSection_post">
+                <div className="feedSection_post post-background">
                     {
                         /* post section */
                         posts.map((post) => (
-                            <Post post={post} />
+                            <Post post={post} logged-user={LOGGED_USER} />
                         ))
                     }
                 </div>
