@@ -47,18 +47,6 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        if (modalIsOpen) {
-            document
-                .querySelector(".feedSection_story")
-                .classList.add("storyVisible");
-        } else {
-            document
-                .querySelector(".feedSection_story")
-                .classList.remove("storyVisible");
-        }
-    }, [modalIsOpen]);
-
-    useEffect(() => {
         setModalIsOpen(false);
         setCloseModal(true);
     }, [closeModal]);
