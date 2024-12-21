@@ -3,8 +3,10 @@ import "./post.css";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import Data from "../../fetchData";
+import { FaRegComment, FaRegHeart } from "react-icons/fa";
+import { RiSendPlaneLine } from "react-icons/ri";
 
-const Post = ({ post }) => {
+const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
@@ -25,6 +27,50 @@ const Post = ({ post }) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
     };
 
+    // share post to story
+    const shareClicked = () => {
+        const confirm = window.confirm(
+            "Do you want to share this post as story?"
+        );
+
+        const image = axios.get(Data.fileStore.downloadPost + post.imageUrl);
+
+        if (confirm) {
+            const formData = new FormData();
+            formData.append("image", image); // Append the file with the key 'image'
+
+            const getUrl = async () => {
+                const fileUploadResponse = await axios.post(
+                    Data.fileStore.uploadStory,
+                    formData, // Send the FormData instance
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data", // Required for file uploads
+                        },
+                    }
+                );
+
+                // Use response.data directly for the next request
+                return fileUploadResponse.data;
+            };
+
+            const fileUrl = getUrl();
+
+            const story = {
+                description: post.description,
+                imageUrl: fileUrl,
+                userId: loggedUser,
+                likeCount: 0,
+                watched: false,
+            };
+
+            axios.post(Data.stories.addStory, story).then((response) => {
+                if (response.status === 201) {
+                    alert("Post shared as story successfully!");
+                }
+            });
+        }
+    };
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
@@ -71,22 +117,25 @@ const Post = ({ post }) => {
             </div>
             <div className="post_bottom">
                 <div className="bottom-icons flex justify-between">
-                    <div className="bottom-icons-left flex">
-                        <img
-                            className="mr-3"
-                            src="./assets/icons/ActivityFeed.png"
-                            alt="Like"
-                        />
-                        <img
-                            className="mr-3"
+                    <div className="bottom-icons-left flex items-center">
+                        <FaRegHeart
+                            className="mr-3 heart-handle"
                             src="./assets/icons/Comment.png"
                             alt="Comment"
                         />
-                        <img
-                            className="mr-3"
-                            src="./assets/icons/SharePosts.png"
-                            alt="Share"
+                        <FaRegComment
+                            className="mr-3 comment-handle"
+                            src="./assets/icons/ActivityFeed.png"
+                            alt="Like"
                         />
+                        <RiSendPlaneLine
+                            className="mr-3 cursor-pointer share-handle"
+                            src="./assets/icons/SharePosts.png"
+                            onClick={() => {
+                                shareClicked();
+                            }}
+                        />
+                        <p className="share-text">Share this post as story</p>
                     </div>
                     <div className="bottom-icons-right">
                         <img src="./assets/icons/Save.png" alt="Save" />

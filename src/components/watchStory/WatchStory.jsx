@@ -1,17 +1,19 @@
 import React from "react";
 import "./watchStory.css";
+import Data from "../../fetchData";
 
 const WatchStory = ({ story }) => {
     return (
-        <div className="watch-story-container">
+        <div className="watch-story-container flex flex-col h-[70vh]">
             <p>{story.description}</p>
 
-            {/* Render story content here (e.g., video, image, etc.) */}
-            {/* {story.mediaType === "video" ? (
-                <video src={story.mediaUrl} controls autoPlay />
-            ) : (
-                <img src={story.mediaUrl} alt={story.title} />
-            )} */}
+            <div className="story-image-container">
+                <img
+                    className="story-image"
+                    src={Data.fileStore.downloadStory + story.imageUrl}
+                    alt="PostPicture"
+                />
+            </div>
         </div>
     );
 };

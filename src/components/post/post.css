@@ -48,3 +48,53 @@
     border-radius: 5px;
     margin-top: 20px;
 }
+
+.share-handle {
+    transition: 0.3s;
+    font-size: 1.6rem;
+    rotate: 10deg;
+    color: rgb(87, 87, 87);
+}
+
+.share-text {
+    display: none;
+    background-color: rgb(211, 211, 211);
+    padding: 5px 10px;
+    z-index: 20;
+    position: absolute;
+    top: -30px;
+    left: 90px;
+    border-radius: 5px;
+    text-wrap: nowrap;
+    transition: 0.5s;
+}
+
+.heart-handle,
+.comment-handle {
+    transition: 0.3s;
+    font-size: 1.4rem;
+    color: rgb(87, 87, 87);
+}
+
+.share-handle:hover {
+    scale: 1.2;
+    color: rgb(3, 112, 255);
+}
+
+.heart-handle:hover {
+    scale: 1.1;
+    color: rgb(218, 14, 14);
+}
+
+.comment-handle:hover {
+    scale: 1.1;
+    color: rgb(0, 0, 0);
+}
+
+.share-handle:hover + .share-text {
+    display: block;
+}
+
+.bottom-icons-left {
+    position: relative;
+}
