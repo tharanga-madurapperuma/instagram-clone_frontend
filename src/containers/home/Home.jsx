@@ -9,6 +9,13 @@ import { useNavigate } from "react-router-dom";
 import CreatePost from "../post/CreatePost";
 import axios from "axios";
 import Data from "../../fetchData";
+import {
+    IoHomeOutline,
+    IoSearchSharp,
+    IoSettingsOutline,
+} from "react-icons/io5";
+import { CgAddR, CgProfile } from "react-icons/cg";
+import { LuLogOut } from "react-icons/lu";
 
 const Home = () => {
     // get the user
@@ -67,30 +74,30 @@ const Home = () => {
                 </div>
 
                 <div
-                    className="flex my-10 flex-row cursor-pointer"
+                    className="flex my-10 flex-row cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         navigation("/");
                     }}
                 >
-                    <img src={Images.home_fill} alt="home" />
+                    <IoHomeOutline className="home_icons" />
                     <span>Home</span>
                 </div>
                 <div
-                    className="flex flex-row my-10 cursor-pointer"
+                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         navigation("/search");
                     }}
                 >
-                    <img src={Images.search} alt="search" />
+                    <IoSearchSharp className="home_icons" />
                     <span>Search</span>
                 </div>
                 <div
-                    className="flex flex-row my-10 cursor-pointer"
+                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         setModalIsOpen(true);
                     }}
                 >
-                    <img src={Images.newPost} alt="newPost" />
+                    <CgAddR className="home_icons" />
                     <span>Create Post</span>
                     <CreatePost
                         open={modalIsOpen}
@@ -100,30 +107,30 @@ const Home = () => {
                     />
                 </div>
                 <div
-                    className="flex flex-row my-10 cursor-pointer"
+                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         navigation("/profile");
                     }}
                 >
-                    <img src={Images.profile} alt="profile" />
+                    <CgProfile className="home_icons" />
                     <span>Profile</span>
                 </div>
                 <div
-                    className="flex flex-row my-10 cursor-pointer"
+                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         navigation("/settings");
                     }}
                 >
-                    <img src={Images.settings} alt="settings" />
+                    <IoSettingsOutline className="home_icons" />
                     <span>Settings</span>
                 </div>
                 <div
-                    className="flex flex-row my-10 cursor-pointer"
+                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                     onClick={() => {
                         navigation("/");
                     }}
                 >
-                    <img src={Images.logout} alt="logout" />
+                    <LuLogOut className="home_icons" />
                     <span>Logout</span>
                 </div>
             </div>

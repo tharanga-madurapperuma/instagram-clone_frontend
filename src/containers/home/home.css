@@ -49,3 +49,19 @@
 .storyVisible {
     display: none;
 }
+
+.home_icons {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: rgb(44, 44, 44);
+}
+
+.home_icons_container:hover {
+    scale: 1.1;
+    color: rgb(44, 44, 44);
+}
+
+.home_icons_container {
+    transition: 0.5s;
+    color: rgb(95, 95, 95);
+}
