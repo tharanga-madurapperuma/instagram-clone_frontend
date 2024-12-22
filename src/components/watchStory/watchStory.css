@@ -24,8 +24,36 @@
 
 .watch-story-container {
     color: rgb(136, 136, 136);
+    margin-bottom: 20px;
 }
 
 .story-image-container p {
     text-wrap: wrap;
+}
+
+.wrapper {
+    /* Wrapper styling */
+    width: 100%; /* Ensure the progress bar spans the full width */
+    margin-top: 10px; /* Spacing above the progress bar */
+}
+
+.container {
+    background-color: rgba(
+        83,
+        118,
+        214,
+        0.473
+    ); /* Light background for contrast */
+    height: 3px; /* Height of the progress bar */
+    border-radius: 5px; /* Rounded edges for smooth appearance */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.barCompleted {
+    background: linear-gradient(
+        90deg,
+        rgb(9, 4, 255),
+        rgb(142, 4, 255)
+    ); /* Color of the filled portion */
+    height: 100%; /* Ensure it fills the container height */
 }
