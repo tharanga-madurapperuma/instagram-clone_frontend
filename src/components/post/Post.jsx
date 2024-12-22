@@ -10,6 +10,9 @@ const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
+    const [file, setFile] = useState();
+    const imageUrl = `${Data.fileStore.downloadPost}${post.imageUrl}`;
+    const fileName = post.imageUrl;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,7 +22,24 @@ const Post = ({ post, loggedUser }) => {
             setUser(response.data);
         };
 
+        const getImageAsFile = async (imageUrl, fileName) => {
+            try {
+                const response = await fetch(imageUrl); // Fetch the image
+                const blob = await response.blob(); // Convert response to Blob
+                const file = new File([blob], fileName, {
+                    type: blob.type,
+                }); // Convert Blob to File
+                return file; // Return the File object
+            } catch (error) {
+                console.error("Error fetching the image as a file:", error);
+                return null;
+            }
+        };
+
         fetchData();
+        getImageAsFile(imageUrl, fileName).then((file) => {
+            setFile(file); // Set the file after fetching
+        });
     }, []);
 
     // Imoji handle method
@@ -33,42 +53,64 @@ const Post = ({ post, loggedUser }) => {
             "Do you want to share this post as story?"
         );
 
-        const image = axios.get(Data.fileStore.downloadPost + post.imageUrl);
-
         if (confirm) {
-            const formData = new FormData();
-            formData.append("image", image); // Append the file with the key 'image'
+            const getStoryFileName = async () => {
+                const formData = new FormData();
+                formData.append("image", file); // Append the file with the key 'image'
 
-            const getUrl = async () => {
-                const fileUploadResponse = await axios.post(
-                    Data.fileStore.uploadStory,
-                    formData, // Send the FormData instance
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data", // Required for file uploads
-                        },
-                    }
-                );
-
-                // Use response.data directly for the next request
-                return fileUploadResponse.data;
-            };
-
-            const fileUrl = getUrl();
-
-            const story = {
-                description: post.description,
-                imageUrl: fileUrl,
-                userId: loggedUser,
-                likeCount: 0,
-                watched: false,
-            };
-
-            axios.post(Data.stories.addStory, story).then((response) => {
-                if (response.status === 201) {
-                    alert("Post shared as story successfully!");
+                try {
+                    const response = await axios.post(
+                        Data.fileStore.uploadStory,
+                        formData, // Send the FormData instance
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data", // Required for file uploads
+                            },
+                        }
+                    );
+                    console.log(response.data);
+                    return response.data; // Return the file name
+                } catch (error) {
+                    console.error(
+                        "Error uploading the image as a story:",
+                        error
+                    );
+                    return null;
                 }
-            });
+            };
+
+            const handleStoryUpload = async () => {
+                if (!file) {
+                    alert("No file selected");
+                    return;
+                }
+
+                try {
+                    const newFileName = await getStoryFileName();
+
+                    const story = {
+                        description: post.description,
+                        imageUrl: newFileName, // Use the uploaded file reference
+                        userId: loggedUser,
+                        likeCount: 0,
+                        watched: false,
+                    };
+
+                    const response = await axios.post(
+                        Data.stories.addStory,
+                        story
+                    );
+
+                    if (response.status === 201) {
+                        alert("Post shared as story successfully!");
+                    }
+                } catch (error) {
+                    console.error("Error creating story:", error);
+                    alert("Failed to share story. Please try again.");
+                }
+            };
+
+            handleStoryUpload(); // Call after setting file
         }
     };
     return (

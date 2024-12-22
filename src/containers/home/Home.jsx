@@ -141,7 +141,7 @@ const Home = () => {
                     {
                         /* post section */
                         posts.map((post) => (
-                            <Post post={post} logged-user={LOGGED_USER} />
+                            <Post post={post} loggedUser={LOGGED_USER} />
                         ))
                     }
                 </div>
