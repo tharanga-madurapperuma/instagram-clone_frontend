@@ -2,7 +2,7 @@ import React from "react";
 import "./watchStory.css";
 import Data from "../../fetchData";
 
-const WatchStory = ({ story }) => {
+const WatchStory = ({ story, timeOut }) => {
     return (
         <div className="watch-story-container flex flex-col h-[65vh]">
             <p>{story.description}</p>

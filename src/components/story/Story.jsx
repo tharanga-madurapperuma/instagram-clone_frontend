@@ -9,6 +9,7 @@ import ReactModal from "react-modal";
 const Story = ({ story }) => {
     const [watched, setWatched] = React.useState(story.watched);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const timeOut = 5000;
 
     // after user clicked the story
     const storyCliked = async () => {
@@ -20,6 +21,10 @@ const Story = ({ story }) => {
             setWatched(true);
             setIsModalOpen(true);
         }
+
+        setTimeout(() => {
+            setIsModalOpen(false);
+        }, timeOut);
     };
 
     const closeModal = () => {
@@ -41,7 +46,9 @@ const Story = ({ story }) => {
                         storyCliked();
                     }}
                 >
-                    <img src={Images.tree} alt="story" />
+                    <img
+                        src={`${Data.fileStore.downloadStory}${story.imageUrl}`}
+                    />
                 </div>
                 {/* React Modal */}
                 <ReactModal
@@ -53,7 +60,7 @@ const Story = ({ story }) => {
                     shouldCloseOnOverlayClick={true}
                 >
                     {/* WatchStory Component */}
-                    <WatchStory story={story} />
+                    <WatchStory story={story} timeOut={timeOut} />
                 </ReactModal>
             </div>
         </div>
