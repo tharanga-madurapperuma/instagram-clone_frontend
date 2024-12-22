@@ -3,7 +3,7 @@
 }
 
 .leftMenu{
-    width: 15%;
+    width: 11%;
 }
 
 .feedSection{
@@ -41,8 +41,8 @@
 }
 
 .speration-line{
-    height: 85vh;
-    margin-top: 50px;
+    height: full;
+    width: 1px;
 }
 
 .storyVisible{
