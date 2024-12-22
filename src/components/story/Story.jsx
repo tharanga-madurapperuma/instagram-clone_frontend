@@ -1,5 +1,4 @@
 import React from "react";
-import Images from "../../assets/images";
 import "./story.css";
 import Data from "../../fetchData";
 import axios from "axios";
@@ -9,7 +8,7 @@ import ReactModal from "react-modal";
 const Story = ({ story }) => {
     const [watched, setWatched] = React.useState(story.watched);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const timeOut = 5000;
+    const timeOut = 8000;
 
     // after user clicked the story
     const storyCliked = async () => {

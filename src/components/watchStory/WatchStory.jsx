@@ -25,7 +25,6 @@ const WatchStory = ({ story, timeOut }) => {
         return () => clearInterval(interval); // Cleanup on unmount
     }, []);
 
-    console.log(progress);
     useEffect(() => {
         document.querySelector(".barCompleted").style.width = `${progress}%`;
     }, [progress]);
