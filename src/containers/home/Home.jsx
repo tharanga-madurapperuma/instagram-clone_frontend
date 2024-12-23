@@ -140,17 +140,18 @@ const Home = () => {
             <div className="feedSection justify-items-center ">
                 {/* feed section */}
                 <div className="feedSection_story flex flex-row justify-items-start ">
-                    {stories.map((story) => (
-                        <Story story={story} />
+                    {[...stories].reverse().map((story) => (
+                        <Story story={story} key={story.storyId} />
                     ))}
                 </div>
                 <div className="feedSection_post post-background">
-                    {
-                        /* post section */
-                        posts.map((post) => (
-                            <Post post={post} loggedUser={LOGGED_USER} />
-                        ))
-                    }
+                    {[...posts].reverse().map((post) => (
+                        <Post
+                            post={post}
+                            key={post.postId}
+                            loggedUser={LOGGED_USER}
+                        />
+                    ))}
                 </div>
             </div>
             <div className="followers justify-items-center m-5">
