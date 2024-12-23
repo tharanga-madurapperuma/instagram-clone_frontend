@@ -19,7 +19,13 @@ import { LuLogOut } from "react-icons/lu";
 
 const Home = () => {
     // get the user
-    const LOGGED_USER = "U1";
+    const LOGGED_USER = {
+        email: "admin@gmail.com",
+        caption: "Quality Manager",
+        userImage: null,
+        firstName: "Tharanga",
+        lastName: "Madurapperuma",
+    };
 
     const [posts, setPosts] = useState([]);
     const navigation = useNavigate();
@@ -29,28 +35,26 @@ const Home = () => {
     const [stories, setStories] = useState([]);
 
     useEffect(() => {
+        // Get all users, stories and posts
         const fetchUsers = async () => {
             const response = await axios.get(Data.users.getAllUsers);
             setUsers(response.data);
         };
-        fetchUsers();
-    }, []);
 
-    useEffect(() => {
+        // get all stories
         const fetchStories = async () => {
             const response = await axios.get(Data.stories.getAllStories);
             setStories(response.data);
         };
 
-        fetchStories();
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
+        // get all posts
+        const fetchPosts = async () => {
             const response = await axios.get(Data.posts.getAllPosts);
             setPosts(response.data);
         };
-        fetchData();
+        fetchUsers();
+        fetchStories();
+        fetchPosts();
     }, []);
 
     useEffect(() => {
@@ -58,7 +62,6 @@ const Home = () => {
         setCloseModal(true);
     }, [closeModal]);
 
-    console.log(users);
     return (
         <div className="flex flex-row">
             <div className="leftMenu justify-items-start text-gray-800 m-10">
@@ -104,6 +107,7 @@ const Home = () => {
                         onClose={() => {
                             setCloseModal(false);
                         }}
+                        loggedUser={LOGGED_USER}
                     />
                 </div>
                 <div

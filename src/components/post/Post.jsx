@@ -20,11 +20,8 @@ const Post = ({ post, loggedUser }) => {
             const response = await axios.get(
                 Data.users.getUserById + post.userId
             );
-            if (response.status === 200) {
-                setUser(response.data);
-            } else {
-                alert("No user");
-            }
+
+            setUser(response.data);
         };
 
         const getImageAsFile = async (imageUrl, fileName) => {
@@ -121,8 +118,8 @@ const Post = ({ post, loggedUser }) => {
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
-                {/* <div className="top-left_content flex">
-                    <div className="content-image">
+                <div className="top-left_content flex">
+                    {/* <div className="content-image">
                         <div className="image">
                             <img
                                 src={
@@ -147,9 +144,10 @@ const Post = ({ post, loggedUser }) => {
                                 {user?.caption}
                             </p>
                         </div>
-                    </div>
-                </div> */}
-                <ProfileTemplatePost user={user} post={post} />
+                    </div> */}
+                    <ProfileTemplatePost user={user} post={post} />
+                </div>
+
                 <div className="top-right-dots">
                     <img src="./assets/icons/More.png" alt="More" />
                 </div>

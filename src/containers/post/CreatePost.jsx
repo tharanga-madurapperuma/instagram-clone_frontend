@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
 import Images from "../../assets/images";
-import ProfileNameIcon from "../../components/profile/ProfileNameIcon";
+import ProfileNameIcon from "../../components/profile/ProfileTemplatePost";
 import ReactModal from "react-modal";
 import axios from "axios";
 import Data from "../../fetchData";
+import ProfileTemplate from "../../components/profile/ProfileTemplate";
 
 ReactModal.setAppElement("#root");
 
-const CreatePost = ({ open, onClose }) => {
+const CreatePost = ({ open, onClose, loggedUser }) => {
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState("");
@@ -154,7 +155,7 @@ const CreatePost = ({ open, onClose }) => {
 
                         <div className="flex flex-col w-[400px] h-full mt-5">
                             <div className="flex items-start w-full">
-                                <ProfileNameIcon />
+                                <ProfileTemplate user={loggedUser} />
                             </div>
                             <textarea
                                 rows={5}
