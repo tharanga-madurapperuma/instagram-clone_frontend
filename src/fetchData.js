@@ -9,6 +9,8 @@ const Data = {
         getUserByEmail: `${BASE_URL}/users/getUserByEmail/`,
         deleteUser: `${BASE_URL}/users/deleteUser/`,
         searchUser: `${BASE_URL}/users/searchUser/`,
+        addLikes: `${BASE_URL}/users/addLikes/`,
+        removeLikes: `${BASE_URL}/users/removeLikes/`,
     },
     posts: {
         getAllPosts: `${BASE_URL}/getAllPosts`,
