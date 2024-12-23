@@ -5,6 +5,7 @@ import axios from "axios";
 import Data from "../../fetchData";
 import { FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
+import ProfileTemplatePost from "../profile/ProfileTemplatePost";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
@@ -19,7 +20,11 @@ const Post = ({ post, loggedUser }) => {
             const response = await axios.get(
                 Data.users.getUserById + post.userId
             );
-            setUser(response.data);
+            if (response.status === 200) {
+                setUser(response.data);
+            } else {
+                alert("No user");
+            }
         };
 
         const getImageAsFile = async (imageUrl, fileName) => {
@@ -116,7 +121,7 @@ const Post = ({ post, loggedUser }) => {
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
-                <div className="top-left_content flex">
+                {/* <div className="top-left_content flex">
                     <div className="content-image">
                         <div className="image">
                             <img
@@ -143,14 +148,15 @@ const Post = ({ post, loggedUser }) => {
                             </p>
                         </div>
                     </div>
-                </div>
+                </div> */}
+                <ProfileTemplatePost user={user} post={post} />
                 <div className="top-right-dots">
                     <img src="./assets/icons/More.png" alt="More" />
                 </div>
             </div>
 
             <div className="post_image my-5">
-                <div className="image-outline">
+                <div className="image-outline flex justify-center">
                     <img
                         src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
                         alt="PostPicture"
