@@ -99,6 +99,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
                 setFile(null);
                 setDescription("");
                 onClose();
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error creating post:", error);

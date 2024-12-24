@@ -124,6 +124,7 @@ const Post = ({ post, loggedUser }) => {
                     if (response.status === 201) {
                         alert("Post shared as story successfully!");
                     }
+                    window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
