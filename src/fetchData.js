@@ -16,6 +16,8 @@ const Data = {
         getAllPosts: `${BASE_URL}/getAllPosts`,
         getPostById: `${BASE_URL}/getPostById/`,
         addPost: `${BASE_URL}/addPost`,
+        incrementLikeCount: `${BASE_URL}/incrementLikes/`,
+        decrementLikeCount: `${BASE_URL}/decrementLikes/`,
     },
     comments: {
         getAllComments: `${BASE_URL}/getAllComments`,
