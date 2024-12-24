@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./watchStory.css";
 import Data from "../../fetchData";
 import ProgressBar from "@ramonak/react-progress-bar";
+import axios from "axios";
+import ProfileTemplate from "../profile/ProfileTemplate";
 
 const WatchStory = ({ story, timeOut }) => {
     const [progress, setProgress] = useState(0);
+    const [user, setUser] = useState();
 
     useEffect(() => {
         const duration = timeOut; // Duration of the story (in ms)
@@ -21,8 +24,19 @@ const WatchStory = ({ story, timeOut }) => {
                 }
             });
         }, intervalTime);
-
         return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
+
+    // fetch user for the story
+    useEffect(() => {
+        const getUser = async () => {
+            const response = await axios.get(
+                Data.users.getUserById + story.userId
+            );
+            setUser(response.data);
+        };
+
+        getUser();
     }, []);
 
     useEffect(() => {
@@ -31,7 +45,8 @@ const WatchStory = ({ story, timeOut }) => {
 
     return (
         <div className="watch-story-container flex flex-col h-[65vh]">
-            <p>{story.description}</p>
+            <ProfileTemplate user={user} />
+            <p className="mt-5">{story.description}</p>
 
             {/* Story visible time progress bar */}
             <div className="flex w-full">
