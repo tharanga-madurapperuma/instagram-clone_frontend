@@ -42,7 +42,7 @@ const ProfileTemplatePost = ({ user, post }) => {
 
     return (
         <div className="top-left_content flex">
-            <div className="content-image">
+            <div className="flex items-center justify-center">
                 <div className="image">
                     <img
                         src={

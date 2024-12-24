@@ -6,6 +6,7 @@ import Data from "../../fetchData";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
+import { s } from "framer-motion/client";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
@@ -61,9 +62,10 @@ const Post = ({ post, loggedUser }) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
     };
 
-    useEffect(() => {
-        setLikeCount(post.likeCount);
-    }, [isLiked]);
+    const updateLikeCount = async () => {
+        const response = await axios.get(Data.posts.getLikeCount + post.postId);
+        setLikeCount(response.data);
+    };
 
     // share post to story
     const shareClicked = () => {
@@ -143,11 +145,9 @@ const Post = ({ post, loggedUser }) => {
                         post.postId
                 );
                 await axios.post(Data.posts.decrementLikeCount + post.postId);
+                updateLikeCount();
             } else {
                 setIsLiked(true);
-                console.log(
-                    Data.users.addLikes + loggedUserId + "/" + post.postId
-                );
                 try {
                     await axios.post(
                         Data.users.addLikes + loggedUserId + "/" + post.postId
@@ -155,6 +155,7 @@ const Post = ({ post, loggedUser }) => {
                     await axios.post(
                         Data.posts.incrementLikeCount + post.postId
                     );
+                    updateLikeCount();
                 } catch (error) {
                     alert(error);
                 }
