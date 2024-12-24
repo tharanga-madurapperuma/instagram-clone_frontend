@@ -137,13 +137,12 @@ const Post = ({ post, loggedUser }) => {
         }
     };
 
+    let clickTimeout;
     const handleDoubleClick = async (event) => {
-        // if one time click on post it shows te image
-        if (event.detail === 1) {
-            setIsModalOpen(true);
-        }
+        if (clickTimeout) clearTimeout(clickTimeout);
+
         // if double click on post it likes the post
-        else if (event.detail === 2) {
+        if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
                 await axios.delete(
@@ -168,6 +167,12 @@ const Post = ({ post, loggedUser }) => {
                     alert(error);
                 }
             }
+        }
+        // if one time click on post it shows te image
+        else {
+            clickTimeout = setTimeout(() => {
+                setIsModalOpen(true);
+            }, 200);
         }
     };
 

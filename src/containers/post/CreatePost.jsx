@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
 import Images from "../../assets/images";
-import ProfileNameIcon from "../../components/profile/ProfileTemplatePost";
 import ReactModal from "react-modal";
 import axios from "axios";
 import Data from "../../fetchData";
