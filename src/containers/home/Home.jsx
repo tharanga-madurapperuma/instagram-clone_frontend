@@ -19,13 +19,7 @@ import { LuLogOut } from "react-icons/lu";
 
 const Home = () => {
     // get the user
-    const LOGGED_USER = {
-        email: "admin@gmail.com",
-        caption: "Quality Manager",
-        userImage: null,
-        firstName: "Tharanga",
-        lastName: "Madurapperuma",
-    };
+    const [LOGGED_USER, setLoggedUser] = useState();
 
     const [posts, setPosts] = useState([]);
     const navigation = useNavigate();
@@ -52,9 +46,21 @@ const Home = () => {
             const response = await axios.get(Data.posts.getAllPosts);
             setPosts(response.data);
         };
+        const fetchLoggedUser = async () => {
+            await axios
+                .get(Data.users.getUserById + "U7")
+                .then((response) => {
+                    setLoggedUser(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        };
+
         fetchUsers();
         fetchStories();
         fetchPosts();
+        fetchLoggedUser();
     }, []);
 
     useEffect(() => {

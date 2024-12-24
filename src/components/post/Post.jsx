@@ -3,7 +3,7 @@ import "./post.css";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import Data from "../../fetchData";
-import { FaRegComment, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
 
@@ -14,6 +14,9 @@ const Post = ({ post, loggedUser }) => {
     const [file, setFile] = useState();
     const imageUrl = `${Data.fileStore.downloadPost}${post.imageUrl}`;
     const fileName = post.imageUrl;
+    const [isLiked, setIsLiked] = useState(false);
+    const loggedUserId = loggedUser.user_id;
+    const [likeCount, setLikeCount] = useState(post.likeCount);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,16 +41,29 @@ const Post = ({ post, loggedUser }) => {
             }
         };
 
+        const checkLikedState = () => {
+            if (loggedUser.likedPosts?.includes(post.postId)) {
+                setIsLiked(true);
+            } else {
+                setIsLiked(false);
+            }
+        };
+
         fetchData();
         getImageAsFile(imageUrl, fileName).then((file) => {
             setFile(file); // Set the file after fetching
         });
+        checkLikedState();
     }, []);
 
     // Imoji handle method
     const handleEmojiClick = (emojiObject) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
     };
+
+    useEffect(() => {
+        setLikeCount(post.likeCount);
+    }, [isLiked]);
 
     // share post to story
     const shareClicked = () => {
@@ -93,7 +109,7 @@ const Post = ({ post, loggedUser }) => {
                     const story = {
                         description: post.description,
                         imageUrl: newFileName, // Use the uploaded file reference
-                        userId: loggedUser,
+                        userId: loggedUserId,
                         likeCount: 0,
                         watched: false,
                     };
@@ -115,36 +131,41 @@ const Post = ({ post, loggedUser }) => {
             handleStoryUpload(); // Call after setting file
         }
     };
+
+    const handleDoubleClick = async (event) => {
+        if (event.detail === 2) {
+            if (isLiked) {
+                setIsLiked(false);
+                await axios.delete(
+                    Data.users.removeLikes +
+                        loggedUser.user_id +
+                        "/" +
+                        post.postId
+                );
+                await axios.post(Data.posts.decrementLikeCount + post.postId);
+            } else {
+                setIsLiked(true);
+                console.log(
+                    Data.users.addLikes + loggedUserId + "/" + post.postId
+                );
+                try {
+                    await axios.post(
+                        Data.users.addLikes + loggedUserId + "/" + post.postId
+                    );
+                    await axios.post(
+                        Data.posts.incrementLikeCount + post.postId
+                    );
+                } catch (error) {
+                    alert(error);
+                }
+            }
+        }
+    };
+
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
-                    {/* <div className="content-image">
-                        <div className="image">
-                            <img
-                                src={
-                                    !user?.userImage
-                                        ? "./assets/users/general.jpg"
-                                        : `./${user.userImage}`
-                                }
-                                alt="Profile"
-                            ></img>
-                        </div>
-                    </div>
-                    <div className="content_data ml-3">
-                        <div className="data-user-name-date flex items-center">
-                            <div className="username text-base font-medium">
-                                {user?.firstName} {user?.lastName}
-                            </div>
-                            <div className="mx-2 bg-gray-500 mt-1"></div>
-                            <div className="date text-gray-500 ml-0">1d</div>
-                        </div>
-                        <div className="data-caption">
-                            <p className="text-sm font-light">
-                                {user?.caption}
-                            </p>
-                        </div>
-                    </div> */}
                     <ProfileTemplatePost user={user} post={post} />
                 </div>
 
@@ -158,25 +179,21 @@ const Post = ({ post, loggedUser }) => {
                     <img
                         src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
                         alt="PostPicture"
+                        onClick={handleDoubleClick}
                     />
                 </div>
             </div>
             <div className="post_bottom">
                 <div className="bottom-icons flex justify-between">
                     <div className="bottom-icons-left flex items-center">
-                        <FaRegHeart
-                            className="mr-3 heart-handle"
-                            src="./assets/icons/Comment.png"
-                            alt="Comment"
-                        />
-                        <FaRegComment
-                            className="mr-3 comment-handle"
-                            src="./assets/icons/ActivityFeed.png"
-                            alt="Like"
-                        />
+                        {isLiked ? (
+                            <FaHeart className="mr-3 heart-handle-fill" />
+                        ) : (
+                            <FaRegHeart className="mr-3 heart-handle" />
+                        )}
+                        <FaRegComment className="mr-3 comment-handle" />
                         <RiSendPlaneLine
                             className="mr-3 cursor-pointer share-handle"
-                            src="./assets/icons/SharePosts.png"
                             onClick={() => {
                                 shareClicked();
                             }}
@@ -188,9 +205,7 @@ const Post = ({ post, loggedUser }) => {
                     </div>
                 </div>
                 <div className="bottom-like-count">
-                    <p className="font-bold text-sm my-2">
-                        {post.likeCount} Likes
-                    </p>
+                    <p className="font-bold text-sm my-2">{likeCount} Likes</p>
                 </div>
                 <div className="bottom-user-name">
                     <div className="mt-2 text-gray-700 font-normal">
