@@ -6,7 +6,8 @@ import Data from "../../fetchData";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
-import { s } from "framer-motion/client";
+import ReactModal from "react-modal";
+import WatchPost from "../watchPost/WatchPost";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
@@ -18,6 +19,7 @@ const Post = ({ post, loggedUser }) => {
     const [isLiked, setIsLiked] = useState(false);
     const loggedUserId = loggedUser.user_id;
     const [likeCount, setLikeCount] = useState(post.likeCount);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -136,7 +138,12 @@ const Post = ({ post, loggedUser }) => {
     };
 
     const handleDoubleClick = async (event) => {
-        if (event.detail === 2) {
+        // if one time click on post it shows te image
+        if (event.detail === 1) {
+            setIsModalOpen(true);
+        }
+        // if double click on post it likes the post
+        else if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
                 await axios.delete(
@@ -164,6 +171,10 @@ const Post = ({ post, loggedUser }) => {
         }
     };
 
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
@@ -183,6 +194,17 @@ const Post = ({ post, loggedUser }) => {
                         alt="PostPicture"
                         onClick={handleDoubleClick}
                     />
+                    <ReactModal
+                        isOpen={isModalOpen}
+                        onRequestClose={closeModal}
+                        contentLabel="Watch Story"
+                        className="modal-content"
+                        overlayClassName="modal-overlay"
+                        shouldCloseOnOverlayClick={true}
+                    >
+                        {/* WatchStory Component */}
+                        <WatchPost post={post} />
+                    </ReactModal>
                 </div>
             </div>
             <div className="post_bottom">
