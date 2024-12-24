@@ -89,7 +89,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
 
             const response = await axios.post(Data.posts.addPost, {
                 description: description,
-                userId: "U2",
+                userId: loggedUser.user_id,
                 likeCount: 0,
                 imageUrl: fileUrl, // Use fileUrl here
             });

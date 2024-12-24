@@ -25,15 +25,15 @@ const ProfileTemplatePost = ({ user, post }) => {
         setDisplayTime(() => {
             const timeDifference = parseInt(presentTime) - parseInt(postedTime);
             if (timeDifference < 60) {
-                return `${timeDifference} seconds ago`;
+                return `${timeDifference} sec ago`;
             } else if (timeDifference <= 5959) {
-                return `${Math.ceil(timeDifference / 100)} minutes ago`;
+                return `${Math.ceil(timeDifference / 100)} min ago`;
             } else if (timeDifference <= 235959) {
                 return `${Math.ceil(timeDifference / 10000)} hours ago`;
             } else if (timeDifference <= 29235959) {
                 return `${Math.ceil(timeDifference / 1000000)} days ago`;
             } else if (timeDifference <= 1129235959) {
-                return `${Math.ceil(timeDifference / 100000000)} months ago`;
+                return `${Math.ceil(timeDifference / 100000000)} mon ago`;
             } else {
                 return `${Math.ceil(timeDifference / 10000000000)} years ago`;
             }

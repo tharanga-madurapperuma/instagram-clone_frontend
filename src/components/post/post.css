@@ -51,7 +51,7 @@
 }
 
 .share-handle {
-    transition: 0.3s;
+    transition: 0.5s;
     font-size: 1.6rem;
     rotate: 10deg;
     color: rgb(87, 87, 87);
@@ -72,9 +72,15 @@
 
 .heart-handle,
 .comment-handle {
-    transition: 0.3s;
+    transition: 0.5s;
     font-size: 1.4rem;
     color: rgb(87, 87, 87);
+}
+
+.heart-handle-fill {
+    transition: 0.3s;
+    font-size: 1.4rem;
+    color: rgb(218, 14, 14);
 }
 
 .share-handle:hover {
@@ -82,7 +88,8 @@
     color: rgb(3, 112, 255);
 }
 
-.heart-handle:hover {
+.heart-handle:hover,
+.heart-handle-fill:hover {
     scale: 1.1;
     color: rgb(218, 14, 14);
 }
