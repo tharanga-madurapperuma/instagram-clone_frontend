@@ -10,8 +10,8 @@ const ProfileTemplate = ({ user }) => {
                     <img
                         src={
                             user?.userImage
-                                ? `${Data.fileStore.downloadUser}${user.userImage}`
-                                : `${Data.fileStore.downloadUser}general.jpg_20241223164338_a9ea9a8a_user.jpg`
+                                ? `${Data.fileStore.downloadUser}${user?.userImage}`
+                                : `${Data.fileStore.downloadUser}`
                         }
                     ></img>
                 </div>

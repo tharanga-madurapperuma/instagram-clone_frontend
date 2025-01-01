@@ -14,17 +14,17 @@ const Post = ({ post, loggedUser }) => {
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
     const [file, setFile] = useState();
-    const imageUrl = `${Data.fileStore.downloadPost}${post.imageUrl}`;
-    const fileName = post.imageUrl;
+    const imageUrl = `${Data.fileStore.downloadPost}${post?.imageUrl}`;
+    const fileName = post?.imageUrl;
     const [isLiked, setIsLiked] = useState(false);
-    const loggedUserId = loggedUser.user_id;
-    const [likeCount, setLikeCount] = useState(post.likeCount);
+    const loggedUserId = loggedUser?.user_id;
+    const [likeCount, setLikeCount] = useState(post?.likeCount);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get(
-                Data.users.getUserById + post.userId
+                Data.users?.getUserById + post?.userId
             );
 
             setUser(response.data);
@@ -45,7 +45,7 @@ const Post = ({ post, loggedUser }) => {
         };
 
         const checkLikedState = () => {
-            if (loggedUser.likedPosts?.includes(post.postId)) {
+            if (loggedUser?.likedPosts?.includes(post?.postId)) {
                 setIsLiked(true);
             } else {
                 setIsLiked(false);
@@ -147,7 +147,7 @@ const Post = ({ post, loggedUser }) => {
                 setIsLiked(false);
                 await axios.delete(
                     Data.users.removeLikes +
-                        loggedUser.user_id +
+                        loggedUser?.user_id +
                         "/" +
                         post.postId
                 );
@@ -172,7 +172,7 @@ const Post = ({ post, loggedUser }) => {
         else {
             clickTimeout = setTimeout(() => {
                 setIsModalOpen(true);
-            }, 200);
+            }, 500);
         }
     };
 
