@@ -7,7 +7,7 @@ const ProfileDetails = () => {
             <div className="flex items-center space-x-10">
                 <div className="w-[15]">
                     <img
-                        className="w-32 h-32 rounded-full"
+                        className="w-40 h-40 rounded-full align-middle"
                         src="https://cdn.pixabay.com/photo/2023/05/10/19/18/sparrow-7984807_640.jpg"
                         alt=""
                     />
@@ -21,7 +21,7 @@ const ProfileDetails = () => {
                         <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
                             View archive
                         </button>
-                        <img src={settings} alt="sttings" className="w-7 h-7" />
+                        <img src={settings} alt="sttings" className="w-5 h-5" />
                     </div>
                     <div className="flex space-x-10 mx-20">
                         <div>
