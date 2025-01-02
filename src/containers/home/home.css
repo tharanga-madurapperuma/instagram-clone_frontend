@@ -1,50 +1,66 @@
- .leftMenu div img{
+.leftMenu div img {
     margin-right: 15px;
 }
 
-.leftMenu{
-    width: 11%;
-}
+.leftMenu {
+    width: 15%;
 
-.feedSection{
-    width: 62%;
+.feedSection {
+    width: 60%;
     overflow-y: scroll;
     height: 100vh;
+    padding: 0 3%;
 }
 
-.feedSection::-webkit-scrollbar{
+.feedSection::-webkit-scrollbar {
     display: none;
 }
 
-.followers{
-    width: 23%;
-    margin-left: -40px;
+.followers {
+    width: 25%;
     height: 95vh;
     overflow-y: scroll;
 }
 
-.followers::-webkit-scrollbar{
+.followers::-webkit-scrollbar {
     display: none;
 }
 
-.feedSection_story{
-    margin: 0 12.7%;
+.feedSection_story {
+    width: 100%;
     overflow-x: scroll;
+    position: relative;
 }
 
-.feedSection_story::-webkit-scrollbar{
+.feedSection_story::-webkit-scrollbar {
     display: none;
 }
 
-.feedSection_post{
+.feedSection_post {
     padding-top: 30px;
 }
 
-.speration-line{
-    height: full;
-    width: 1px;
+.speration-line {
+    height: 85vh;
+    margin-top: 50px;
+
+
+.storyVisible {
+    display: none;
 }
 
-.storyVisible{
-    display:none;
+.home_icons {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: rgb(44, 44, 44);
+}
+
+.home_icons_container:hover {
+    scale: 1.1;
+    color: rgb(44, 44, 44);
+}
+
+.home_icons_container {
+    transition: 0.5s;
+    color: rgb(95, 95, 95);
 }

@@ -3,11 +3,16 @@ import "./post.css";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import Data from "../../fetchData";
+import { FaRegComment, FaRegHeart } from "react-icons/fa";
+import { RiSendPlaneLine } from "react-icons/ri";
 
-const Post = ({ post }) => {
+const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
+    const [file, setFile] = useState();
+    const imageUrl = `${Data.fileStore.downloadPost}${post.imageUrl}`;
+    const fileName = post.imageUrl;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,7 +22,24 @@ const Post = ({ post }) => {
             setUser(response.data);
         };
 
+        const getImageAsFile = async (imageUrl, fileName) => {
+            try {
+                const response = await fetch(imageUrl); // Fetch the image
+                const blob = await response.blob(); // Convert response to Blob
+                const file = new File([blob], fileName, {
+                    type: blob.type,
+                }); // Convert Blob to File
+                return file; // Return the File object
+            } catch (error) {
+                console.error("Error fetching the image as a file:", error);
+                return null;
+            }
+        };
+
         fetchData();
+        getImageAsFile(imageUrl, fileName).then((file) => {
+            setFile(file); // Set the file after fetching
+        });
     }, []);
 
     // Imoji handle method
@@ -25,6 +47,72 @@ const Post = ({ post }) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
     };
 
+    // share post to story
+    const shareClicked = () => {
+        const confirm = window.confirm(
+            "Do you want to share this post as story?"
+        );
+
+        if (confirm) {
+            const getStoryFileName = async () => {
+                const formData = new FormData();
+                formData.append("image", file); // Append the file with the key 'image'
+
+                try {
+                    const response = await axios.post(
+                        Data.fileStore.uploadStory,
+                        formData, // Send the FormData instance
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data", // Required for file uploads
+                            },
+                        }
+                    );
+                    console.log(response.data);
+                    return response.data; // Return the file name
+                } catch (error) {
+                    console.error(
+                        "Error uploading the image as a story:",
+                        error
+                    );
+                    return null;
+                }
+            };
+
+            const handleStoryUpload = async () => {
+                if (!file) {
+                    alert("No file selected");
+                    return;
+                }
+
+                try {
+                    const newFileName = await getStoryFileName();
+
+                    const story = {
+                        description: post.description,
+                        imageUrl: newFileName, // Use the uploaded file reference
+                        userId: loggedUser,
+                        likeCount: 0,
+                        watched: false,
+                    };
+
+                    const response = await axios.post(
+                        Data.stories.addStory,
+                        story
+                    );
+
+                    if (response.status === 201) {
+                        alert("Post shared as story successfully!");
+                    }
+                } catch (error) {
+                    console.error("Error creating story:", error);
+                    alert("Failed to share story. Please try again.");
+                }
+            };
+
+            handleStoryUpload(); // Call after setting file
+        }
+    };
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
@@ -71,22 +159,25 @@ const Post = ({ post }) => {
             </div>
             <div className="post_bottom">
                 <div className="bottom-icons flex justify-between">
-                    <div className="bottom-icons-left flex">
-                        <img
-                            className="mr-3"
-                            src="./assets/icons/ActivityFeed.png"
-                            alt="Like"
-                        />
-                        <img
-                            className="mr-3"
+                    <div className="bottom-icons-left flex items-center">
+                        <FaRegHeart
+                            className="mr-3 heart-handle"
                             src="./assets/icons/Comment.png"
                             alt="Comment"
                         />
-                        <img
-                            className="mr-3"
-                            src="./assets/icons/SharePosts.png"
-                            alt="Share"
+                        <FaRegComment
+                            className="mr-3 comment-handle"
+                            src="./assets/icons/ActivityFeed.png"
+                            alt="Like"
                         />
+                        <RiSendPlaneLine
+                            className="mr-3 cursor-pointer share-handle"
+                            src="./assets/icons/SharePosts.png"
+                            onClick={() => {
+                                shareClicked();
+                            }}
+                        />
+                        <p className="share-text">Share this post as story</p>
                     </div>
                     <div className="bottom-icons-right">
                         <img src="./assets/icons/Save.png" alt="Save" />
