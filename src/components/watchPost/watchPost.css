@@ -1,0 +1,16 @@
+.post-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.post-image {
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.watch-post-container {
+    color: rgb(136, 136, 136);
+}

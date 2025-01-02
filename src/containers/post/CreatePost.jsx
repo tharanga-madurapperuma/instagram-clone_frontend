@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
 import Images from "../../assets/images";
-import ProfileNameIcon from "../../components/profile/ProfileNameIcon";
 import ReactModal from "react-modal";
 import axios from "axios";
 import Data from "../../fetchData";
+import ProfileTemplate from "../../components/profile/ProfileTemplate";
 import FileResizer from "react-image-file-resizer";
 
 ReactModal.setAppElement("#root");
 
-const CreatePost = ({ open, onClose }) => {
+const CreatePost = ({ open, onClose, loggedUser }) => {
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState("");
@@ -94,7 +94,7 @@ const CreatePost = ({ open, onClose }) => {
 
             const response = await axios.post(Data.posts.addPost, {
                 description: description,
-                userId: "U2",
+                userId: loggedUser.user_id,
                 likeCount: 0,
                 imageUrl: fileUrl, // Use fileUrl here
             });
@@ -104,6 +104,7 @@ const CreatePost = ({ open, onClose }) => {
                 setFile(null);
                 setDescription("");
                 onClose();
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error creating post:", error);
@@ -195,7 +196,7 @@ const CreatePost = ({ open, onClose }) => {
 
                         <div className="flex flex-col w-[400px] h-full mt-5">
                             <div className="flex items-start w-full">
-                                <ProfileNameIcon />
+                                <ProfileTemplate user={loggedUser} />
                             </div>
                             <textarea
                                 rows={5}

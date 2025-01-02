@@ -1,4 +1,5 @@
 const BASE_URL = "http://localhost:8080";
+// const BASE_URL = "https://render-deploy-bm1c.onrender.com";
 
 const Data = {
     users: {
@@ -9,11 +10,16 @@ const Data = {
         getUserByEmail: `${BASE_URL}/users/getUserByEmail/`,
         deleteUser: `${BASE_URL}/users/deleteUser/`,
         searchUser: `${BASE_URL}/users/searchUser/`,
+        addLikes: `${BASE_URL}/users/addLikes/`,
+        removeLikes: `${BASE_URL}/users/removeLikes/`,
     },
     posts: {
         getAllPosts: `${BASE_URL}/getAllPosts`,
         getPostById: `${BASE_URL}/getPostById/`,
         addPost: `${BASE_URL}/addPost`,
+        incrementLikeCount: `${BASE_URL}/incrementLikes/`,
+        decrementLikeCount: `${BASE_URL}/decrementLikes/`,
+        getLikeCount: `${BASE_URL}/getLikeCount/`,
     },
     comments: {
         getAllComments: `${BASE_URL}/getAllComments`,

@@ -19,7 +19,7 @@ import { LuLogOut } from "react-icons/lu";
 
 const Home = () => {
     // get the user
-    const LOGGED_USER = "U1";
+    const [LOGGED_USER, setLoggedUser] = useState();
 
     const [posts, setPosts] = useState([]);
     const navigation = useNavigate();
@@ -29,28 +29,38 @@ const Home = () => {
     const [stories, setStories] = useState([]);
 
     useEffect(() => {
+        // Get all users, stories and posts
         const fetchUsers = async () => {
             const response = await axios.get(Data.users.getAllUsers);
             setUsers(response.data);
         };
-        fetchUsers();
-    }, []);
 
-    useEffect(() => {
+        // get all stories
         const fetchStories = async () => {
             const response = await axios.get(Data.stories.getAllStories);
             setStories(response.data);
         };
 
-        fetchStories();
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
+        // get all posts
+        const fetchPosts = async () => {
             const response = await axios.get(Data.posts.getAllPosts);
             setPosts(response.data);
         };
-        fetchData();
+        const fetchLoggedUser = async () => {
+            await axios
+                .get(Data.users.getUserById + "U7")
+                .then((response) => {
+                    setLoggedUser(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        };
+
+        fetchUsers();
+        fetchStories();
+        fetchPosts();
+        fetchLoggedUser();
     }, []);
 
     useEffect(() => {
@@ -58,7 +68,6 @@ const Home = () => {
         setCloseModal(true);
     }, [closeModal]);
 
-    console.log(users);
     return (
         <div className="flex flex-row">
             <div className="leftMenu justify-items-start text-gray-800 m-10">
@@ -104,6 +113,7 @@ const Home = () => {
                         onClose={() => {
                             setCloseModal(false);
                         }}
+                        loggedUser={LOGGED_USER}
                     />
                 </div>
                 <div
@@ -140,17 +150,18 @@ const Home = () => {
             <div className="feedSection justify-items-center ">
                 {/* feed section */}
                 <div className="feedSection_story flex flex-row justify-items-start ">
-                    {stories.map((story) => (
-                        <Story story={story} />
+                    {[...stories].reverse().map((story) => (
+                        <Story story={story} key={story.storyId} />
                     ))}
                 </div>
                 <div className="feedSection_post post-background">
-                    {
-                        /* post section */
-                        posts.map((post) => (
-                            <Post post={post} loggedUser={LOGGED_USER} />
-                        ))
-                    }
+                    {[...posts].reverse().map((post) => (
+                        <Post
+                            post={post}
+                            key={post.postId}
+                            loggedUser={LOGGED_USER}
+                        />
+                    ))}
                 </div>
             </div>
             <div className="followers justify-items-center m-5">

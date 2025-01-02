@@ -3,22 +3,30 @@ import "./post.css";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import Data from "../../fetchData";
-import { FaRegComment, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
+import ProfileTemplatePost from "../profile/ProfileTemplatePost";
+import ReactModal from "react-modal";
+import WatchPost from "../watchPost/WatchPost";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
     const [file, setFile] = useState();
-    const imageUrl = `${Data.fileStore.downloadPost}${post.imageUrl}`;
-    const fileName = post.imageUrl;
+    const imageUrl = `${Data.fileStore.downloadPost}${post?.imageUrl}`;
+    const fileName = post?.imageUrl;
+    const [isLiked, setIsLiked] = useState(false);
+    const loggedUserId = loggedUser?.user_id;
+    const [likeCount, setLikeCount] = useState(post?.likeCount);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get(
-                Data.users.getUserById + post.userId
+                Data.users?.getUserById + post?.userId
             );
+
             setUser(response.data);
         };
 
@@ -36,15 +44,29 @@ const Post = ({ post, loggedUser }) => {
             }
         };
 
+        const checkLikedState = () => {
+            if (loggedUser?.likedPosts?.includes(post?.postId)) {
+                setIsLiked(true);
+            } else {
+                setIsLiked(false);
+            }
+        };
+
         fetchData();
         getImageAsFile(imageUrl, fileName).then((file) => {
             setFile(file); // Set the file after fetching
         });
+        checkLikedState();
     }, []);
 
     // Imoji handle method
     const handleEmojiClick = (emojiObject) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
+    };
+
+    const updateLikeCount = async () => {
+        const response = await axios.get(Data.posts.getLikeCount + post.postId);
+        setLikeCount(response.data);
     };
 
     // share post to story
@@ -91,7 +113,7 @@ const Post = ({ post, loggedUser }) => {
                     const story = {
                         description: post.description,
                         imageUrl: newFileName, // Use the uploaded file reference
-                        userId: loggedUser,
+                        userId: loggedUserId,
                         likeCount: 0,
                         watched: false,
                     };
@@ -104,6 +126,7 @@ const Post = ({ post, loggedUser }) => {
                     if (response.status === 201) {
                         alert("Post shared as story successfully!");
                     }
+                    window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
@@ -113,66 +136,93 @@ const Post = ({ post, loggedUser }) => {
             handleStoryUpload(); // Call after setting file
         }
     };
+
+    let clickTimeout;
+    const handleDoubleClick = async (event) => {
+        if (clickTimeout) clearTimeout(clickTimeout);
+
+        // if double click on post it likes the post
+        if (event.detail === 2) {
+            if (isLiked) {
+                setIsLiked(false);
+                await axios.delete(
+                    Data.users.removeLikes +
+                        loggedUser?.user_id +
+                        "/" +
+                        post.postId
+                );
+                await axios.post(Data.posts.decrementLikeCount + post.postId);
+                updateLikeCount();
+            } else {
+                setIsLiked(true);
+                try {
+                    await axios.post(
+                        Data.users.addLikes + loggedUserId + "/" + post.postId
+                    );
+                    await axios.post(
+                        Data.posts.incrementLikeCount + post.postId
+                    );
+                    updateLikeCount();
+                } catch (error) {
+                    alert(error);
+                }
+            }
+        }
+        // if one time click on post it shows te image
+        else {
+            clickTimeout = setTimeout(() => {
+                setIsModalOpen(true);
+            }, 500);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
-                    <div className="content-image">
-                        <div className="image">
-                            <img
-                                src={
-                                    !user?.userImage
-                                        ? "./assets/users/general.jpg"
-                                        : `./${user.userImage}`
-                                }
-                                alt="Profile"
-                            ></img>
-                        </div>
-                    </div>
-                    <div className="content_data ml-3">
-                        <div className="data-user-name-date flex items-center">
-                            <div className="username text-base font-medium">
-                                {user?.firstName} {user?.lastName}
-                            </div>
-                            <div className="mx-2 bg-gray-500 mt-1"></div>
-                            <div className="date text-gray-500 ml-0">1d</div>
-                        </div>
-                        <div className="data-caption">
-                            <p className="text-sm font-light">
-                                {user?.caption}
-                            </p>
-                        </div>
-                    </div>
+                    <ProfileTemplatePost user={user} post={post} />
                 </div>
+
                 <div className="top-right-dots">
                     <img src="./assets/icons/More.png" alt="More" />
                 </div>
             </div>
 
             <div className="post_image my-5">
-                <div className="image-outline">
+                <div className="image-outline flex justify-center">
                     <img
                         src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
                         alt="PostPicture"
+                        onClick={handleDoubleClick}
                     />
+                    <ReactModal
+                        isOpen={isModalOpen}
+                        onRequestClose={closeModal}
+                        contentLabel="Watch Story"
+                        className="modal-content"
+                        overlayClassName="modal-overlay"
+                        shouldCloseOnOverlayClick={true}
+                    >
+                        {/* WatchStory Component */}
+                        <WatchPost post={post} />
+                    </ReactModal>
                 </div>
             </div>
             <div className="post_bottom">
                 <div className="bottom-icons flex justify-between">
                     <div className="bottom-icons-left flex items-center">
-                        <FaRegHeart
-                            className="mr-3 heart-handle"
-                            src="./assets/icons/Comment.png"
-                            alt="Comment"
-                        />
-                        <FaRegComment
-                            className="mr-3 comment-handle"
-                            src="./assets/icons/ActivityFeed.png"
-                            alt="Like"
-                        />
+                        {isLiked ? (
+                            <FaHeart className="mr-3 heart-handle-fill" />
+                        ) : (
+                            <FaRegHeart className="mr-3 heart-handle" />
+                        )}
+                        <FaRegComment className="mr-3 comment-handle" />
                         <RiSendPlaneLine
                             className="mr-3 cursor-pointer share-handle"
-                            src="./assets/icons/SharePosts.png"
                             onClick={() => {
                                 shareClicked();
                             }}
@@ -184,9 +234,7 @@ const Post = ({ post, loggedUser }) => {
                     </div>
                 </div>
                 <div className="bottom-like-count">
-                    <p className="font-bold text-sm my-2">
-                        {post.likeCount} Likes
-                    </p>
+                    <p className="font-bold text-sm my-2">{likeCount} Likes</p>
                 </div>
                 <div className="bottom-user-name">
                     <div className="mt-2 text-gray-700 font-normal">
