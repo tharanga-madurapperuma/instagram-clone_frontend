@@ -20,7 +20,7 @@ const Follower = ({ user }) => {
                         </div>
                     </div>
 
-                    <div className="content_data ml-3">
+                    <div className="content_data ml-2">
                         <div className="data-user-name-date flex items-center">
                             <div className="username text-base font-medium">
                                 {user?.firstName} {user?.lastName}
@@ -34,7 +34,7 @@ const Follower = ({ user }) => {
                     </div>
                 </div>
 
-                <div className="date text-blue-600">follwed</div>
+                <div className="date text-cyan-500 m-2">Followed</div>
             </div>
         </div>
     );
