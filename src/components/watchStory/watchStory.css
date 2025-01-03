@@ -57,3 +57,21 @@
     ); /* Color of the filled portion */
     height: 100%; /* Ensure it fills the container height */
 }
+
+.story-delete-menu {
+    position: relative;
+}
+
+.story-delete-menu-list-active {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: rgb(43, 43, 43);
+    border-radius: 5px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.story-delete-menu-list-inactive {
+    display: none;
+}
