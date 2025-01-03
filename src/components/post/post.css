@@ -127,3 +127,42 @@
     outline: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.top-right-dots {
+    position: relative;
+    cursor: pointer;
+}
+
+.top-right-dots_icon {
+    color: rgb(46, 46, 46);
+    font-size: 1.4rem;
+}
+
+.top-right-dots_menu-active {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background-color: rgb(222, 222, 222);
+    padding: 5px 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(35, 35, 35);
+}
+
+.top-right-dots_menu-active li a {
+    padding: 3px 10px;
+    margin-bottom: 5px;
+    color: rgb(35, 35, 35);
+    border-radius: 5px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.top-right-dots_menu-active a:hover {
+    color: #0066cc;
+    font-weight: 500;
+}
+
+.top-right-dots_menu-inactive {
+    display: none;
+}

@@ -8,6 +8,8 @@ import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
 import ReactModal from "react-modal";
 import WatchPost from "../watchPost/WatchPost";
+import { CiMenuKebab } from "react-icons/ci";
+import EditPost from "./EditPost";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
@@ -20,6 +22,8 @@ const Post = ({ post, loggedUser }) => {
     const loggedUserId = loggedUser?.user_id;
     const [likeCount, setLikeCount] = useState(post?.likeCount);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isPostEditModalOpen, setIsPostEditModalOpen] = React.useState(false);
+    const [menuClicked, setMenuClicked] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -180,6 +184,18 @@ const Post = ({ post, loggedUser }) => {
         setIsModalOpen(false);
     };
 
+    const closePostEditModal = () => {
+        setIsPostEditModalOpen(false);
+    };
+
+    const dotClicked = () => {
+        menuClicked ? setMenuClicked(false) : setMenuClicked(true);
+    };
+
+    const closeEditPostModal = () => {
+        setIsPostEditModalOpen(false);
+    };
+
     return (
         <div className=" feedSection_post">
             <div className="post_top flex justify-between items-center">
@@ -188,7 +204,59 @@ const Post = ({ post, loggedUser }) => {
                 </div>
 
                 <div className="top-right-dots">
-                    <img src="./assets/icons/More.png" alt="More" />
+                    <CiMenuKebab
+                        className="top-right-dots_icon"
+                        onClick={dotClicked}
+                    />
+                    <div
+                        className={
+                            menuClicked
+                                ? "top-right-dots_menu-active"
+                                : "top-right-dots_menu-inactive"
+                        }
+                    >
+                        <ul>
+                            <li>
+                                <a
+                                    onClick={() => {
+                                        setIsPostEditModalOpen(true);
+                                        setMenuClicked(false);
+                                    }}
+                                >
+                                    Edit
+                                </a>
+                                <ReactModal
+                                    isOpen={isPostEditModalOpen}
+                                    onRequestClose={closePostEditModal}
+                                    contentLabel="Watch Story"
+                                    className="modal-content"
+                                    overlayClassName="modal-overlay"
+                                    shouldCloseOnOverlayClick={true}
+                                >
+                                    {/* WatchStory Component */}
+                                    <EditPost
+                                        post={post}
+                                        loggedUser={loggedUser}
+                                        closeEditPostModal={closeEditPostModal}
+                                    />
+                                </ReactModal>
+                            </li>
+                            <hr></hr>
+                            <li>
+                                <a
+                                    onClick={async () => {
+                                        const response = await axios.delete(
+                                            Data.posts.deletePost + post.postId
+                                        );
+                                        setMenuClicked(false);
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
