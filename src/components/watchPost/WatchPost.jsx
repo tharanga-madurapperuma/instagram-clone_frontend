@@ -8,7 +8,7 @@ const WatchPost = ({ post }) => {
             <div className="post-image-container">
                 <img
                     className="post-image"
-                    src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
+                    src={post.imageUrl}
                     alt="PostPicture"
                 />
             </div>

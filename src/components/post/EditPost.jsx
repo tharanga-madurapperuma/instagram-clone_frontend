@@ -37,11 +37,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
         <div>
             <div className="flex bg-slate-100 p-5 rounded-lg">
                 <div className="newPostImageContainer ">
-                    <img
-                        className="newPostImage"
-                        src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
-                        alt=""
-                    />
+                    <img className="newPostImage" src={post.imageUrl} alt="" />
                 </div>
 
                 <div className="flex flex-col w-[400px] h-full mt-5">

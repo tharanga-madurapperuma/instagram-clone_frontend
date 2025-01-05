@@ -99,7 +99,7 @@ const WatchStory = ({ story, timeOut }) => {
             <div className="story-image-container">
                 <img
                     className="story-image"
-                    src={`${Data.fileStore.downloadStory}${story.imageUrl}`}
+                    src={story.imageUrl}
                     alt="PostPicture"
                 />
             </div>
