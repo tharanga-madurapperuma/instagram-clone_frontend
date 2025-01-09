@@ -6,7 +6,6 @@ import axios from "axios";
 import Data from "../../fetchData";
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
 import FileResizer from "react-image-file-resizer";
-import { form } from "framer-motion/client";
 
 ReactModal.setAppElement("#root");
 
@@ -112,11 +111,14 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
     // File resizer
     const resizeFile = (file) =>
         new Promise((resolve, reject) => {
+            // Determine output format based on the input file type
+            const outputFormat = file.type === "image/png" ? "PNG" : "JPEG";
+
             FileResizer.imageFileResizer(
                 file,
                 1000, // Target width
                 1000, // Target height
-                "JPEG", // Output format
+                outputFormat, // Dynamically set output format
                 100, // Quality percentage
                 0, // Rotation (0 degrees)
                 (uri) => {
