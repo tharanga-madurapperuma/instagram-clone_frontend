@@ -14,7 +14,8 @@ const NavBar = () => {
     }, [closeModal]);
 
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row h-screen justify-between">
+            <div className="flex flex-col h-screen">
             <div className="leftMenu justify-items-start text-gray-800 m-10">
                 {/* left menu */}
                 <div className="mt-0 mb-20 cursor-pointer">
@@ -87,6 +88,7 @@ const NavBar = () => {
                     <img src={Images.logout} alt="logout" />
                     <span>Logout</span>
                 </div>
+            </div>
             </div>
 
             <div className="speration-line w-0.5 bg-gray-300"></div>
