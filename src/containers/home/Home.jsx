@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import CreatePost from "../post/CreatePost";
 import axios from "axios";
 import Data from "../../fetchData";
+import NavBar from "../../components/NavigationBar/NavBar";
 
 const Home = () => {
     const [posts, setPosts] = useState([]);
@@ -54,80 +55,7 @@ const Home = () => {
     console.log(users);
     return (
         <div className="flex flex-row">
-            <div className="leftMenu justify-items-start text-gray-800 m-10">
-                {/* left menu */}
-                <div className="mt-0 mb-20 cursor-pointer">
-                    <img
-                        src={Images.logo}
-                        alt="logo"
-                        onClick={() => {
-                            navigation("/");
-                        }}
-                    />
-                </div>
-
-                <div
-                    className="flex my-10 flex-row cursor-pointer"
-                    onClick={() => {
-                        navigation("/");
-                    }}
-                >
-                    <img src={Images.home_fill} alt="home" />
-                    <span>Home</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer"
-                    onClick={() => {
-                        navigation("/search");
-                    }}
-                >
-                    <img src={Images.search} alt="search" />
-                    <span>Search</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer"
-                    onClick={() => {
-                        setModalIsOpen(true);
-                    }}
-                >
-                    <img src={Images.newPost} alt="newPost" />
-                    <span>Create Post</span>
-                    <CreatePost
-                        open={modalIsOpen}
-                        onClose={() => {
-                            setCloseModal(false);
-                        }}
-                    />
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer"
-                    onClick={() => {
-                        navigation("/profile");
-                    }}
-                >
-                    <img src={Images.profile} alt="profile" />
-                    <span>Profile</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer"
-                    onClick={() => {
-                        navigation("/settings");
-                    }}
-                >
-                    <img src={Images.settings} alt="settings" />
-                    <span>Settings</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer"
-                    onClick={() => {
-                        navigation("/");
-                    }}
-                >
-                    <img src={Images.logout} alt="logout" />
-                    <span>Logout</span>
-                </div>
-            </div>
-
+            <NavBar />
             <div className="speration-line w-0.5 bg-gray-300"></div>
 
             <div className="feedSection justify-items-cente">
