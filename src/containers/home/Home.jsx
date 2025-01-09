@@ -10,12 +10,14 @@ import CreatePost from "../post/CreatePost";
 import axios from "axios";
 import Data from "../../fetchData";
 import {
+    IoClose,
     IoHomeOutline,
     IoSearchSharp,
     IoSettingsOutline,
 } from "react-icons/io5";
 import { CgAddR, CgProfile } from "react-icons/cg";
 import { LuLogOut } from "react-icons/lu";
+import { TiThMenu } from "react-icons/ti";
 
 const Home = () => {
     // get the user
@@ -27,6 +29,21 @@ const Home = () => {
     const [closeModal, setCloseModal] = useState(true);
     const [users, setUsers] = useState([]);
     const [stories, setStories] = useState([]);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setScreenWidth(window.innerWidth);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        // Cleanup the event listener on unmount
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []); // Empty array ensures the effect runs only on mount and unmount
 
     useEffect(() => {
         // Get all users, stories and posts
@@ -70,82 +87,171 @@ const Home = () => {
 
     return (
         <div className="flex flex-row">
-            <div className="leftMenu justify-items-start text-gray-800 m-10">
-                {/* left menu */}
-                <div className="mt-0 mb-20 cursor-pointer">
-                    <img
-                        src={Images.logo}
-                        alt="logo"
+            {screenWidth > 768 ? (
+                <div className="leftMenu justify-items-start text-gray-800 m-10">
+                    {/* left menu */}
+                    <div className="mt-0 mb-20 cursor-pointer">
+                        <img
+                            src={Images.logo}
+                            alt="logo"
+                            onClick={() => {
+                                navigation("/");
+                            }}
+                        />
+                    </div>
+
+                    <div
+                        className="flex my-10 flex-row cursor-pointer items-center home_icons_container"
                         onClick={() => {
                             navigation("/");
                         }}
-                    />
-                </div>
-
-                <div
-                    className="flex my-10 flex-row cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        navigation("/");
-                    }}
-                >
-                    <IoHomeOutline className="home_icons" />
-                    <span>Home</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        navigation("/search");
-                    }}
-                >
-                    <IoSearchSharp className="home_icons" />
-                    <span>Search</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        setModalIsOpen(true);
-                    }}
-                >
-                    <CgAddR className="home_icons" />
-                    <span>Create Post</span>
-                    <CreatePost
-                        open={modalIsOpen}
-                        onClose={() => {
-                            setCloseModal(false);
+                    >
+                        <IoHomeOutline className="home_icons" />
+                        <span>Home</span>
+                    </div>
+                    <div
+                        className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
+                        onClick={() => {
+                            navigation("/search");
                         }}
-                        loggedUser={LOGGED_USER}
-                    />
+                    >
+                        <IoSearchSharp className="home_icons" />
+                        <span>Search</span>
+                    </div>
+                    <div
+                        className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
+                        onClick={() => {
+                            setModalIsOpen(true);
+                        }}
+                    >
+                        <CgAddR className="home_icons" />
+                        <span>Create Post</span>
+                        <CreatePost
+                            open={modalIsOpen}
+                            onClose={() => {
+                                setCloseModal(false);
+                            }}
+                            loggedUser={LOGGED_USER}
+                        />
+                    </div>
+                    <div
+                        className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
+                        onClick={() => {
+                            navigation("/profile");
+                        }}
+                    >
+                        <CgProfile className="home_icons" />
+                        <span>Profile</span>
+                    </div>
+                    <div
+                        className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
+                        onClick={() => {
+                            navigation("/settings");
+                        }}
+                    >
+                        <IoSettingsOutline className="home_icons" />
+                        <span>Settings</span>
+                    </div>
+                    <div
+                        className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
+                        onClick={() => {
+                            navigation("/");
+                        }}
+                    >
+                        <LuLogOut className="home_icons" />
+                        <span>Logout</span>
+                    </div>
                 </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        navigation("/profile");
-                    }}
-                >
-                    <CgProfile className="home_icons" />
-                    <span>Profile</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        navigation("/settings");
-                    }}
-                >
-                    <IoSettingsOutline className="home_icons" />
-                    <span>Settings</span>
-                </div>
-                <div
-                    className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
-                    onClick={() => {
-                        navigation("/");
-                    }}
-                >
-                    <LuLogOut className="home_icons" />
-                    <span>Logout</span>
-                </div>
-            </div>
+            ) : menuOpen ? (
+                <>
+                    <div
+                        className="smallScreen-overlay"
+                        onClick={() => {
+                            setMenuOpen(false);
+                        }}
+                    ></div>
+                    <div className="leftMenu-small-screen flex flex-col justify-evenly items-center">
+                        {/* left menu for small screens*/}
 
-            <div className="speration-line w-0.5 bg-gray-300"></div>
+                        <div className="">
+                            <IoClose
+                                className="home_icons close-smallScreen "
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                }}
+                            />
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                navigation("/");
+                            }}
+                        >
+                            <IoHomeOutline className="home_icons" />
+                        </div>
+                        <div
+                            className="home_icons_container"
+                            onClick={() => {
+                                navigation("/search");
+                            }}
+                        >
+                            <IoSearchSharp className="home_icons" />
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                setModalIsOpen(true);
+                            }}
+                        >
+                            <CgAddR className="home_icons" />
+                            <CreatePost
+                                open={modalIsOpen}
+                                onClose={() => {
+                                    setCloseModal(false);
+                                }}
+                                loggedUser={LOGGED_USER}
+                            />
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                navigation("/profile");
+                            }}
+                        >
+                            <CgProfile className="home_icons" />
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                navigation("/settings");
+                            }}
+                        >
+                            <IoSettingsOutline className="home_icons" />
+                        </div>
+                        <div
+                            className=""
+                            onClick={() => {
+                                navigation("/");
+                            }}
+                        >
+                            <LuLogOut className="home_icons" />
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <TiThMenu
+                    className="home_icons menu-icon-smallScreen"
+                    onClick={() => {
+                        console.log("menu icon clicked");
+                        setMenuOpen(true);
+                    }}
+                />
+            )}
+
+            {/* seperation line */}
+            {screenWidth > 768 ? (
+                <div className="speration-line w-0.5 bg-gray-300"></div>
+            ) : null}
 
             <div className="feedSection justify-items-center ">
                 {/* feed section */}

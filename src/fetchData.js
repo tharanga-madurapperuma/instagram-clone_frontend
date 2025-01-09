@@ -20,6 +20,8 @@ const Data = {
         incrementLikeCount: `${BASE_URL}/incrementLikes/`,
         decrementLikeCount: `${BASE_URL}/decrementLikes/`,
         getLikeCount: `${BASE_URL}/getLikeCount/`,
+        deletePost: `${BASE_URL}/deletePost/`,
+        editPost: `${BASE_URL}/editPost/`,
     },
     comments: {
         getAllComments: `${BASE_URL}/getAllComments`,
@@ -42,6 +44,7 @@ const Data = {
         getStoryById: `${BASE_URL}/getStoryById/`,
         addStory: `${BASE_URL}/addStory`,
         markedWatched: `${BASE_URL}/watchedStory/`,
+        deleteStory: `${BASE_URL}/deleteStory/`,
     },
 };
 

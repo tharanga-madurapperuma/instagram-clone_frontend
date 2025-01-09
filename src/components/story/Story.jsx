@@ -45,9 +45,7 @@ const Story = ({ story }) => {
                         storyCliked();
                     }}
                 >
-                    <img
-                        src={`${Data.fileStore.downloadStory}${story.imageUrl}`}
-                    />
+                    <img src={story.imageUrl} />
                 </div>
                 {/* React Modal */}
                 <ReactModal

@@ -8,18 +8,21 @@ import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
 import ReactModal from "react-modal";
 import WatchPost from "../watchPost/WatchPost";
+import { CiMenuKebab } from "react-icons/ci";
+import EditPost from "./EditPost";
+import Loader from "../loader/Loader";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
-    const [file, setFile] = useState();
-    const imageUrl = `${Data.fileStore.downloadPost}${post?.imageUrl}`;
-    const fileName = post?.imageUrl;
     const [isLiked, setIsLiked] = useState(false);
     const loggedUserId = loggedUser?.user_id;
     const [likeCount, setLikeCount] = useState(post?.likeCount);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isPostEditModalOpen, setIsPostEditModalOpen] = React.useState(false);
+    const [menuClicked, setMenuClicked] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,20 +31,6 @@ const Post = ({ post, loggedUser }) => {
             );
 
             setUser(response.data);
-        };
-
-        const getImageAsFile = async (imageUrl, fileName) => {
-            try {
-                const response = await fetch(imageUrl); // Fetch the image
-                const blob = await response.blob(); // Convert response to Blob
-                const file = new File([blob], fileName, {
-                    type: blob.type,
-                }); // Convert Blob to File
-                return file; // Return the File object
-            } catch (error) {
-                console.error("Error fetching the image as a file:", error);
-                return null;
-            }
         };
 
         const checkLikedState = () => {
@@ -53,9 +42,6 @@ const Post = ({ post, loggedUser }) => {
         };
 
         fetchData();
-        getImageAsFile(imageUrl, fileName).then((file) => {
-            setFile(file); // Set the file after fetching
-        });
         checkLikedState();
     }, []);
 
@@ -64,55 +50,19 @@ const Post = ({ post, loggedUser }) => {
         setComment((prevComment) => prevComment + emojiObject.emoji);
     };
 
-    const updateLikeCount = async () => {
-        const response = await axios.get(Data.posts.getLikeCount + post.postId);
-        setLikeCount(response.data);
-    };
-
     // share post to story
     const shareClicked = () => {
+        setIsLoading(true);
         const confirm = window.confirm(
             "Do you want to share this post as story?"
         );
 
         if (confirm) {
-            const getStoryFileName = async () => {
-                const formData = new FormData();
-                formData.append("image", file); // Append the file with the key 'image'
-
-                try {
-                    const response = await axios.post(
-                        Data.fileStore.uploadStory,
-                        formData, // Send the FormData instance
-                        {
-                            headers: {
-                                "Content-Type": "multipart/form-data", // Required for file uploads
-                            },
-                        }
-                    );
-                    console.log(response.data);
-                    return response.data; // Return the file name
-                } catch (error) {
-                    console.error(
-                        "Error uploading the image as a story:",
-                        error
-                    );
-                    return null;
-                }
-            };
-
             const handleStoryUpload = async () => {
-                if (!file) {
-                    alert("No file selected");
-                    return;
-                }
-
                 try {
-                    const newFileName = await getStoryFileName();
-
                     const story = {
                         description: post.description,
-                        imageUrl: newFileName, // Use the uploaded file reference
+                        imageUrl: post.imageUrl, // Use the uploaded file reference
                         userId: loggedUserId,
                         likeCount: 0,
                         watched: false,
@@ -124,9 +74,9 @@ const Post = ({ post, loggedUser }) => {
                     );
 
                     if (response.status === 201) {
-                        alert("Post shared as story successfully!");
+                        setIsLoading(false);
+                        window.location.reload();
                     }
-                    window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
@@ -145,6 +95,7 @@ const Post = ({ post, loggedUser }) => {
         if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
+                setLikeCount((prevCount) => prevCount - 1);
                 await axios.delete(
                     Data.users.removeLikes +
                         loggedUser?.user_id +
@@ -152,9 +103,9 @@ const Post = ({ post, loggedUser }) => {
                         post.postId
                 );
                 await axios.post(Data.posts.decrementLikeCount + post.postId);
-                updateLikeCount();
             } else {
                 setIsLiked(true);
+                setLikeCount((prevCount) => prevCount + 1);
                 try {
                     await axios.post(
                         Data.users.addLikes + loggedUserId + "/" + post.postId
@@ -162,7 +113,6 @@ const Post = ({ post, loggedUser }) => {
                     await axios.post(
                         Data.posts.incrementLikeCount + post.postId
                     );
-                    updateLikeCount();
                 } catch (error) {
                     alert(error);
                 }
@@ -180,22 +130,87 @@ const Post = ({ post, loggedUser }) => {
         setIsModalOpen(false);
     };
 
+    const closePostEditModal = () => {
+        setIsPostEditModalOpen(false);
+    };
+
+    const dotClicked = () => {
+        menuClicked ? setMenuClicked(false) : setMenuClicked(true);
+    };
+
+    const closeEditPostModal = () => {
+        setIsPostEditModalOpen(false);
+    };
+
     return (
         <div className=" feedSection_post">
+            {<Loader loader={isLoading} />}
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
                     <ProfileTemplatePost user={user} post={post} />
                 </div>
 
                 <div className="top-right-dots">
-                    <img src="./assets/icons/More.png" alt="More" />
+                    <CiMenuKebab
+                        className="top-right-dots_icon"
+                        onClick={dotClicked}
+                    />
+                    <div
+                        className={
+                            menuClicked
+                                ? "top-right-dots_menu-active"
+                                : "top-right-dots_menu-inactive"
+                        }
+                    >
+                        <ul>
+                            <li>
+                                <a
+                                    onClick={() => {
+                                        setIsPostEditModalOpen(true);
+                                        setMenuClicked(false);
+                                    }}
+                                >
+                                    Edit
+                                </a>
+                                <ReactModal
+                                    isOpen={isPostEditModalOpen}
+                                    onRequestClose={closePostEditModal}
+                                    contentLabel="Watch Story"
+                                    className="modal-content"
+                                    overlayClassName="modal-overlay"
+                                    shouldCloseOnOverlayClick={true}
+                                >
+                                    {/* WatchStory Component */}
+                                    <EditPost
+                                        post={post}
+                                        loggedUser={loggedUser}
+                                        closeEditPostModal={closeEditPostModal}
+                                    />
+                                </ReactModal>
+                            </li>
+                            <hr></hr>
+                            <li>
+                                <a
+                                    onClick={async () => {
+                                        await axios.delete(
+                                            Data.posts.deletePost + post.postId
+                                        );
+                                        setMenuClicked(false);
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <div className="post_image my-5">
                 <div className="image-outline flex justify-center">
                     <img
-                        src={`${Data.fileStore.downloadPost}${post.imageUrl}`}
+                        src={post.imageUrl}
                         alt="PostPicture"
                         onClick={handleDoubleClick}
                     />
@@ -216,9 +231,29 @@ const Post = ({ post, loggedUser }) => {
                 <div className="bottom-icons flex justify-between">
                     <div className="bottom-icons-left flex items-center">
                         {isLiked ? (
-                            <FaHeart className="mr-3 heart-handle-fill" />
+                            <FaHeart
+                                onClick={async () => {
+                                    setLikeCount((prevCount) => prevCount - 1);
+                                    setIsLiked(false);
+                                    await axios.post(
+                                        Data.posts.decrementLikeCount +
+                                            post.postId
+                                    );
+                                }}
+                                className="mr-3 heart-handle-fill"
+                            />
                         ) : (
-                            <FaRegHeart className="mr-3 heart-handle" />
+                            <FaRegHeart
+                                onClick={async () => {
+                                    setLikeCount((prevCount) => prevCount + 1);
+                                    setIsLiked(true);
+                                    await axios.post(
+                                        Data.posts.incrementLikeCount +
+                                            post.postId
+                                    );
+                                }}
+                                className="mr-3 heart-handle"
+                            />
                         )}
                         <FaRegComment className="mr-3 comment-handle" />
                         <RiSendPlaneLine

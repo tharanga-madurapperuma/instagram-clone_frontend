@@ -10,6 +10,7 @@ import FileResizer from "react-image-file-resizer";
 ReactModal.setAppElement("#root");
 
 const CreatePost = ({ open, onClose, loggedUser }) => {
+    const CLOUDINARY_CLOUD_NAME = "dr9jbdl9c";
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState("");
@@ -77,20 +78,15 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
 
         try {
             const formData = new FormData();
-            formData.append("image", file); // Append the file with the key 'image'
+            formData.append("file", file); // Append the file with the key 'image'
+            formData.append("upload_preset", "instagram-clone_posts");
+            formData.append("cloud_name", { CLOUDINARY_CLOUD_NAME });
+            const CLOUD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-            const fileUploadResponse = await axios.post(
-                Data.fileStore.uploadPost,
-                formData, // Send the FormData instance
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data", // Required for file uploads
-                    },
-                }
-            );
+            const response_cloudinary = await axios.post(CLOUD_URL, formData);
 
-            // Use response.data directly for the next request
-            const fileUrl = fileUploadResponse.data;
+            // get file url from cloudinary and assign it to fileUrl
+            const fileUrl = response_cloudinary.data.secure_url;
 
             const response = await axios.post(Data.posts.addPost, {
                 description: description,
@@ -115,11 +111,14 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
     // File resizer
     const resizeFile = (file) =>
         new Promise((resolve, reject) => {
+            // Determine output format based on the input file type
+            const outputFormat = file.type === "image/png" ? "PNG" : "JPEG";
+
             FileResizer.imageFileResizer(
                 file,
                 1000, // Target width
                 1000, // Target height
-                "JPEG", // Output format
+                outputFormat, // Dynamically set output format
                 100, // Quality percentage
                 0, // Rotation (0 degrees)
                 (uri) => {
