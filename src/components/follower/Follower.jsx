@@ -13,17 +13,17 @@ const Follower = ({ user }) => {
                                 src={
                                     !user.userImage
                                         ? "./assets/users/general.jpg"
-                                        : `${user.userImage}`
+                                        : `./${user.userImage}`
                                 }
                                 alt="Profile"
                             ></img>
                         </div>
                     </div>
 
-                    <div className="content_data ml-3">
+                    <div className="content_data ml-2">
                         <div className="data-user-name-date flex items-center">
                             <div className="username text-base font-medium">
-                                {user?.firstname} {user?.lastname}
+                                {user?.firstName} {user?.lastName}
                             </div>
                         </div>
                         <div className="data-caption">
@@ -34,7 +34,7 @@ const Follower = ({ user }) => {
                     </div>
                 </div>
 
-                <div className="date text-blue-600">follwed</div>
+                <div className="date text-cyan-500 m-2">Followed</div>
             </div>
         </div>
     );

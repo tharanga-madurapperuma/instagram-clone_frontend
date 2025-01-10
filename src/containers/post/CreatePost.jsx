@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
-import Modal from "react-modal";
 import Images from "../../assets/images";
-import ProfileNameIcon from "../../components/profile/ProfileNameIcon";
+import ReactModal from "react-modal";
+import axios from "axios";
+import Data from "../../fetchData";
+import ProfileTemplate from "../../components/profile/ProfileTemplate";
+import FileResizer from "react-image-file-resizer";
 
-Modal.setAppElement("#root");
+ReactModal.setAppElement("#root");
 
-const CreatePost = ({ open, onClose }) => {
+const CreatePost = ({ open, onClose, loggedUser }) => {
+    const CLOUDINARY_CLOUD_NAME = "dr9jbdl9c";
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState("");
+    const [description, setDescription] = useState("");
 
     // Use effect to handle open and close modal
     useEffect(() => {
@@ -19,13 +24,14 @@ const CreatePost = ({ open, onClose }) => {
     // Drop handle
     const handleDrop = (e) => {
         e.preventDefault();
-        const droppedFile = e.dataTransfer.files[0];
+        if (isDragOver) {
+            const droppedFile = e.dataTransfer.files[0];
 
-        if (
-            droppedFile.type.startsWith("image/") ||
-            droppedFile.type.startsWith("video/")
-        ) {
-            setFile(droppedFile);
+            if (droppedFile.type.startsWith("image/")) {
+                setFile(droppedFile);
+            }
+        } else {
+            alert("Please select an image only");
         }
     };
 
@@ -43,23 +49,105 @@ const CreatePost = ({ open, onClose }) => {
     };
 
     // On change handle for file input
-    const handleOnChange = (e) => {
+    const handleOnChange = async (e) => {
         e.preventDefault();
-        const file = e.target.files[0];
+        const fileUpload = e.target.files[0];
 
-        if (
-            file &&
-            (file.type.startsWith("image/") || file.type.startsWith("video/"))
-        ) {
-            setFile(file);
+        if (fileUpload && fileUpload.type.startsWith("image/")) {
+            // resize the image
+            try {
+                const file = await resizeFile(fileUpload);
+
+                setFile(file);
+            } catch (error) {
+                console.error("Error resizing the file:", error);
+                alert("Failed to resize the image. Please try again.");
+            }
         } else {
             setFile(null);
             alert("Please select image or video file");
         }
     };
 
+    // After create post button clicked this method happens
+    const handleClicked = async () => {
+        if (!file) {
+            alert("Please select a file");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file); // Append the file with the key 'image'
+            formData.append("upload_preset", "instagram-clone_posts");
+            formData.append("cloud_name", { CLOUDINARY_CLOUD_NAME });
+            const CLOUD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+            const response_cloudinary = await axios.post(CLOUD_URL, formData);
+
+            // get file url from cloudinary and assign it to fileUrl
+            const fileUrl = response_cloudinary.data.secure_url;
+
+            const response = await axios.post(Data.posts.addPost, {
+                description: description,
+                userId: loggedUser.user_id,
+                likeCount: 0,
+                imageUrl: fileUrl, // Use fileUrl here
+            });
+
+            if (response.status === 201) {
+                alert("Post created successfully!");
+                setFile(null);
+                setDescription("");
+                onClose();
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error creating post:", error);
+            alert("Failed to create post. Please try again.");
+        }
+    };
+
+    // File resizer
+    const resizeFile = (file) =>
+        new Promise((resolve, reject) => {
+            // Determine output format based on the input file type
+            const outputFormat = file.type === "image/png" ? "PNG" : "JPEG";
+
+            FileResizer.imageFileResizer(
+                file,
+                1000, // Target width
+                1000, // Target height
+                outputFormat, // Dynamically set output format
+                100, // Quality percentage
+                0, // Rotation (0 degrees)
+                (uri) => {
+                    // Convert Base64 to File
+                    const byteString = atob(uri.split(",")[1]);
+                    const mimeString = uri.split(",")[0].match(/:(.*?);/)[1];
+                    const arrayBuffer = new ArrayBuffer(byteString.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+
+                    for (let i = 0; i < byteString.length; i++) {
+                        uint8Array[i] = byteString.charCodeAt(i);
+                    }
+
+                    const blob = new Blob([uint8Array], { type: mimeString });
+                    const resizedFile = new File([blob], file.name, {
+                        type: mimeString,
+                    });
+
+                    resolve(resizedFile);
+                },
+                "base64", // Output type
+                (error) => {
+                    reject(error);
+                }
+            );
+        });
+
     return (
-        <Modal
+        <ReactModal
             isOpen={modelOpen}
             onRequestClose={() => {
                 setModelOpen(false);
@@ -90,7 +178,7 @@ const CreatePost = ({ open, onClose }) => {
                         <input
                             type="file"
                             id="file-upload"
-                            accept="image/*, video/*"
+                            accept="image/*"
                             onChange={handleOnChange}
                         />
                     </div>
@@ -107,17 +195,33 @@ const CreatePost = ({ open, onClose }) => {
 
                         <div className="flex flex-col w-[400px] h-full mt-5">
                             <div className="flex items-start w-full">
-                                <ProfileNameIcon />
+                                <ProfileTemplate user={loggedUser} />
                             </div>
                             <textarea
                                 rows={5}
-                                className="w-full bg-slate-100 mt-5 p-5"
+                                className="w-full bg-slate-100 mt-5 p-5 post-textarea"
+                                onChange={(e) => {
+                                    setDescription(e.target.value);
+                                }}
                             ></textarea>
+                            <button
+                                className="post-button align"
+                                onClick={() => {
+                                    handleClicked();
+                                }}
+                            >
+                                Post
+                            </button>
+                            <p className="text-gray-500 text-xs mt-5">
+                                &copy; instagram clone, developed by Tharanga
+                                Madurapperuma, Rusiru Erandaka and Harshana
+                                Rathnayaka.
+                            </p>
                         </div>
                     </div>
                 )}
             </div>
-        </Modal>
+        </ReactModal>
     );
 };
 

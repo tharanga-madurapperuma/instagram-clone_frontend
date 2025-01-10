@@ -4,16 +4,16 @@
 @tailwind utilities;
 
 :root {
-	--font-base: "Lato", serif;
-	--color-pink: #D000BE;
-	--color-orange: #FE3E34;
-	--color-yellow: #FDC700;
-	--color-blue: #06c;
+    --font-base: "Lato", serif;
+    --color-pink: #d000be;
+    --color-orange: #fe3e34;
+    --color-yellow: #fdc700;
+    --color-blue: #06c;
 }
 
 * {
-	margin: 0;
-	padding: 0;
-	scroll-behavior: smooth;
-	font-family: var(--font-base);
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: var(--font-base);
 }

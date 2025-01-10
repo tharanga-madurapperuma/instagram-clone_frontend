@@ -1,8 +1,8 @@
 * {
     box-sizing: border-box;
-  }
-  
-  .login-container {
+}
+
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +12,6 @@
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(250, 250, 250);
-  
   }
   
   .instagram-logo {
@@ -41,16 +40,15 @@
   }
   
   
-  .box-1{
+
+.box-1 {
     padding-top: 10px;
     height: 400px;
     width: 350px;
     border: 1px solid rgb(219, 219, 219);
     background-color: rgb(255, 255, 255);
-  
-  }
-  
-  .box-2{
+
+.box-2 {
     height: 63px;
     width: 350px;
     border: 1px solid rgb(219, 219, 219);
@@ -60,7 +58,6 @@
     justify-content: center;
     text-align: center;
     margin: 10px 0;
-  
   }
   
   .input-box{
@@ -73,7 +70,6 @@
     width: 250px;
     border: 1px solid rgb(219, 219, 219);
     margin: 3px 0;
-    outline: none;
   }
   
   .login-button{
@@ -92,7 +88,7 @@
     border-radius: 9px;
   }
   
-  .limes-box{
+.limes-box {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,27 +98,24 @@
     font-size: 13px;
     color: rgb(142, 142, 142);
     font-weight: bold;
-  
   }
   
-  .line-1{
+.line-1 {
     width: 100px;
     height: 1px;
     background-color: rgb(219, 219, 219);
     margin-right: 5px;
     margin-left: 48px;
-  
   }
   
-  .line-2{
+.line-2 {
     width: 100px;
     height: 2px;
     background-color: rgb(219, 219, 219);
     margin-left: 200px;
-  
   }
   
-  .fb-box{
+.fb-box {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -136,7 +129,8 @@
     gap: 8px;
   }
   
-  .or-box{
+
+.or-box {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -151,7 +145,7 @@
     gap: 8px;
   }
   
-  .sign-up-span{
+.sign-up-span {
     color: rgb(0, 149, 246);
     font-weight: 600;
     margin: 10px 0;
@@ -170,21 +164,19 @@
     text-decoration: none;
   }
   
-  .instruction{
+.instruction {
     color: rgb(142, 142, 142);
     font-size: 12px;
     margin: 10px 0;
     padding: 5px 37px 7px 37px;
-  
   }
   
-  .box-3{
+.box-3 {
     padding-top: 5px;
     height: 550px;
     width: 350px;
     border: 1px solid rgb(219, 219, 219);
     background-color: rgb(255, 255, 255);
-  
   }
   
   .account{
@@ -193,7 +185,7 @@
     color: rgb(62, 57, 57);
   }
   
-  .footer {
+.footer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -204,7 +196,7 @@
     text-align: center;
   }
   
-  .footer-links {
+.footer-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -237,3 +229,5 @@
     align-items: center; 
   
   }
+}
+
