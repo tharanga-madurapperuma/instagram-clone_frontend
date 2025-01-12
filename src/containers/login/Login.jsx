@@ -1,46 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import googlwplay from "../../assets/google.png";
 import appstore from "../../assets/apple.png";
 import instalogo from "../../assets/insta.png";
 import facebook from "../../assets/fb.png";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
-import Data from "../../fetchData";
+import axios from "axios"; 
 
 const Login = () => {
-    const Navigation = useNavigate();
-    const [gUsers, setGUser] = useState();
-    var login = false;
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userResult = await fetch(Data.users.getAllUsers);
-                setGUser(await userResult.json());
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchUserData();
-    }, []);
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const userValidation = async () => {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        try {
+            const response = await axios.post("http://localhost:8080/users/login", {
+                email: email,
+                password: password,
+            });
 
-        gUsers?.map((GUser) => {
-            if (GUser.email === email && GUser.password === password) {
-                login = true;
-                let loggedUser = JSON.stringify(GUser);
-                localStorage.setItem("loggedUser", loggedUser);
-                localStorage.setItem("userEmail", GUser.email);
-                Navigation("/");
-            } else if (GUser.email === email) {
-                alert("Incorrect password");
+            if (response.data) {
+                
+                const { token } = response.data;
+
+                
+                localStorage.setItem("authToken", token);
+                localStorage.setItem("userEmail", email);
+
+                
+                navigate("/");
+            } else {
+                
+                alert("Login failed. Please check your credentials.");
             }
-        });
-        if (!login) {
-            alert("User does not exist");
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("Invalid email or password. Please try again.");
         }
     };
 
@@ -58,7 +53,8 @@ const Login = () => {
                     <input
                         className="input-box"
                         type="text"
-                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="Phone number, username, or email"
                     />
                 </div>
@@ -66,7 +62,8 @@ const Login = () => {
                     <input
                         className="input-box"
                         type="password"
-                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
                     />
                 </div>
@@ -105,7 +102,7 @@ const Login = () => {
                     Don't have an account?
                     <span
                         className="sign-up-span"
-                        onClick={() => Navigation("/signup")}
+                        onClick={() => navigate("/signup")}
                     >
                         Sign up
                     </span>
