@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
-import Images from "../../assets/images";
 import ReactModal from "react-modal";
 import axios from "axios";
 import Data from "../../fetchData";
@@ -10,6 +9,9 @@ import FileResizer from "react-image-file-resizer";
 ReactModal.setAppElement("#root");
 
 const CreatePost = ({ open, onClose, loggedUser }) => {
+    // images from public folder
+    const dragDrop = "/assets/icons/dragDrop.png";
+
     const CLOUDINARY_CLOUD_NAME = "dr9jbdl9c";
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
@@ -170,9 +172,11 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                     >
-                        <img src={Images.dragDrop} alt="dragDrop" />
-                        <p>Drag photos and video here</p>
-                        <label htmlFor="file-upload">
+                        <img src={dragDrop} alt="dragDrop" />
+                        <p className="text-center">
+                            Drag photos and video here
+                        </p>
+                        <label htmlFor="file-upload" className="text-center">
                             Select from Computer
                         </label>
                         <input
@@ -184,7 +188,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
                     </div>
                 )}
                 {file && (
-                    <div className="flex">
+                    <div className="flex newPostImageContainer-wrapper">
                         <div className="newPostImageContainer ">
                             <img
                                 className="newPostImage"
@@ -193,8 +197,8 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
                             />
                         </div>
 
-                        <div className="flex flex-col w-[400px] h-full mt-5">
-                            <div className="flex items-start w-full">
+                        <div className="newPostContainer flex flex-col w-[400px] h-full mt-5 ">
+                            <div className="createPost-profile flex items-start w-full">
                                 <ProfileTemplate user={loggedUser} />
                             </div>
                             <textarea
