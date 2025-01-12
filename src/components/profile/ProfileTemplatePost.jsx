@@ -48,7 +48,7 @@ const ProfileTemplatePost = ({ user, post }) => {
                         src={
                             user?.userImage
                                 ? `${Data.fileStore.downloadUser}${user?.userImage}`
-                                : `${Data.fileStore.downloadUser}general.jpg_20241223164338_a9ea9a8a_user.jpg`
+                                : "/assets/users/general.jpg"
                         }
                     ></img>
                 </div>
