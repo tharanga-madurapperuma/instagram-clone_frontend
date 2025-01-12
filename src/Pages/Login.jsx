@@ -14,7 +14,7 @@ const Login = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResult = await fetch('http://localhost:8080/users/getAllUser');
+        const userResult = await fetch('http://localhost:8080/users/login');
         setGUser(await userResult.json());
 
       }catch (error){

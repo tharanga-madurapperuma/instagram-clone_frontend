@@ -14,7 +14,7 @@ const Signup = () => {
   const[email, setEmail] = useState('');
 
   const saveUserData = async (email, password, firstname, lastname) => {
-    const response = await fetch('http://localhost:8080/users/addUser', {
+    const response = await fetch('http://localhost:8080/users/register', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
