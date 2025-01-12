@@ -1,9 +1,8 @@
 import React from "react";
-import settings from "../assets/icons/Options.png";
-import Images from "../assets/images";
 import { useNavigate } from "react-router-dom";
 
 const ProfileDetails = () => {
+    const settingIcon = "/assets/icons/Options.png";
     const navigation = useNavigate();
     return (
         <div className="py-10">
@@ -41,7 +40,12 @@ const ProfileDetails = () => {
                         <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
                             View archive
                         </button>
-                        <img src={settings} alt="sttings" className="w-5 h-5" />
+                        <img
+                            src={settingIcon}
+                            alt="sttings"
+                            className="w-7 h-7"
+                        />
+
                     </div>
                     <div className="flex space-x-10 mx-20">
                         <div>

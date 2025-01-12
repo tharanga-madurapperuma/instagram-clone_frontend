@@ -1,12 +1,14 @@
 import React from "react";
-import instalogo from "../../assets/insta.png";
-import googlwplay from "../../assets/google.png";
-import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Data from "../../fetchData";
 
 const Signup = () => {
+    // images from public folder
+    const instaLogo = "/assets/insta.png";
+    const googlePlay = "/assets/google.png";
+    const appStore = "/assets/apple.png";
+
     const navigation = useNavigate();
     const [gUser, setGUser] = useState();
     const [email, setEmail] = useState("");
@@ -86,7 +88,7 @@ const Signup = () => {
             <div className="box-3">
                 <div className="box-1-logo">
                     <img
-                        src={instalogo}
+                        src={instaLogo}
                         alt="instagram logo"
                         className="instagram-logo"
                     />
@@ -157,12 +159,12 @@ const Signup = () => {
             </div>
             <div className="app-store-google-play-box">
                 <img
-                    src={appstore}
+                    src={appStore}
                     alt="app store logo"
                     className="app-store-logo"
                 />
                 <img
-                    src={googlwplay}
+                    src={googlePlay}
                     alt="google play logo"
                     className="google-play-logo"
                 />
