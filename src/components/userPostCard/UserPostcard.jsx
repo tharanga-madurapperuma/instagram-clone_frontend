@@ -6,7 +6,7 @@ import "./UserPostCard.css";
 const UserPostcard = () => {
     return (
         <div className="p-1">
-            <div className="post w-60 h-60">
+            <div className="post w-80 h-80 m-1 relative">
                 <img
                     className="cursor-pointer"
                     src="https://images.pexels.com/photos/29529568/pexels-photo-29529568/free-photo-of-traditional-chinese-dumplings-with-soy-sauce.jpeg"

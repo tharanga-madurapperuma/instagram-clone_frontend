@@ -7,17 +7,17 @@ const UserPost = () => {
     const [activeTab, setActiveTab] = React.useState();
     const tabs = [
         {
-            tab: "Posts",
+            tab: "POSTS",
             icon: <AiOutlineTable />,
             activeTab: "",
         },
 
         {
-            tab: "Saved",
+            tab: "SAVED",
             icon: <BiBookmark />,
         },
         {
-            tab: "Tagged",
+            tab: "TAGGED",
             icon: <AiOutlineUser />,
         },
     ];
@@ -36,7 +36,7 @@ const UserPost = () => {
                     >
                         <p>{item.icon}</p>
 
-                        <p className="ml-1">{item.tab}</p>
+                        <p className="ml-3">{item.tab}</p>
                     </div>
                 ))}
             </div>
