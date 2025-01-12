@@ -51,3 +51,24 @@
     object-fit: cover;
     border-radius: 5px;
 }
+
+.post-button {
+    background-color: var(--color-blue);
+    color: white;
+    font-weight: 600;
+    line-height: 18px;
+    font-size: 14px;
+    padding: 9px 0 7px 8px;
+    width: 50%;
+    border: 1px solid rgb(219, 219, 219);
+    margin: 20px 0;
+    outline: none;
+    cursor: pointer;
+    border-radius: 9px;
+}
+
+.post-textarea {
+    outline: none;
+    background-color: #c6c6c6;
+    border-radius: 6px;
+}
