@@ -1,7 +1,7 @@
 import React from "react";
-import settings from "../assets/icons/Options.png";
 
 const ProfileDetails = () => {
+    const settingIcon = "/assets/icons/Options.png";
     return (
         <div className="py-10">
             <div className="flex items-center space-x-10">
@@ -21,7 +21,11 @@ const ProfileDetails = () => {
                         <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
                             View archive
                         </button>
-                        <img src={settings} alt="sttings" className="w-7 h-7" />
+                        <img
+                            src={settingIcon}
+                            alt="sttings"
+                            className="w-7 h-7"
+                        />
                     </div>
                     <div className="flex space-x-10 mx-20">
                         <div>
