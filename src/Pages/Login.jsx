@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import googlwplay from '../images/google.png'
-import appstore from '../images/apple.png'
-import instalogo from '../images/insta.png'
-import facebook from '../images/fb.png'
+import googlwplay from "../assets/google.png";
+import appstore from "../assets/apple.png";
+import instalogo from "../assets/insta.png";
+import facebook from "../assets/fb.png";
 import {Link, useNavigate} from 'react-router-dom'
 import '../App' 
 
@@ -74,7 +74,7 @@ const Login = () => {
             </div>
         </div>
         <div className='box-2'>
-            <p className='account'>Don't have an account?<span className='sign-up-span' onClick={() => Navigation("/signup")}>Sign up</span></p>
+            <p className='account'>Don have an account?<span className='sign-up-span' onClick={() => Navigation("/signup")}>Sign up</span></p>
         </div>
         <div className='get-app-box'>
             <p>Get the app.</p>
