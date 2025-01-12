@@ -1,9 +1,10 @@
 import React from 'react'
-import instalogo from '../images/insta.png'
-import googlwplay from '../images/google.png'
-import appstore from '../images/apple.png'
+import instalogo from "../assets/insta.png";
+import googlwplay from "../assets/google.png";
+import appstore from "../assets/apple.png";
 import {Link, useNavigate} from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import '../App.css' 
 
 
 
@@ -14,7 +15,7 @@ const Signup = () => {
   const[email, setEmail] = useState('');
 
   const saveUserData = async (email, password, firstname, lastname) => {
-    const response = await fetch('http://localhost:8080/users/addUser', {
+    const response = await fetch('http://localhost:8080/users/register', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -109,7 +110,7 @@ const Signup = () => {
         </div>
         <div className='login-button-box'>
             <button className='login-button' onClick={userValidation} >Sign up</button>
-          </div>
+        </div>
       </div>
       <div className='box-2'>
             <p className='account'>Have an account?<span className='sign-up-span' onClick={() => navigation("/")}>Log in</span></p>
