@@ -4,10 +4,8 @@ import googlwplay from "../../assets/google.png";
 import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
 import Data from "../../fetchData";
+import "../../App.css";
 import "./signUp.css";
-
-
- 
 
 const Signup = () => {
     // images from public folder
@@ -20,7 +18,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
 
     const saveUserData = async (email, password, firstName, lastName) => {
-        const response = await fetch("http://localhost:8080/users/addUser", {
+        const response = await fetch("http://localhost:8080/users/register", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -110,7 +108,7 @@ const Signup = () => {
                 <div>
                     <input
                         className="input-box"
-                        type="text"
+                        type="password"
                         id="password"
                         placeholder="Password"
                     />
