@@ -12,9 +12,10 @@ import { CiMenuKebab } from "react-icons/ci";
 import EditPost from "./EditPost";
 import Loader from "../loader/Loader";
 import { GrSave } from "react-icons/gr";
+import Comment from "../comment/Comment";
 
 const Post = ({ post, loggedUser }) => {
-    const [comment, setComment] = useState("");
+    const [comment, setComment] = useState();
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
     const [isLiked, setIsLiked] = useState(false);
@@ -24,6 +25,8 @@ const Post = ({ post, loggedUser }) => {
     const [isPostEditModalOpen, setIsPostEditModalOpen] = React.useState(false);
     const [menuClicked, setMenuClicked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [fetchComments, setFetchComments] = useState([]);
+    const [showComment, setShowComment] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,8 +45,17 @@ const Post = ({ post, loggedUser }) => {
             }
         };
 
+        const getComments = async () => {
+            const response = await axios.get(
+                Data.comments.getCommentByPostId + post?.postId
+            );
+
+            setFetchComments(response.data);
+        };
+
         fetchData();
         checkLikedState();
+        getComments();
     }, []);
 
     // Imoji handle method
@@ -143,6 +155,7 @@ const Post = ({ post, loggedUser }) => {
         setIsPostEditModalOpen(false);
     };
 
+    console.log(fetchComments);
     return (
         <div className=" feedSection_post">
             {<Loader loader={isLoading} />}
@@ -256,7 +269,14 @@ const Post = ({ post, loggedUser }) => {
                                 className="mr-3 heart-handle"
                             />
                         )}
-                        <FaRegComment className="mr-3 comment-handle" />
+                        <FaRegComment
+                            className="mr-3 comment-handle cursor-pointer"
+                            onClick={() => {
+                                showComment
+                                    ? setShowComment(false)
+                                    : setShowComment(true);
+                            }}
+                        />
                         <RiSendPlaneLine
                             className="mr-3 cursor-pointer share-handle"
                             onClick={() => {
@@ -289,7 +309,7 @@ const Post = ({ post, loggedUser }) => {
                             />
                             <div className="flex items-center">
                                 <p className="text-blue-700 font-bold text-sm mr-2">
-                                    {comment.length > 0 ? "Post" : ""}
+                                    {comment?.length > 0 ? "Post" : ""}
                                 </p>
                                 <button
                                     onClick={() => setShowPicker(!showPicker)}
@@ -314,6 +334,13 @@ const Post = ({ post, loggedUser }) => {
                         </div>
                     </div>
                     <div className="comment-bottom-line w-full bg-gray-400"></div>
+                    <div className="post-comment-section">
+                        {showComment
+                            ? fetchComments?.map((comment, index) => (
+                                  <Comment comment={comment} />
+                              ))
+                            : null}
+                    </div>
                 </div>
             </div>
         </div>
