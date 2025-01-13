@@ -11,6 +11,7 @@ import WatchPost from "../watchPost/WatchPost";
 import { CiMenuKebab } from "react-icons/ci";
 import EditPost from "./EditPost";
 import Loader from "../loader/Loader";
+import { GrSave } from "react-icons/gr";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState("");
@@ -265,7 +266,7 @@ const Post = ({ post, loggedUser }) => {
                         <p className="share-text">Share this post as story</p>
                     </div>
                     <div className="bottom-icons-right">
-                        <img src="./assets/icons/Save.png" alt="Save" />
+                        <GrSave className="save-handle" />
                     </div>
                 </div>
                 <div className="bottom-like-count">
