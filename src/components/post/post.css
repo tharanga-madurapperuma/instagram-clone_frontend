@@ -71,7 +71,8 @@
 }
 
 .heart-handle,
-.comment-handle {
+.comment-handle,
+.save-handle {
     transition: 0.5s;
     font-size: 1.4rem;
     color: rgb(87, 87, 87);
@@ -83,7 +84,8 @@
     color: rgb(218, 14, 14);
 }
 
-.share-handle:hover {
+.share-handle:hover,
+.save-handle:hover {
     scale: 1.2;
     color: rgb(3, 112, 255);
 }
@@ -165,4 +167,52 @@
 
 .top-right-dots_menu-inactive {
     display: none;
+}
+
+@media screen and (max-width: 480px) {
+    .image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .username {
+        font-size: 0.85rem;
+    }
+
+    .data-caption p {
+        font-size: 0.75rem;
+        margin-top: -5px;
+    }
+
+    .date {
+        font-size: 0.8rem;
+    }
+
+    .top-right-dots_icon {
+        font-size: 1.2rem;
+    }
+
+    .heart-handle,
+    .heart-handle-fill,
+    .comment-handle,
+    .save-handle {
+        font-size: 1.2rem;
+    }
+
+    .share-handle {
+        font-size: 1.4rem;
+    }
+
+    .bottom-user-name div {
+        font-size: 0.8rem;
+    }
+
+    .bottom-like-count p {
+        font-size: 0.8rem;
+        margin-top: 0px;
+    }
 }

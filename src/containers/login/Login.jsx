@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import googlwplay from "../../assets/google.png";
 import appstore from "../../assets/apple.png";
 import instalogo from "../../assets/insta.png";
 import facebook from "../../assets/fb.png";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import axios from "axios"; 
@@ -11,6 +11,28 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    // get Images from public
+    const googlePlay = "/assets/google.png";
+    const appStore = "/assets/apple.png";
+    const instaLogo = "/assets/insta.png";
+    const facebook = "/assets/fb.png";
+
+    const Navigation = useNavigate();
+    const [gUsers, setGUser] = useState();
+    var login = false;
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userResult = await fetch(Data.users.getAllUsers);
+                setGUser(await userResult.json());
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUserData();
+    }, []);
 
     const userValidation = async () => {
         try {
@@ -44,7 +66,7 @@ const Login = () => {
             <div className="box-1">
                 <div className="box-1-logo">
                     <img
-                        src={instalogo}
+                        src={instaLogo}
                         alt="instagram logo"
                         className="instagram-logo"
                     />
@@ -113,12 +135,12 @@ const Login = () => {
             </div>
             <div className="app-store-google-play-box">
                 <img
-                    src={appstore}
+                    src={appStore}
                     alt="app store logo"
                     className="app-store-logo"
                 />
                 <img
-                    src={googlwplay}
+                    src={googlePlay}
                     alt="google play logo"
                     className="google-play-logo"
                 />
