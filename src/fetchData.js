@@ -27,6 +27,7 @@ const Data = {
         getAllComments: `${BASE_URL}/getAllComments`,
         getCommentById: `${BASE_URL}/getCommentById/`,
         addComment: `${BASE_URL}/addComment`,
+        getCommentByPostId: `${BASE_URL}/getCommentByPostId/`,
     },
     fileStore: {
         uploadPost: `${BASE_URL}/uploadPost`,
