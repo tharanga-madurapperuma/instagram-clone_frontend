@@ -28,6 +28,8 @@ const Data = {
         getCommentById: `${BASE_URL}/getCommentById/`,
         addComment: `${BASE_URL}/addComment`,
         getCommentByPostId: `${BASE_URL}/getCommentByPostId/`,
+        addLikedUsers: `${BASE_URL}/addLikesComments/`,
+        removeLikedUsers: `${BASE_URL}/removeLikesComments/`,
     },
     fileStore: {
         uploadPost: `${BASE_URL}/uploadPost`,
