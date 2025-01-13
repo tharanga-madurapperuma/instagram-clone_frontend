@@ -34,20 +34,20 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
     };
 
     return (
-        <div>
-            <div className="flex bg-slate-100 p-5 rounded-lg">
+        <div className="edit-post-container">
+            <div className="flex newPostImageContainer-wrapper bg-slate-100 p-5 rounded-lg">
                 <div className="newPostImageContainer ">
                     <img className="newPostImage" src={post.imageUrl} alt="" />
                 </div>
 
-                <div className="flex flex-col w-[400px] h-full mt-5">
-                    <div className="flex items-start w-full">
+                <div className="flex flex-col w-[400px] h-full mt-5 edit-post-right-side">
+                    <div className="createPost-profile flex items-start w-full">
                         <ProfileTemplate user={loggedUser} />
                     </div>
                     <textarea
                         value={description}
                         rows={5}
-                        className="w-full bg-slate-100 mt-5 p-5 post-textarea"
+                        className="post-textarea w-full bg-slate-100 mt-5 p-5 post-textarea"
                         onChange={(e) => {
                             setDescription(e.target.value);
                         }}
@@ -60,7 +60,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
                     >
                         Post
                     </button>
-                    <p className="text-gray-500 text-xs mt-5">
+                    <p className="text-gray-500 text-xs mt-5 edit-post-copyright">
                         &copy; instagram clone, developed by Tharanga
                         Madurapperuma, Rusiru Erandaka and Harshana Rathnayaka.
                     </p>

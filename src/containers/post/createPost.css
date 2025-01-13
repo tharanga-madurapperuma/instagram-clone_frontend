@@ -78,10 +78,17 @@
         width: 80%;
     }
 
+    .modal-content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
     .newPostImageContainer-wrapper {
         display: flex;
         width: 80%;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
     }
 
@@ -89,7 +96,7 @@
         width: 100%;
         height: 200px;
         margin-top: 20px;
-        margin-right: 20px;
+        margin-right: 0px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -109,12 +116,58 @@
     .createPost-profile {
         display: none;
     }
+
+    .post-textarea {
+        width: 60%;
+        font-size: 0.8rem;
+    }
+
+    .edit-post-right-side {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .top-right-dots_menu-active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .edit-post-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .edit-post-copyright {
+        width: 60%;
+    }
+
+    .image-outline {
+        height: auto !important;
+    }
 }
 
 @media (max-width: 768px) and (min-width: 481px) {
     .modal {
         width: auto;
         max-width: 90%;
+    }
+
+    .modal-content {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .post-image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .post-image {
+        width: auto;
+        height: 500px;
+        object-fit: contain;
     }
 
     .newPostImageContainer {
