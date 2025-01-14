@@ -151,7 +151,41 @@ const Login = () => {
                 </div>
             </div>
         </div>
-    );
-};
+        <div className='box-2'>
+            <p className='account'>Don have an account?<span className='sign-up-span' onClick={() => Navigation("/signup")}>Sign up</span></p>
+        </div>
+        <div className='get-app-box'>
+            <p>Get the app.</p>
+        </div>
+        <div className='app-store-google-play-box'>
+            <img src={appstore} alt='app store logo' className='app-store-logo'/>
+            <img src={googlwplay} alt='google play logo' className='google-play-logo'/>
+        </div>
+      
+        <div className="footer">
+    <div className="footer-links">
+      <a href="#">Meta</a>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="#">Jobs</a>
+      <a href="#">Help</a>
+      <a href="#">API</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Locations</a>
+      <a href="#">Instagram Lite</a>
+      <a href="#">Threads</a>
+      <a href="#">Contact uploading and non-users</a>
+      <a href="#">Meta Verified</a>
+    </div>
+    <div className="footer-bottom">
+      <span>English (UK)</span>
+      <span>© 2024 Instagram from Meta</span>
+    </div>
+  </div>
+    </div>
+    
+  )
+}
 
 export default Login;

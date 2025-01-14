@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import instalogo from "../../assets/insta.png";
+import googlwplay from "../../assets/google.png";
+import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { addUser, getUserByEmail } from "../../Api/UserApi";
+import Data from "../../fetchData";
+import "../../App.css";
+import "./signUp.css";
 
 const Signup = () => {
     // images from public folder
@@ -14,11 +20,20 @@ const Signup = () => {
     const [email, setEmail] = useState("");
 
     const saveUserData = async (email, password, firstName, lastName) => {
-        const response = await addUser({
-            email: email,
-            password: password,
-            firstName: firstName,
-            lastName: lastName,
+// Should be replaced with the actual API endpoint
+        const response = await fetch("http://localhost:8080/users/register", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                firstName: firstName,
+                lastName: lastName,
+            }),
+
         });
         setGUser(response.data);
     };
@@ -95,7 +110,7 @@ const Signup = () => {
                 <div>
                     <input
                         className="input-box"
-                        type="text"
+                        type="password"
                         id="password"
                         placeholder="Password"
                     />
@@ -127,12 +142,12 @@ const Signup = () => {
                         By signing up, you agree to our <b>Terms</b>,{" "}
                         <b>Privacy Policy</b> and <b>Cookies Policy</b>.
                     </p>
+                    <div className='login-button-box'>
+                    <button className='login-button' onClick={userValidation} >Sign up</button>
                 </div>
-                <div className="login-button-box">
-                    <button className="login-button" onClick={userValidation}>
-                        Sign up
-                    </button>
-                </div>
+            </div>
+                
+                
             </div>
             <div className="box-2">
                 <p className="account">
