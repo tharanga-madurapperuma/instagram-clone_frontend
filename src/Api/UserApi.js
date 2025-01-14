@@ -50,7 +50,7 @@ export const getUserById = async (userId) => {
 
 // API functions for add user
 export const addUser = async (user) => {
-    return await apiRequest("POST", "/users/addUser", user);
+    return await apiRequest("POST", "/users/register", user);
 };
 
 // API functions for update user
