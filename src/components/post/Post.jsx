@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./post.css";
 import EmojiPicker from "emoji-picker-react";
-import axios from "axios";
-import Data from "../../fetchData";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
@@ -13,6 +11,14 @@ import EditPost from "./EditPost";
 import Loader from "../loader/Loader";
 import { GrSave } from "react-icons/gr";
 import Comment from "../comment/Comment";
+import { addLikes, getUserById, removeLikes } from "../../Api/UserApi";
+import { addComment, getCommentByPostId } from "../../Api/CommentApi";
+import { addStory } from "../../Api/StoryApi";
+import {
+    decrementLikeCount,
+    deletePost,
+    incrementLikeCount,
+} from "../../Api/PostApi";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState();
@@ -31,11 +37,8 @@ const Post = ({ post, loggedUser }) => {
     useEffect(() => {
         setIsLoading(true);
         const fetchData = async () => {
-            const response = await axios.get(
-                Data.users?.getUserById + post?.userId
-            );
-
-            setUser(response.data);
+            const response = await getUserById(post?.userId);
+            setUser(response);
         };
 
         const checkLikedState = () => {
@@ -47,10 +50,7 @@ const Post = ({ post, loggedUser }) => {
         };
 
         const getComments = async () => {
-            const response = await axios.get(
-                Data.comments.getCommentByPostId + post?.postId
-            );
-
+            const response = await getCommentByPostId(post?.postId);
             setFetchComments(response.data);
         };
 
@@ -83,10 +83,7 @@ const Post = ({ post, loggedUser }) => {
                         watched: false,
                     };
 
-                    const response = await axios.post(
-                        Data.stories.addStory,
-                        story
-                    );
+                    const response = addStory(story);
 
                     if (response.status === 201) {
                         setIsLoading(false);
@@ -112,26 +109,26 @@ const Post = ({ post, loggedUser }) => {
         if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
+                setIsLoading(true);
                 setLikeCount((prevCount) => prevCount - 1);
-                await axios.delete(
-                    Data.users.removeLikes +
-                        loggedUser?.user_id +
-                        "/" +
-                        post.postId
-                );
-                await axios.post(Data.posts.decrementLikeCount + post.postId);
+
+                // Remove like from user
+                await removeLikes(loggedUser?.user_id, post.postId);
+
+                // Decrement like count
+                await decrementLikeCount(post.postId);
+                setIsLoading(false);
             } else {
+                setIsLoading(true);
                 setIsLiked(true);
                 setLikeCount((prevCount) => prevCount + 1);
                 try {
-                    await axios.post(
-                        Data.users.addLikes + loggedUserId + "/" + post.postId
-                    );
-                    await axios.post(
-                        Data.posts.incrementLikeCount + post.postId
-                    );
+                    await addLikes(loggedUserId, post.postId);
+                    await incrementLikeCount(post.postId);
                 } catch (error) {
                     alert(error);
+                } finally {
+                    setIsLoading(false);
                 }
             }
         }
@@ -162,7 +159,7 @@ const Post = ({ post, loggedUser }) => {
     const handlePostComment = async () => {
         setIsLoading(true);
         try {
-            await axios.post(Data.comments.addComment, {
+            await addComment({
                 userId: loggedUser.user_id,
                 postId: post.postId,
                 content: comment,
@@ -177,7 +174,6 @@ const Post = ({ post, loggedUser }) => {
         }
     };
 
-    console.log(fetchComments);
     return (
         <div className=" feedSection_post">
             {<Loader loader={isLoading} />}
@@ -228,9 +224,7 @@ const Post = ({ post, loggedUser }) => {
                             <li>
                                 <a
                                     onClick={async () => {
-                                        await axios.delete(
-                                            Data.posts.deletePost + post.postId
-                                        );
+                                        await deletePost(post.postId);
                                         setMenuClicked(false);
                                         window.location.reload();
                                     }}
@@ -271,10 +265,9 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount - 1);
                                     setIsLiked(false);
-                                    await axios.post(
-                                        Data.posts.decrementLikeCount +
-                                            post.postId
-                                    );
+                                    setIsLoading(true);
+                                    await decrementLikeCount(post.postId);
+                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle-fill"
                             />
@@ -283,10 +276,9 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount + 1);
                                     setIsLiked(true);
-                                    await axios.post(
-                                        Data.posts.incrementLikeCount +
-                                            post.postId
-                                    );
+                                    setIsLoading(true);
+                                    await incrementLikeCount(post.postId);
+                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle"
                             />

@@ -1,40 +1,38 @@
-import React, { useEffect, useState } from "react";
-import Data from "../../fetchData";
+import React, { useState } from "react";
 import ProfileTemplate from "../profile/ProfileTemplate";
 import "./EditPost.css";
-import axios from "axios";
+import { editPost } from "../../Api/PostApi";
+import Loader from "../loader/Loader";
 
 const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
     const [description, setDescription] = useState(post.description);
+    const [isLoading, setIsLoading] = useState(false);
 
     console.log(description);
 
     const handleClicked = async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.put(
-                Data.posts.editPost + post.postId,
-                {
-                    description: description,
-                    userId: loggedUser.user_id,
-                    likeCount: post.likeCount,
-                    imageUrl: post.imageUrl, // Use fileUrl here
-                }
-            );
-
-            if (response.status === 200) {
-                alert("Post Edited successfully!");
-                setDescription("");
-                closeEditPostModal();
-                window.location.reload();
-            }
+            await editPost(post.postId, {
+                description: description,
+                userId: loggedUser.user_id,
+                likeCount: post.likeCount,
+                imageUrl: post.imageUrl, // Use fileUrl here
+            });
+            setDescription("");
+            closeEditPostModal();
+            window.location.reload();
         } catch (error) {
             console.error("Error creating post:", error);
             alert("Failed to create post. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="edit-post-container">
+            {<Loader loading={isLoading} />}
             <div className="flex newPostImageContainer-wrapper bg-slate-100 p-5 rounded-lg">
                 <div className="newPostImageContainer ">
                     <img className="newPostImage" src={post.imageUrl} alt="" />

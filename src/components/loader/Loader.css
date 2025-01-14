@@ -16,3 +16,7 @@
     width: auto;
     outline: none;
 }
+
+.loader {
+    z-index: 1000;
+}

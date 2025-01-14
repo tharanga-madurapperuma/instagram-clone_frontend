@@ -6,8 +6,6 @@ import Follower from "../../components/follower/Follower";
 import "swiper/css";
 import { useNavigate } from "react-router-dom";
 import CreatePost from "../post/CreatePost";
-import axios from "axios";
-import Data from "../../fetchData";
 import {
     IoClose,
     IoHomeOutline,
@@ -18,6 +16,10 @@ import { CgAddR, CgProfile } from "react-icons/cg";
 import { LuLogOut } from "react-icons/lu";
 import { TiThMenu } from "react-icons/ti";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import Loader from "../../components/loader/Loader";
+import { getAllUsers, getUserById } from "../../Api/UserApi";
+import { getAllStories } from "../../Api/StoryApi";
+import { getAllPosts } from "../../Api/PostApi";
 
 const Home = () => {
     // logo Image
@@ -35,6 +37,7 @@ const Home = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [opacity, setOpacity] = useState(0);
     const scrollableDivRef = useRef(null); // Reference to the scrollable div
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -50,38 +53,34 @@ const Home = () => {
     }, []); // Empty array ensures the effect runs only on mount and unmount
 
     useEffect(() => {
+        setIsLoading(true);
         // Get all users, stories and posts
         const fetchUsers = async () => {
-            const response = await axios.get(Data.users.getAllUsers);
-            setUsers(response.data);
+            const response = await getAllUsers();
+            setUsers(response);
         };
 
         // get all stories
         const fetchStories = async () => {
-            const response = await axios.get(Data.stories.getAllStories);
-            setStories(response.data);
+            const response = await getAllStories();
+            setStories(response);
         };
 
         // get all posts
         const fetchPosts = async () => {
-            const response = await axios.get(Data.posts.getAllPosts);
-            setPosts(response.data);
+            const response = await getAllPosts();
+            setPosts(response);
         };
         const fetchLoggedUser = async () => {
-            await axios
-                .get(Data.users.getUserById + "U7")
-                .then((response) => {
-                    setLoggedUser(response.data);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            const response = await getUserById("U7");
+            setLoggedUser(response);
         };
 
         fetchUsers();
         fetchStories();
         fetchPosts();
         fetchLoggedUser();
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
@@ -96,7 +95,6 @@ const Home = () => {
             if (!scrollDiv) return;
 
             const scrollY = scrollDiv.scrollTop; // Get scroll position of the div
-            console.log("Scroll position:", scrollY);
 
             const maxOpacity = 0.9; // Maximum opacity value
             const minOpacity = 0; // Minimum opacity value
@@ -123,6 +121,7 @@ const Home = () => {
 
     return (
         <div className="flex flex-row">
+            {<Loader loading={isLoading} />}
             {screenWidth > 768 ? (
                 <div className="leftMenu justify-items-start text-gray-800 m-10">
                     {/* left menu */}
@@ -335,7 +334,7 @@ const Home = () => {
             <div className="followers justify-items-center m-5">
                 {/* All users*/}
                 {users.map((user) => (
-                    <Follower user={user} />
+                    <Follower user={user} key={user.user_id} />
                 ))}
             </div>
         </div>

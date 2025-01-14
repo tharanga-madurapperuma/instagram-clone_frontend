@@ -1,22 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./story.css";
-import Data from "../../fetchData";
-import axios from "axios";
 import WatchStory from "../watchStory/WatchStory";
 import ReactModal from "react-modal";
+import { markedWatched } from "../../Api/StoryApi";
+import Loader from "../loader/Loader";
 
 const Story = ({ story }) => {
-    const [watched, setWatched] = React.useState(story.watched);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [watched, setWatched] = useState(story.watched);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const timeOut = 8000;
+    const [isLoading, setIsLoading] = useState(false);
 
     // after user clicked the story
     const storyCliked = async () => {
-        const response = await axios.put(
-            Data.stories.markedWatched + story.storyId
-        );
+        const response = await markedWatched(story.storyId);
 
-        if (response.data) {
+        if (response) {
             setWatched(true);
             setIsModalOpen(true);
         }
@@ -30,8 +29,13 @@ const Story = ({ story }) => {
         setIsModalOpen(false);
     };
 
+    useEffect(() => {
+        setIsLoading(true);
+    }, []);
+
     return (
         <div className="story m-2 mt-10">
+            {<Loader loading={isLoading} />}
             <div
                 className={
                     watched
@@ -45,7 +49,12 @@ const Story = ({ story }) => {
                         storyCliked();
                     }}
                 >
-                    <img src={story.imageUrl} />
+                    <img
+                        src={story.imageUrl}
+                        onLoad={() => {
+                            setIsLoading(false);
+                        }}
+                    />
                 </div>
                 {/* React Modal */}
                 <ReactModal

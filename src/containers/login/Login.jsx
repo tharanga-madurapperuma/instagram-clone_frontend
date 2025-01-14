@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
-import Data from "../../fetchData";
+import { getAllUsers } from "../../Api/UserApi";
 
 const Login = () => {
     // get Images from public
@@ -17,7 +17,7 @@ const Login = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userResult = await fetch(Data.users.getAllUsers);
+                const userResult = await getAllUsers();
                 setGUser(await userResult.json());
             } catch (error) {
                 console.log(error);

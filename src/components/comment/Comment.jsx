@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./comment.css";
-import Data from "../../fetchData";
-import axios from "axios";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Loader from "../loader/Loader";
+import { getUserById } from "../../Api/UserApi";
+import { addLikedUsers, removeLikedUsers } from "../../Api/CommentApi";
 
 const Comment = ({ comment }) => {
     const [user, setUser] = useState();
@@ -13,9 +13,7 @@ const Comment = ({ comment }) => {
     useEffect(() => {
         setIsLoading(true);
         const fetchUser = async () => {
-            const res = await axios.get(
-                `${Data.users.getUserById + comment.userId}`
-            );
+            const res = await getUserById(comment.userId);
             setUser(res.data);
         };
 
@@ -36,24 +34,14 @@ const Comment = ({ comment }) => {
     // This triggers when the like button is clicked
     const likeHandleClicked = async () => {
         setIsLoading(true);
-        await axios.post(
-            Data.comments.addLikedUsers +
-                user?.user_id +
-                "/" +
-                comment.commentId
-        );
+        await addLikedUsers(user?.user_id, comment.commentId);
         setIsLoading(false);
     };
 
     // This triggers when the unlike button is clicked
     const unLikeHandleClicked = async () => {
         setIsLoading(true);
-        await axios.delete(
-            Data.comments.removeLikedUsers +
-                user?.user_id +
-                "/" +
-                comment.commentId
-        );
+        await removeLikedUsers(user?.user_id, comment.commentId);
         setIsLoading(false);
     };
 
