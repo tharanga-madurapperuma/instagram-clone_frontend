@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./createPost.css";
 import ReactModal from "react-modal";
-import axios from "axios";
-import Data from "../../fetchData";
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
 import FileResizer from "react-image-file-resizer";
+import { addPost } from "../../Api/PostApi";
+import axios from "axios";
+import Loader from "../../components/loader/Loader";
 
 ReactModal.setAppElement("#root");
 
@@ -12,11 +13,12 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
     // images from public folder
     const dragDrop = "/assets/icons/dragDrop.png";
 
-    const CLOUDINARY_CLOUD_NAME = "dr9jbdl9c";
+    const CLOUDINARY_CLOUD_NAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
     const [modelOpen, setModelOpen] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
     const [file, setFile] = useState("");
     const [description, setDescription] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     // Use effect to handle open and close modal
     useEffect(() => {
@@ -73,6 +75,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
 
     // After create post button clicked this method happens
     const handleClicked = async () => {
+        setIsLoading(true);
         if (!file) {
             alert("Please select a file");
             return;
@@ -90,23 +93,22 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             // get file url from cloudinary and assign it to fileUrl
             const fileUrl = response_cloudinary.data.secure_url;
 
-            const response = await axios.post(Data.posts.addPost, {
+            await addPost({
                 description: description,
                 userId: loggedUser.user_id,
                 likeCount: 0,
                 imageUrl: fileUrl, // Use fileUrl here
             });
 
-            if (response.status === 201) {
-                alert("Post created successfully!");
-                setFile(null);
-                setDescription("");
-                onClose();
-                window.location.reload();
-            }
+            setFile(null);
+            setDescription("");
+            onClose();
+            window.location.reload();
         } catch (error) {
             console.error("Error creating post:", error);
             alert("Failed to create post. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -160,6 +162,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             overlayClassName="overlay"
             shouldCloseOnOverlayClick={true}
         >
+            {<Loader loading={isLoading} />}
             <div className="flex flex-col items-center">
                 <div className="mb-[8px]">
                     <h2 className="font-bold">Create New Post</h2>

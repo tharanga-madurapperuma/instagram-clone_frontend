@@ -5,6 +5,7 @@ import facebook from "../../assets/fb.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
+import { getAllUsers } from "../../Api/UserApi";
 import axios from "axios"; 
 
 const Login = () => {
@@ -25,7 +26,7 @@ const Login = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userResult = await fetch(Data.users.getAllUsers);
+                const userResult = await getAllUsers();
                 setGUser(await userResult.json());
             } catch (error) {
                 console.log(error);

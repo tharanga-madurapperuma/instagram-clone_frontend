@@ -6,84 +6,85 @@ import {Link, useNavigate} from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import '../App.css' 
 
-
-
 const Signup = () => {
+    const navigation = useNavigate();
+    const [gUser, setGUser] = useState();
+    const [email, setEmail] = useState("");
 
-  const navigation = useNavigate();
-  const [gUser, setGUser] = useState();
-  const[email, setEmail] = useState('');
-
-  const saveUserData = async (email, password, firstname, lastname) => {
-    const response = await fetch('http://localhost:8080/users/register', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        firstname: firstname,
-        lastname: lastname
-      })
-    });
-    const data = await response.json();
-    console.log(data);
-  }
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/users/getUserByEmail/{email}');
+    const saveUserData = async (email, password, firstname, lastname) => {
+        // Should be replaced with the actual API endpoint
+        const response = await fetch("http://localhost:8080/users/register", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                firstname: firstname,
+                lastname: lastname,
+            }),
+        });
         const data = await response.json();
-        setGUser(data);
-      }catch (error){
-        console.log(error);
-      }
+        console.log(data);
     };
-    fetchUserData();
 
-  }, [email]);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            // Should be replaced with the actual API endpoint
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/users/getUserByEmail/{email}"
+                );
+                const data = await response.json();
+                setGUser(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUserData();
+    }, [email]);
 
-  const userValidation = async () => {
-    const firstname = document.getElementById('firstname').value;
-    const lastname = document.getElementById('lastname').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-  
-    try {
-      // Fetch user by email
-      const response = await fetch(`http://localhost:8080/users/getUserByEmail/${email}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.email === email) {
-          alert('User already exists, Please login');
-          return;
+    const userValidation = async () => {
+        const firstname = document.getElementById("firstname").value;
+        const lastname = document.getElementById("lastname").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            // Should be replaced with the actual API endpoint
+            // Fetch user by email
+            const response = await fetch(
+                `http://localhost:8080/users/getUserByEmail/${email}`
+            );
+            if (response.ok) {
+                const data = await response.json();
+                if (data?.email === email) {
+                    alert("User already exists, Please login");
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
         }
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  
-    // Save user if no existing user is found
-    await saveUserData(email, password, firstname, lastname);
-  
-    const user = {
-      email: email,
-      password: password,
-      firstname: firstname,
-      lastname: lastname
-    };
-  
-    localStorage.setItem("userEmail", email);
-    let loggedUser = JSON.stringify(user);
-    localStorage.setItem("user", loggedUser);
-  
-    navigation("/");
-  };
-  
 
+        // Save user if no existing user is found
+        await saveUserData(email, password, firstname, lastname);
+
+        const user = {
+            email: email,
+            password: password,
+            firstname: firstname,
+            lastname: lastname,
+        };
+
+        localStorage.setItem("userEmail", email);
+        let loggedUser = JSON.stringify(user);
+        localStorage.setItem("user", loggedUser);
+
+        navigation("/");
+    };
   return (
     <div className='login-container'>
       <div className='box-3'>
@@ -122,30 +123,7 @@ const Signup = () => {
             <img src={appstore} alt='app store logo' className='app-store-logo'/>
             <img src={googlwplay} alt='google play logo' className='google-play-logo'/>
         </div>
-      
-        <div className="footer">
-    <div className="footer-links">
-      <a href="#">Meta</a>
-      <a href="#">About</a>
-      <a href="#">Blog</a>
-      <a href="#">Jobs</a>
-      <a href="#">Help</a>
-      <a href="#">API</a>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Locations</a>
-      <a href="#">Instagram Lite</a>
-      <a href="#">Threads</a>
-      <a href="#">Contact uploading and non-users</a>
-      <a href="#">Meta Verified</a>
-    </div>
-    <div className="footer-bottom">
-      <span>English (UK)</span>
-      <span>© 2024 Instagram from Meta</span>
-    </div>
-  </div>
-    </div>
-  )
-}
+    );
+};
 
-export default Signup
+export default Signup;

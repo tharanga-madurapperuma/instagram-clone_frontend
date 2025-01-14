@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./post.css";
 import EmojiPicker from "emoji-picker-react";
-import axios from "axios";
-import Data from "../../fetchData";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import ProfileTemplatePost from "../profile/ProfileTemplatePost";
@@ -12,9 +10,18 @@ import { CiMenuKebab } from "react-icons/ci";
 import EditPost from "./EditPost";
 import Loader from "../loader/Loader";
 import { GrSave } from "react-icons/gr";
+import Comment from "../comment/Comment";
+import { addLikes, getUserById, removeLikes } from "../../Api/UserApi";
+import { addComment, getCommentByPostId } from "../../Api/CommentApi";
+import { addStory } from "../../Api/StoryApi";
+import {
+    decrementLikeCount,
+    deletePost,
+    incrementLikeCount,
+} from "../../Api/PostApi";
 
 const Post = ({ post, loggedUser }) => {
-    const [comment, setComment] = useState("");
+    const [comment, setComment] = useState();
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
     const [isLiked, setIsLiked] = useState(false);
@@ -24,14 +31,14 @@ const Post = ({ post, loggedUser }) => {
     const [isPostEditModalOpen, setIsPostEditModalOpen] = React.useState(false);
     const [menuClicked, setMenuClicked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [fetchComments, setFetchComments] = useState([]);
+    const [showComment, setShowComment] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
-            const response = await axios.get(
-                Data.users?.getUserById + post?.userId
-            );
-
-            setUser(response.data);
+            const response = await getUserById(post?.userId);
+            setUser(response);
         };
 
         const checkLikedState = () => {
@@ -42,8 +49,15 @@ const Post = ({ post, loggedUser }) => {
             }
         };
 
+        const getComments = async () => {
+            const response = await getCommentByPostId(post?.postId);
+            setFetchComments(response.data);
+        };
+
         fetchData();
         checkLikedState();
+        getComments();
+        setIsLoading(false);
     }, []);
 
     // Imoji handle method
@@ -53,13 +67,13 @@ const Post = ({ post, loggedUser }) => {
 
     // share post to story
     const shareClicked = () => {
-        setIsLoading(true);
         const confirm = window.confirm(
             "Do you want to share this post as story?"
         );
 
         if (confirm) {
             const handleStoryUpload = async () => {
+                setIsLoading(true);
                 try {
                     const story = {
                         description: post.description,
@@ -69,10 +83,7 @@ const Post = ({ post, loggedUser }) => {
                         watched: false,
                     };
 
-                    const response = await axios.post(
-                        Data.stories.addStory,
-                        story
-                    );
+                    const response = addStory(story);
 
                     if (response.status === 201) {
                         setIsLoading(false);
@@ -81,6 +92,8 @@ const Post = ({ post, loggedUser }) => {
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
+                } finally {
+                    setIsLoading(false);
                 }
             };
 
@@ -96,26 +109,26 @@ const Post = ({ post, loggedUser }) => {
         if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
+                setIsLoading(true);
                 setLikeCount((prevCount) => prevCount - 1);
-                await axios.delete(
-                    Data.users.removeLikes +
-                        loggedUser?.user_id +
-                        "/" +
-                        post.postId
-                );
-                await axios.post(Data.posts.decrementLikeCount + post.postId);
+
+                // Remove like from user
+                await removeLikes(loggedUser?.user_id, post.postId);
+
+                // Decrement like count
+                await decrementLikeCount(post.postId);
+                setIsLoading(false);
             } else {
+                setIsLoading(true);
                 setIsLiked(true);
                 setLikeCount((prevCount) => prevCount + 1);
                 try {
-                    await axios.post(
-                        Data.users.addLikes + loggedUserId + "/" + post.postId
-                    );
-                    await axios.post(
-                        Data.posts.incrementLikeCount + post.postId
-                    );
+                    await addLikes(loggedUserId, post.postId);
+                    await incrementLikeCount(post.postId);
                 } catch (error) {
                     alert(error);
+                } finally {
+                    setIsLoading(false);
                 }
             }
         }
@@ -141,6 +154,24 @@ const Post = ({ post, loggedUser }) => {
 
     const closeEditPostModal = () => {
         setIsPostEditModalOpen(false);
+    };
+
+    const handlePostComment = async () => {
+        setIsLoading(true);
+        try {
+            await addComment({
+                userId: loggedUser.user_id,
+                postId: post.postId,
+                content: comment,
+                likeCount: 0,
+                likedUsers: [],
+            });
+        } catch (error) {
+            console.error("Error posting comment:", error);
+            alert("Failed to post comment. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -193,9 +224,7 @@ const Post = ({ post, loggedUser }) => {
                             <li>
                                 <a
                                     onClick={async () => {
-                                        await axios.delete(
-                                            Data.posts.deletePost + post.postId
-                                        );
+                                        await deletePost(post.postId);
                                         setMenuClicked(false);
                                         window.location.reload();
                                     }}
@@ -236,10 +265,9 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount - 1);
                                     setIsLiked(false);
-                                    await axios.post(
-                                        Data.posts.decrementLikeCount +
-                                            post.postId
-                                    );
+                                    setIsLoading(true);
+                                    await decrementLikeCount(post.postId);
+                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle-fill"
                             />
@@ -248,15 +276,21 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount + 1);
                                     setIsLiked(true);
-                                    await axios.post(
-                                        Data.posts.incrementLikeCount +
-                                            post.postId
-                                    );
+                                    setIsLoading(true);
+                                    await incrementLikeCount(post.postId);
+                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle"
                             />
                         )}
-                        <FaRegComment className="mr-3 comment-handle" />
+                        <FaRegComment
+                            className="mr-3 comment-handle cursor-pointer"
+                            onClick={() => {
+                                showComment
+                                    ? setShowComment(false)
+                                    : setShowComment(true);
+                            }}
+                        />
                         <RiSendPlaneLine
                             className="mr-3 cursor-pointer share-handle"
                             onClick={() => {
@@ -288,8 +322,11 @@ const Post = ({ post, loggedUser }) => {
                                 placeholder="Add a comment..."
                             />
                             <div className="flex items-center">
-                                <p className="text-blue-700 font-bold text-sm mr-2">
-                                    {comment.length > 0 ? "Post" : ""}
+                                <p
+                                    className="text-blue-700 font-bold text-sm mr-2 cursor-pointer"
+                                    onClick={handlePostComment}
+                                >
+                                    {comment?.length > 0 ? "Post" : ""}
                                 </p>
                                 <button
                                     onClick={() => setShowPicker(!showPicker)}
@@ -314,6 +351,13 @@ const Post = ({ post, loggedUser }) => {
                         </div>
                     </div>
                     <div className="comment-bottom-line w-full bg-gray-400"></div>
+                    <div className="post-comment-section">
+                        {showComment
+                            ? fetchComments?.map((comment, index) => (
+                                  <Comment comment={comment} />
+                              ))
+                            : null}
+                    </div>
                 </div>
             </div>
         </div>

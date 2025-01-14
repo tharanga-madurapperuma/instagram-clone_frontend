@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Data from "../../fetchData";
 
 const ProfileTemplatePost = ({ user, post }) => {
     const [displayTime, setDisplayTime] = useState("");
@@ -47,7 +46,7 @@ const ProfileTemplatePost = ({ user, post }) => {
                     <img
                         src={
                             user?.userImage
-                                ? `${Data.fileStore.downloadUser}${user?.userImage}`
+                                ? user?.userImage
                                 : "/assets/users/general.jpg"
                         }
                     ></img>

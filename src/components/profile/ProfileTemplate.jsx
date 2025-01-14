@@ -1,5 +1,4 @@
 import React from "react";
-import Data from "../../fetchData";
 
 const ProfileTemplate = ({ user }) => {
     console.log(user);
@@ -10,8 +9,8 @@ const ProfileTemplate = ({ user }) => {
                     <img
                         src={
                             user?.userImage
-                                ? `${Data.fileStore.downloadUser}${user?.userImage}`
-                                : `${Data.fileStore.downloadUser}`
+                                ? user?.userImage
+                                : "/assets/users/general.jpg"
                         }
                     ></img>
                 </div>

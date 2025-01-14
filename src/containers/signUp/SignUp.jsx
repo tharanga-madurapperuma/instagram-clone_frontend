@@ -3,6 +3,8 @@ import instalogo from "../../assets/insta.png";
 import googlwplay from "../../assets/google.png";
 import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { addUser, getUserByEmail } from "../../Api/UserApi";
 import Data from "../../fetchData";
 import "../../App.css";
 import "./signUp.css";
@@ -18,6 +20,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
 
     const saveUserData = async (email, password, firstName, lastName) => {
+// Should be replaced with the actual API endpoint
         const response = await fetch("http://localhost:8080/users/register", {
             method: "POST",
             headers: {
@@ -30,16 +33,17 @@ const Signup = () => {
                 firstName: firstName,
                 lastName: lastName,
             }),
+
         });
-        const data = await response.json();
-        console.log(data);
+        setGUser(response.data);
     };
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                // Should be replaced with the actual API endpoint
                 const response = await fetch(
-                    "http://localhost:8080/users/getUserByEmail/{email}"
+                    "http://localhost:80/users/getUserByEmail/{email}"
                 );
                 const data = await response.json();
                 setGUser(data);
@@ -58,13 +62,11 @@ const Signup = () => {
 
         try {
             // Fetch user by email
-            const response = await fetch(Data.users.getUserByEmail + email);
-            if (response.ok) {
-                const data = await response.json();
-                if (data?.email === email) {
-                    alert("User already exists, Please login");
-                    return;
-                }
+            const response = await getUserByEmail(email);
+
+            if (response.data?.email === email) {
+                alert("User already exists, Please login");
+                return;
             }
         } catch (error) {
             console.error("Error fetching user data:", error);

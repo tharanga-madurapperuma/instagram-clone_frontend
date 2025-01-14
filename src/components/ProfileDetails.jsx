@@ -3,25 +3,25 @@ import { useNavigate } from "react-router-dom";
 
 const ProfileDetails = () => {
     const settingIcon = "/assets/icons/Options.png";
+    const logo = "/assets/images/Logo.png";
     const navigation = useNavigate();
     return (
         <div className="py-10">
             <div>
-            <div className="leftMenu justify-items-start text-gray-800 m-10">
-                {/* left menu */}
-                <div className="mt-0 mb-20 cursor-pointer">
-                    <img
-                        src={Images.logo}
-                        alt="logo"
-                        onClick={() => {
-                            navigation("/");
-                        }}
-                    />
+                <div className="leftMenu justify-items-start text-gray-800 m-10">
+                    {/* left menu */}
+                    <div className="mt-0 mb-20 cursor-pointer">
+                        <img
+                            src={logo}
+                            alt="logo"
+                            onClick={() => {
+                                navigation("/");
+                            }}
+                        />
+                    </div>
                 </div>
+                <div className="speration-line w-0.5 bg-gray-300"></div>
             </div>
-            <div className="speration-line w-0.5 bg-gray-300"></div>
-            </div>
-            
 
             <div className="flex items-center space-x-10">
                 <div className="w-[15]">
@@ -45,7 +45,6 @@ const ProfileDetails = () => {
                             alt="sttings"
                             className="w-7 h-7"
                         />
-
                     </div>
                     <div className="flex space-x-10 mx-20">
                         <div>

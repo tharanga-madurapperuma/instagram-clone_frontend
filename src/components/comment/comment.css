@@ -1,0 +1,57 @@
+.comment-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+}
+
+.comment-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-user-details h4 {
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .comment-image {
+        width: 25px;
+        height: 25px;
+    }
+    .comment-user-details h4 {
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .comment-user-details p {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 481px) {
+    .comment-image {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .comment-user-details h4 {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .comment-user-details p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 1440px) and (min-width: 1025px) {
+}
+
+@media (min-width: 1441px) {
+}
