@@ -1,12 +1,8 @@
-import googlwplay from "../../assets/google.png";
-import appstore from "../../assets/apple.png";
-import instalogo from "../../assets/insta.png";
-import facebook from "../../assets/fb.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import { getAllUsers } from "../../Api/UserApi";
-import axios from "axios"; 
+import axios from "axios";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -37,23 +33,22 @@ const Login = () => {
 
     const userValidation = async () => {
         try {
-            const response = await axios.post("http://localhost:8080/users/login", {
-                email: email,
-                password: password,
-            });
+            const response = await axios.post(
+                "http://localhost:8080/users/login",
+                {
+                    email: email,
+                    password: password,
+                }
+            );
 
             if (response.data) {
-                
                 const { token } = response.data;
 
-                
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("userEmail", email);
 
-                
                 navigate("/");
             } else {
-                
                 alert("Login failed. Please check your credentials.");
             }
         } catch (error) {

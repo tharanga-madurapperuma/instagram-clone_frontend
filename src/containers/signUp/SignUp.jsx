@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import instalogo from "../../assets/insta.png";
-import googlwplay from "../../assets/google.png";
-import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { addUser, getUserByEmail } from "../../Api/UserApi";
-import Data from "../../fetchData";
 import "../../App.css";
 import "./signUp.css";
 
@@ -20,7 +15,7 @@ const Signup = () => {
     const [email, setEmail] = useState("");
 
     const saveUserData = async (email, password, firstName, lastName) => {
-// Should be replaced with the actual API endpoint
+        // Should be replaced with the actual API endpoint
         const response = await fetch("http://localhost:8080/users/register", {
             method: "POST",
             headers: {
@@ -33,7 +28,6 @@ const Signup = () => {
                 firstName: firstName,
                 lastName: lastName,
             }),
-
         });
         setGUser(response.data);
     };
@@ -142,12 +136,15 @@ const Signup = () => {
                         By signing up, you agree to our <b>Terms</b>,{" "}
                         <b>Privacy Policy</b> and <b>Cookies Policy</b>.
                     </p>
-                    <div className='login-button-box'>
-                    <button className='login-button' onClick={userValidation} >Sign up</button>
+                    <div className="login-button-box">
+                        <button
+                            className="login-button"
+                            onClick={userValidation}
+                        >
+                            Sign up
+                        </button>
+                    </div>
                 </div>
-            </div>
-                
-                
             </div>
             <div className="box-2">
                 <p className="account">

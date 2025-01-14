@@ -1,15 +1,15 @@
-import React from 'react'
-import instalogo from "../assets/insta.png";
-import googlwplay from "../assets/google.png";
-import appstore from "../assets/apple.png";
-import {Link, useNavigate} from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import '../App.css' 
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../App.css";
 
 const Signup = () => {
     const navigation = useNavigate();
     const [gUser, setGUser] = useState();
     const [email, setEmail] = useState("");
+    const instalogo = "/assets/insta.png";
+    const googlwplay = "/assets/google.png";
+    const appstore = "/assets/apple.png";
 
     const saveUserData = async (email, password, firstname, lastname) => {
         // Should be replaced with the actual API endpoint
@@ -85,43 +85,95 @@ const Signup = () => {
 
         navigation("/");
     };
-  return (
-    <div className='login-container'>
-      <div className='box-3'>
-        <div className = 'box-1-logo'>
-          <img src={instalogo} alt='instagram logo' className='instagram-logo'/>
-        </div>
-        <div>
-          <input className='input-box' type='text' id='email' placeholder='Email address' />
-        </div>
-        <div>
-          <input className='input-box' type='text' id='password' placeholder='Password' />
-        </div>
-        <div>
-          <input className='input-box' type='text' id='firstname' placeholder='First Name' />
-        </div>
-        <div>
-          <input className='input-box' type='text' id='lastname' placeholder='Last Name' />
-        </div>
-        <div>
-          <p className='instruction'>People who use our service may have uploaded your contact information to Instagram. Learn more</p>
-        </div>
-        <div>
-          <p className='instruction'>By signing up, you agree to our <b>Terms</b>, <b>Privacy Policy</b> and <b>Cookies Policy</b>.</p>
-        </div>
-        <div className='login-button-box'>
-            <button className='login-button' onClick={userValidation} >Sign up</button>
-        </div>
-      </div>
-      <div className='box-2'>
-            <p className='account'>Have an account?<span className='sign-up-span' onClick={() => navigation("/")}>Log in</span></p>
-        </div>
-        <div className='get-app-box'>
-            <p>Get the app.</p>
-        </div>
-        <div className='app-store-google-play-box'>
-            <img src={appstore} alt='app store logo' className='app-store-logo'/>
-            <img src={googlwplay} alt='google play logo' className='google-play-logo'/>
+
+    return (
+        <div className="login-container">
+            <div className="box-3">
+                <div className="box-1-logo">
+                    <img
+                        src={instalogo}
+                        alt="instagram logo"
+                        className="instagram-logo"
+                    />
+                </div>
+                <div>
+                    <input
+                        className="input-box"
+                        type="text"
+                        id="email"
+                        placeholder="Email address"
+                    />
+                </div>
+                <div>
+                    <input
+                        className="input-box"
+                        type="text"
+                        id="password"
+                        placeholder="Password"
+                    />
+                </div>
+                <div>
+                    <input
+                        className="input-box"
+                        type="text"
+                        id="firstname"
+                        placeholder="First Name"
+                    />
+                </div>
+                <div>
+                    <input
+                        className="input-box"
+                        type="text"
+                        id="lastname"
+                        placeholder="Last Name"
+                    />
+                </div>
+                <div>
+                    <p className="instruction">
+                        People who use our service may have uploaded your
+                        contact information to Instagram. Learn more
+                    </p>
+                </div>
+                <div>
+                    <p className="instruction">
+                        By signing up, you agree to our <b>Terms</b>,{" "}
+                        <b>Privacy Policy</b> and <b>Cookies Policy</b>.
+                    </p>
+                </div>
+                <div className="login-button-box">
+                    <button className="login-button" onClick={userValidation}>
+                        Sign up
+                    </button>
+                </div>
+            </div>
+            <div className="box-2">
+                <div>
+                    <p className="account">
+                        Have an account?
+                        <span
+                            className="sign-up-span"
+                            onClick={() => navigation("/")}
+                        >
+                            Log in
+                        </span>
+                    </p>
+                </div>
+                <div className="get-app-box">
+                    <p>Get the app.</p>
+                </div>
+                <div className="app-store-google-play-box">
+                    <img
+                        src={appstore}
+                        alt="app store logo"
+                        className="app-store-logo"
+                    />
+                    <img
+                        src={googlwplay}
+                        alt="google play logo"
+                        className="google-play-logo"
+                    />
+                </div>
+            </div>
         </div>
     );
 };
