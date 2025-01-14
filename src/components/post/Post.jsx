@@ -29,6 +29,7 @@ const Post = ({ post, loggedUser }) => {
     const [showComment, setShowComment] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             const response = await axios.get(
                 Data.users?.getUserById + post?.userId
@@ -56,6 +57,7 @@ const Post = ({ post, loggedUser }) => {
         fetchData();
         checkLikedState();
         getComments();
+        setIsLoading(false);
     }, []);
 
     // Imoji handle method
@@ -65,13 +67,13 @@ const Post = ({ post, loggedUser }) => {
 
     // share post to story
     const shareClicked = () => {
-        setIsLoading(true);
         const confirm = window.confirm(
             "Do you want to share this post as story?"
         );
 
         if (confirm) {
             const handleStoryUpload = async () => {
+                setIsLoading(true);
                 try {
                     const story = {
                         description: post.description,
@@ -93,6 +95,8 @@ const Post = ({ post, loggedUser }) => {
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
+                } finally {
+                    setIsLoading(false);
                 }
             };
 
@@ -153,6 +157,24 @@ const Post = ({ post, loggedUser }) => {
 
     const closeEditPostModal = () => {
         setIsPostEditModalOpen(false);
+    };
+
+    const handlePostComment = async () => {
+        setIsLoading(true);
+        try {
+            await axios.post(Data.comments.addComment, {
+                userId: loggedUser.user_id,
+                postId: post.postId,
+                content: comment,
+                likeCount: 0,
+                likedUsers: [],
+            });
+        } catch (error) {
+            console.error("Error posting comment:", error);
+            alert("Failed to post comment. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     console.log(fetchComments);
@@ -308,7 +330,10 @@ const Post = ({ post, loggedUser }) => {
                                 placeholder="Add a comment..."
                             />
                             <div className="flex items-center">
-                                <p className="text-blue-700 font-bold text-sm mr-2">
+                                <p
+                                    className="text-blue-700 font-bold text-sm mr-2 cursor-pointer"
+                                    onClick={handlePostComment}
+                                >
                                     {comment?.length > 0 ? "Post" : ""}
                                 </p>
                                 <button
