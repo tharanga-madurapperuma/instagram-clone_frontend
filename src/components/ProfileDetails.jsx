@@ -34,7 +34,12 @@ const ProfileDetails = () => {
                 <div className="my-5 w-[50]">
                     <div className="font-medium mx-20 flex space-x-3 items-center">
                         <p>UserName</p>
-                        <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
+                        <button
+                            onClick={() => {
+                                navigation("/editProfileDetails");
+                            }}
+                            className="py-1 rounded-md px-2 bg-[#e7e5e4]"
+                        >
                             Edit profile
                         </button>
                         <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
