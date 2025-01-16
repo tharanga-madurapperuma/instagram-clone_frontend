@@ -32,7 +32,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
 
     return (
         <div className="edit-post-container">
-            {<Loader loading={isLoading} />}
+            {isLoading && <Loader />}
             <div className="flex newPostImageContainer-wrapper bg-slate-100 p-5 rounded-lg">
                 <div className="newPostImageContainer ">
                     <img className="newPostImage" src={post.imageUrl} alt="" />

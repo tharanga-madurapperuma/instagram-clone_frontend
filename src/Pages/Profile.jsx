@@ -1,6 +1,6 @@
-import React from 'react'
-import ProfileDetails from '../components/ProfileDetails'
-import UserPost from '../components/UserPost'
+import React from "react";
+import ProfileDetails from "../components/ProfileDetails";
+import UserPost from "../components/UserPost";
 
 const Profile = () => {
     return (

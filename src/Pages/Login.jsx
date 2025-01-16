@@ -34,8 +34,6 @@ const Login = () => {
             if (GUser.email === email && GUser.password === password) {
                 login = true;
                 let loggedUser = JSON.stringify(GUser);
-                localStorage.setItem("loggedUser", loggedUser);
-                localStorage.setItem("userEmail", GUser.email);
                 Navigation("/home");
             } else if (GUser.email === email) {
                 alert("Incorrect password");

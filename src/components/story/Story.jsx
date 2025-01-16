@@ -9,7 +9,6 @@ const Story = ({ story }) => {
     const [watched, setWatched] = useState(story.watched);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const timeOut = 8000;
-    const [isLoading, setIsLoading] = useState(false);
 
     // after user clicked the story
     const storyCliked = async () => {
@@ -29,13 +28,8 @@ const Story = ({ story }) => {
         setIsModalOpen(false);
     };
 
-    useEffect(() => {
-        setIsLoading(true);
-    }, []);
-
     return (
         <div className="story m-2 mt-10">
-            {<Loader loading={isLoading} />}
             <div
                 className={
                     watched
@@ -49,12 +43,7 @@ const Story = ({ story }) => {
                         storyCliked();
                     }}
                 >
-                    <img
-                        src={story.imageUrl}
-                        onLoad={() => {
-                            setIsLoading(false);
-                        }}
-                    />
+                    <img src={story.imageUrl} />
                 </div>
                 {/* React Modal */}
                 <ReactModal

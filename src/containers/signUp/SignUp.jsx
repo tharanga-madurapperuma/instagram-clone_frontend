@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { addUser, getUserByEmail } from "../../Api/UserApi";
 import "../../App.css";
 import "./signUp.css";
+import Loader from "../../components/loader/Loader";
 
 const Signup = () => {
     // images from public folder
@@ -13,9 +14,11 @@ const Signup = () => {
     const navigation = useNavigate();
     const [gUser, setGUser] = useState();
     const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const saveUserData = async (email, password, firstName, lastName) => {
         // Should be replaced with the actual API endpoint
+        setIsLoading(true);
         const response = await fetch("http://localhost:8080/users/register", {
             method: "POST",
             headers: {
@@ -30,11 +33,13 @@ const Signup = () => {
             }),
         });
         setGUser(response.data);
+        setIsLoading(false);
     };
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                setIsLoading(true);
                 // Should be replaced with the actual API endpoint
                 const response = await fetch(
                     "http://localhost:80/users/getUserByEmail/{email}"
@@ -43,6 +48,8 @@ const Signup = () => {
                 setGUser(data);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchUserData();
@@ -56,6 +63,7 @@ const Signup = () => {
 
         try {
             // Fetch user by email
+            setIsLoading(true);
             const response = await getUserByEmail(email);
 
             if (response.data?.email === email) {
@@ -64,6 +72,8 @@ const Signup = () => {
             }
         } catch (error) {
             console.error("Error fetching user data:", error);
+        } finally {
+            setIsLoading(false);
         }
 
         // Save user if no existing user is found
@@ -85,6 +95,7 @@ const Signup = () => {
 
     return (
         <div className="login-container">
+            {isLoading && <Loader />}
             <div className="box-3">
                 <div className="box-1-logo">
                     <img

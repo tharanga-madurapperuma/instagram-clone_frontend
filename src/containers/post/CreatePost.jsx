@@ -75,13 +75,13 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
 
     // After create post button clicked this method happens
     const handleClicked = async () => {
-        setIsLoading(true);
         if (!file) {
             alert("Please select a file");
             return;
         }
 
         try {
+            setIsLoading(true);
             const formData = new FormData();
             formData.append("file", file); // Append the file with the key 'image'
             formData.append("upload_preset", "instagram-clone_posts");
@@ -162,7 +162,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             overlayClassName="overlay"
             shouldCloseOnOverlayClick={true}
         >
-            {<Loader loading={isLoading} />}
+            {isLoading && <Loader />}
             <div className="flex flex-col items-center">
                 <div className="mb-[8px]">
                     <h2 className="font-bold">Create New Post</h2>

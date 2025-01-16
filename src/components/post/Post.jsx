@@ -51,7 +51,7 @@ const Post = ({ post, loggedUser }) => {
 
         const getComments = async () => {
             const response = await getCommentByPostId(post?.postId);
-            setFetchComments(response.data);
+            setFetchComments(response);
         };
 
         fetchData();
@@ -84,11 +84,7 @@ const Post = ({ post, loggedUser }) => {
                     };
 
                     const response = addStory(story);
-
-                    if (response.status === 201) {
-                        setIsLoading(false);
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
                     alert("Failed to share story. Please try again.");
@@ -176,7 +172,7 @@ const Post = ({ post, loggedUser }) => {
 
     return (
         <div className=" feedSection_post">
-            {<Loader loader={isLoading} />}
+            {isLoading && <Loader />}
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
                     <ProfileTemplatePost user={user} post={post} />

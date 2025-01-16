@@ -14,7 +14,7 @@ const Comment = ({ comment }) => {
         setIsLoading(true);
         const fetchUser = async () => {
             const res = await getUserById(comment.userId);
-            setUser(res.data);
+            setUser(res);
         };
 
         const checkLikeStatus = () => {
@@ -47,7 +47,7 @@ const Comment = ({ comment }) => {
 
     return (
         <>
-            {<Loader loading={isLoading} />}
+            {isLoading && <Loader />}
             <div className="flex justify-between items-center my-2">
                 <div className="flex items-center w-[95%]">
                     <div className="comment-image w-[10%]">

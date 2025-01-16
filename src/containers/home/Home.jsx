@@ -17,9 +17,10 @@ import { LuLogOut } from "react-icons/lu";
 import { TiThMenu } from "react-icons/ti";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import Loader from "../../components/loader/Loader";
-import { getAllUsers, getUserById } from "../../Api/UserApi";
+import { getAllUsers, getUserByEmail } from "../../Api/UserApi";
 import { getAllStories } from "../../Api/StoryApi";
 import { getAllPosts } from "../../Api/PostApi";
+import { jwtDecode } from "jwt-decode";
 
 const Home = () => {
     // logo Image
@@ -72,7 +73,11 @@ const Home = () => {
             setPosts(response);
         };
         const fetchLoggedUser = async () => {
-            const response = await getUserById("U7");
+            const token = localStorage.getItem("authToken");
+            const decode = jwtDecode(token);
+            const loggedUserEmail = decode.sub;
+
+            const response = await getUserByEmail(loggedUserEmail);
             setLoggedUser(response);
         };
 
@@ -121,7 +126,7 @@ const Home = () => {
 
     return (
         <div className="flex flex-row">
-            {<Loader loading={isLoading} />}
+            {isLoading && <Loader />}
             {screenWidth > 768 ? (
                 <div className="leftMenu justify-items-start text-gray-800 m-10">
                     {/* left menu */}

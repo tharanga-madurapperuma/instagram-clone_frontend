@@ -58,7 +58,7 @@ const WatchStory = ({ story, timeOut }) => {
 
     return (
         <div className="watch-story-container flex flex-col h-[65vh]">
-            {<Loader loading={isLoading} />}
+            {isLoading && <Loader />}
             <div className="flex items-center justify-between story-delete-menu">
                 <ProfileTemplate user={user} />
                 <CiMenuKebab

@@ -54,4 +54,12 @@
 }
 
 @media (min-width: 1441px) {
+    .comment-user-details h4 {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .comment-user-details p {
+        font-size: 0.9rem;
+    }
 }

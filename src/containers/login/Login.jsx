@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import { getAllUsers } from "../../Api/UserApi";
 import axios from "axios";
+import Loader from "../../components/loader/Loader";
 
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     // get Images from public
     const googlePlay = "/assets/google.png";
@@ -20,6 +22,7 @@ const Login = () => {
     var login = false;
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchUserData = async () => {
             try {
                 const userResult = await getAllUsers();
@@ -29,10 +32,12 @@ const Login = () => {
             }
         };
         fetchUserData();
+        setIsLoading(false);
     }, []);
 
     const userValidation = async () => {
         try {
+            setIsLoading(true);
             const response = await axios.post(
                 "http://localhost:8080/users/login",
                 {
@@ -40,12 +45,10 @@ const Login = () => {
                     password: password,
                 }
             );
-
             if (response.data) {
-                const { token } = response.data;
-
+                const token = response.data;
+                console.log(token);
                 localStorage.setItem("authToken", token);
-                localStorage.setItem("userEmail", email);
 
                 navigate("/");
             } else {
@@ -54,11 +57,14 @@ const Login = () => {
         } catch (error) {
             console.error("Error during login:", error);
             alert("Invalid email or password. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="login-container">
+            {isLoading && <Loader />}
             <div className="box-1">
                 <div className="box-1-logo">
                     <img
