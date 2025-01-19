@@ -27,8 +27,12 @@ const apiRequest = async (method, endpoint, payload = {}) => {
             data: payload, // For PUT, POST requests
         });
         console.log("API request successful:", response.data);
+
         return response.data;
     } catch (error) {
+        if (error.code === "ERR_NETWORK" || error.response.status === 401) {
+            localStorage.removeItem("authToken");
+        }
         console.log(error.response?.data || error.message);
         throw error; // Propagate the error to be handled in the calling function
     }
