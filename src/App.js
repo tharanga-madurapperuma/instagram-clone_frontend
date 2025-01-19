@@ -9,6 +9,7 @@ import SignUp from "./containers/signUp/SignUp";
 import Settings from "./containers/settings/Settings";
 import ProtectedRoute from "./Api/ProtectedRoute";
 import EditProfile from "./containers/editProfile/EditProfile";
+import NotFound from "./containers/notFound/NotFound";
 
 function App() {
     return (
@@ -33,6 +34,7 @@ function App() {
                                 element={<EditProfile />}
                             />
                         </Route>
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
             </div>
