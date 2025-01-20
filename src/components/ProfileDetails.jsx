@@ -6,23 +6,7 @@ const ProfileDetails = () => {
     const logo = "/assets/images/Logo.png";
     const navigation = useNavigate();
     return (
-        <div className="py-10">
-            <div>
-                <div className="leftMenu justify-items-start text-gray-800 m-10">
-                    {/* left menu */}
-                    <div className="mt-0 mb-20 cursor-pointer">
-                        <img
-                            src={logo}
-                            alt="logo"
-                            onClick={() => {
-                                navigation("/");
-                            }}
-                        />
-                    </div>
-                </div>
-                <div className="speration-line w-0.5 bg-gray-300"></div>
-            </div>
-
+        <div className="px-20 py-10">
             <div className="flex items-center space-x-10">
                 <div className="w-[15]">
                     <img
