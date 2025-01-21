@@ -12,6 +12,7 @@ const ProfileTemplate = ({ user }) => {
                                 ? user?.userImage
                                 : "/assets/users/general.jpg"
                         }
+                        alt={user?.firstName ? `${user.firstName}'s profile` : 'default profile'}
                     ></img>
                 </div>
             </div>

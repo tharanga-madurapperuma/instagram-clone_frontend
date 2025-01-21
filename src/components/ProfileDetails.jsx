@@ -1,79 +1,99 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { BiSearch, BiX } from "react-icons/bi";
 
 const ProfileDetails = () => {
     const settingIcon = "/assets/icons/Options.png";
-    const logo = "/assets/images/Logo.png";
-    const navigation = useNavigate();
-    return (
-        <div className="py-10">
-            <div>
-                <div className="leftMenu justify-items-start text-gray-800 m-10">
-                    {/* left menu */}
-                    <div className="mt-0 mb-20 cursor-pointer">
-                        <img
-                            src={logo}
-                            alt="logo"
-                            onClick={() => {
-                                navigation("/");
-                            }}
-                        />
-                    </div>
-                </div>
-                <div className="speration-line w-0.5 bg-gray-300"></div>
-            </div>
+    const [showFollowers, setShowFollowers] = useState(false);
 
-            <div className="flex items-center space-x-10">
-                <div className="w-[15]">
-                    <img
-                        className="w-40 h-40 rounded-full align-middle"
-                        src="https://cdn.pixabay.com/photo/2023/05/10/19/18/sparrow-7984807_640.jpg"
-                        alt=""
-                    />
-                </div>
-                <div className="my-5 w-[50]">
-                    <div className="font-medium mx-20 flex space-x-3 items-center">
-                        <p>UserName</p>
-                        <button
-                            onClick={() => {
-                                navigation("/editProfileDetails");
-                            }}
-                            className="py-1 rounded-md px-2 bg-[#e7e5e4]"
-                        >
-                            Edit profile
-                        </button>
-                        <button className="py-1 rounded-md px-2 bg-[#e7e5e4]">
-                            View archive
-                        </button>
-                        <img
+    const followers = [
+        { id: 1, username: 'tharu_rd', name: 'Tharushi Ranasinghe', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop' },
+        { id: 2, username: 'tharukaamasha', name: 'Tharuka Amasha', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop' },
+        { id: 3, username: 'w.msew', name: 'W.M Sew wasala', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=50&h=50&fit=crop' },
+        { id: 4, username: 'waruna_hashan_', name: 'Waruna Hashan', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=50&h=50&fit=crop' },
+        { id: 5, username: '.mindii', name: 'Theekshana lakmindu', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop' },
+      ];
+      
+    return (
+        <div className="flex items-start space-x-20 mb-10 px-10 py-10">
+          <img
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces"
+            alt="Profile"
+            className="w-40 h-40 rounded-full object-cover"
+          />
+          <div className="flex-1">
+            <div className="flex items-center space-x-4 mb-4">
+              <h1 className="text-xl font-normal">janedoe</h1>
+              <button className="px-4 py-1.5 bg-gray-100 rounded-md font-semibold">Edit profile</button>
+              <img
                             src={settingIcon}
-                            alt="sttings"
+                            alt="settings"
                             className="w-7 h-7"
                         />
-                    </div>
-                    <div className="flex space-x-10 mx-20">
-                        <div>
-                            <span className="font-medium mr-2">10</span>
-                            <span>Posts</span>
-                        </div>
-                        <div>
-                            <span className="font-medium mr-2">10</span>
-                            <span>Followers</span>
-                        </div>
-                        <div>
-                            <span className="font-medium mr-2">10</span>
-                            <span>Following</span>
-                        </div>
-                    </div>
-
-                    <div className="mx-20 my-5">
-                        <p className="font-medium">User Name</p>
-                        <p className="font-thin text-sm">
-                            Demon 😈 <br /> Coder 👨‍💻 <br /> Traveller ✈️
-                        </p>
-                    </div>
-                </div>
             </div>
+            <div className="flex space-x-10 mb-4">
+              <span><strong>542</strong> posts</span>
+              <button 
+                onClick={() => setShowFollowers(true)}
+                className="hover:opacity-70"
+              >
+                <strong>88.5k</strong> followers
+              </button>
+              <span><strong>884</strong> following</span>
+            </div>
+            <div>
+              <h2 className="font-semibold">Jane Doe</h2>
+              <p className="text-gray-700">Digital creator</p>
+              <p className="mt-1">Capturing life's beautiful moments ✨</p>
+              <p className="text-blue-900">www.janedoe.com</p>
+            </div>
+          </div>
+
+{/* Followers Modal */}
+{showFollowers && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl w-full max-w-md">
+            <div className="border-b p-4 flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Followers</h2>
+              <button onClick={() => setShowFollowers(false)}>
+                <BiX className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-2">
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="w-full px-4 py-2 bg-gray-100 rounded-lg"
+                  />
+                  <BiSearch className="w-4 h-4 absolute right-3 top-3 text-gray-400" />
+                </div>
+              </div>
+              <div className="max-h-96 overflow-y-auto">
+                {followers.map((follower) => (
+                  <div key={follower.id} className="flex items-center justify-between p-2 hover:bg-gray-50">
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={follower.avatar}
+                        alt={follower.username}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold">{follower.username}</p>
+                        <p className="text-gray-500 text-sm">{follower.name}</p>
+                      </div>
+                    </div>
+                    <button className="px-6 py-1.5 rounded bg-gray-100 text-sm font-semibold">
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
         </div>
     );
 };
