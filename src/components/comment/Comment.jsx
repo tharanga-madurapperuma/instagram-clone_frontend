@@ -33,16 +33,14 @@ const Comment = ({ comment }) => {
 
     // This triggers when the like button is clicked
     const likeHandleClicked = async () => {
-        setIsLoading(true);
+        setLiked(true);
         await addLikedUsers(user?.user_id, comment.commentId);
-        setIsLoading(false);
     };
 
     // This triggers when the unlike button is clicked
     const unLikeHandleClicked = async () => {
-        setIsLoading(true);
+        setLiked(false);
         await removeLikedUsers(user?.user_id, comment.commentId);
-        setIsLoading(false);
     };
 
     return (
