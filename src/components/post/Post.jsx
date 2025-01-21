@@ -33,6 +33,7 @@ const Post = ({ post, loggedUser }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fetchComments, setFetchComments] = useState([]);
     const [showComment, setShowComment] = useState(false);
+    const [reloadComments, setReloadComments] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -49,16 +50,19 @@ const Post = ({ post, loggedUser }) => {
             }
         };
 
+        fetchData();
+        checkLikedState();
+        reloadComments ? setReloadComments(false) : setReloadComments(true);
+        setIsLoading(false);
+    }, []);
+
+    useEffect(() => {
         const getComments = async () => {
             const response = await getCommentByPostId(post?.postId);
             setFetchComments(response);
         };
-
-        fetchData();
-        checkLikedState();
         getComments();
-        setIsLoading(false);
-    }, []);
+    }, [reloadComments]);
 
     // Imoji handle method
     const handleEmojiClick = (emojiObject) => {
@@ -105,7 +109,7 @@ const Post = ({ post, loggedUser }) => {
         if (event.detail === 2) {
             if (isLiked) {
                 setIsLiked(false);
-                setIsLoading(true);
+
                 setLikeCount((prevCount) => prevCount - 1);
 
                 // Remove like from user
@@ -113,9 +117,7 @@ const Post = ({ post, loggedUser }) => {
 
                 // Decrement like count
                 await decrementLikeCount(post.postId);
-                setIsLoading(false);
             } else {
-                setIsLoading(true);
                 setIsLiked(true);
                 setLikeCount((prevCount) => prevCount + 1);
                 try {
@@ -123,8 +125,6 @@ const Post = ({ post, loggedUser }) => {
                     await incrementLikeCount(post.postId);
                 } catch (error) {
                     alert(error);
-                } finally {
-                    setIsLoading(false);
                 }
             }
         }
@@ -162,6 +162,8 @@ const Post = ({ post, loggedUser }) => {
                 likeCount: 0,
                 likedUsers: [],
             });
+            setComment("");
+            reloadComments ? setReloadComments(false) : setReloadComments(true);
         } catch (error) {
             console.error("Error posting comment:", error);
             alert("Failed to post comment. Please try again.");
@@ -349,9 +351,11 @@ const Post = ({ post, loggedUser }) => {
                     <div className="comment-bottom-line w-full bg-gray-400"></div>
                     <div className="post-comment-section">
                         {showComment
-                            ? fetchComments?.map((comment, index) => (
-                                  <Comment comment={comment} />
-                              ))
+                            ? [...fetchComments]
+                                  .reverse()
+                                  ?.map((comment, index) => (
+                                      <Comment comment={comment} />
+                                  ))
                             : null}
                     </div>
                 </div>
