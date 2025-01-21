@@ -6,6 +6,7 @@ import axios from "axios";
 import Loader from "../../components/loader/Loader";
 
 const Login = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -38,13 +39,10 @@ const Login = () => {
     const userValidation = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.post(
-                "http://localhost:8080/users/login",
-                {
-                    email: email,
-                    password: password,
-                }
-            );
+            const response = await axios.post(`${API_BASE_URL}/users/login`, {
+                email: email,
+                password: password,
+            });
             if (response.data) {
                 const token = response.data;
                 console.log(token);

@@ -195,7 +195,8 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
-                            navigation("/");
+                            window.localStorage.removeItem("authToken");
+                            navigation("/login");
                         }}
                     >
                         <LuLogOut className="home_icons" />
@@ -265,7 +266,8 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
-                                navigation("/");
+                                window.localStorage.removeItem("authToken");
+                                navigation("/login");
                             }}
                         >
                             <LuLogOut className="home_icons" />

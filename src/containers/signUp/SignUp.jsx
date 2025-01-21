@@ -6,6 +6,7 @@ import "./signUp.css";
 import Loader from "../../components/loader/Loader";
 
 const Signup = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     // images from public folder
     const instaLogo = "/assets/insta.png";
     const googlePlay = "/assets/google.png";
@@ -19,7 +20,7 @@ const Signup = () => {
     const saveUserData = async (email, password, firstName, lastName) => {
         // Should be replaced with the actual API endpoint
         setIsLoading(true);
-        const response = await fetch("http://localhost:8080/users/register", {
+        const response = await fetch(`${API_BASE_URL}/users/register`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -42,7 +43,7 @@ const Signup = () => {
                 setIsLoading(true);
                 // Should be replaced with the actual API endpoint
                 const response = await fetch(
-                    "http://localhost:80/users/getUserByEmail/{email}"
+                    `${API_BASE_URL}/users/getUserByEmail/{email}`
                 );
                 const data = await response.json();
                 setGUser(data);
