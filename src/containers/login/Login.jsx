@@ -1,11 +1,8 @@
-import googlwplay from "../../assets/google.png";
-import appstore from "../../assets/apple.png";
-import instalogo from "../../assets/insta.png";
-import facebook from "../../assets/fb.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../App.css";
-import axios from "axios"; 
+import { getAllUsers } from "../../Api/UserApi";
+import axios from "axios";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -18,47 +15,93 @@ const Login = () => {
     const instaLogo = "/assets/insta.png";
     const facebook = "/assets/fb.png";
 
-    const Navigation = useNavigate();
     const [gUsers, setGUser] = useState();
-    var login = false;
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const userResult = await fetch(Data.users.getAllUsers);
+                const userResult = await getAllUsers();
                 setGUser(await userResult.json());
             } catch (error) {
                 console.log(error);
             }
         };
         fetchUserData();
+
+        // Initialize Facebook SDK
+        window.fbAsyncInit = function () {
+            window.FB.init({
+                appId: 1298521664790252, 
+                cookie: true,
+                xfbml: true,
+                version: "v16.0", 
+            });
+        };
+
+        // Load Facebook SDK
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     }, []);
 
     const userValidation = async () => {
         try {
-            const response = await axios.post("http://localhost:8080/users/login", {
-                email: email,
-                password: password,
-            });
+            const response = await axios.post(
+                "http://localhost:8080/users/login",
+                {
+                    email: email,
+                    password: password,
+                }
+            );
 
             if (response.data) {
-                
                 const { token } = response.data;
 
-                
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("userEmail", email);
 
-                
                 navigate("/");
             } else {
-                
                 alert("Login failed. Please check your credentials.");
             }
         } catch (error) {
             console.error("Error during login:", error);
             alert("Invalid email or password. Please try again.");
         }
+    };
+
+    const handleFacebookLogin = () => {
+        window.FB.login(
+            (response) => {
+                if (response.status === "connected") {
+                    const { accessToken } = response.authResponse;
+
+                    // Send the accessToken to the backend for verification
+                    axios
+                        .post("http://localhost:8080/users/facebook-login", {
+                            accessToken,
+                        })
+                        .then((res) => {
+                            const { token } = res.data;
+
+                            // Store the token and navigate to the homepage
+                            localStorage.setItem("authToken", token);
+                            navigate("/");
+                        })
+                        .catch((error) => {
+                            console.error("Facebook login error:", error);
+                            alert("Facebook login failed.");
+                        });
+                } else {
+                    alert("User canceled login or did not fully authorize.");
+                }
+            },
+            { scope: "public_profile,email" }
+        );
     };
 
     return (
@@ -108,9 +151,9 @@ const Login = () => {
                         className="fb-logo"
                     />
                     <p className="log-fb">
-                        <a className="fb-link" href="www.facebook.com">
+                        <div className="fb-link" onClick={handleFacebookLogin}>
                             Log in with Facebook
-                        </a>
+                        </div>
                     </p>
                 </div>
                 <div className="forgotten-password-box">
