@@ -1,18 +1,10 @@
 import React, { useEffect } from "react";
-import { HashLoader } from "react-spinners";
+import { DotLoader } from "react-spinners";
 import "./Loader.css";
 import ReactModal from "react-modal";
 
-const Loader = ({ loading }) => {
+const Loader = ({}) => {
     const [isModalOpen, setIsModalOpen] = React.useState(true);
-
-    useEffect(() => {
-        if (!loading) {
-            setTimeout(() => {
-                setIsModalOpen(false);
-            }, 1000);
-        }
-    }, [loading]);
 
     return (
         <div className="loader">
@@ -23,11 +15,12 @@ const Loader = ({ loading }) => {
                 overlayClassName="loader-overlay"
                 shouldCloseOnOverlayClick={true}
             >
-                <HashLoader
+                <DotLoader
                     color="#3fa9d4"
-                    loading={loading}
-                    size={75}
+                    loading={true}
+                    size={40}
                     speedMultiplier={1}
+                    className="loader-spinner"
                 />
             </ReactModal>
         </div>

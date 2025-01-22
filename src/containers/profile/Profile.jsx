@@ -6,14 +6,18 @@ import NavBar from "../../components/NavigationBar/NavBar";
 const Profile = () => {
     return (
         <div className="px-20">
-            <div>
-                <NavBar />
-            </div>
-            <div>
-                <ProfileDetails />
-            </div>
-            <div>
-                <UserPost />
+            <div className="flex flex-row">
+                <div>
+                    <NavBar />
+                </div>
+                <div className="flex flex-col">
+                    <div>
+                        <ProfileDetails />
+                    </div>
+                    <div>
+                        <UserPost />
+                    </div>
+                </div>
             </div>
         </div>
     );

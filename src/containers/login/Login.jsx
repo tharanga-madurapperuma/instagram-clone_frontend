@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "../../App.css";
 import { getAllUsers } from "../../Api/UserApi";
 import axios from "axios";
+import Loader from "../../components/loader/Loader";
 
 const Login = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     // get Images from public
     const googlePlay = "/assets/google.png";
@@ -18,6 +21,7 @@ const Login = () => {
     const [gUsers, setGUser] = useState();
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchUserData = async () => {
             try {
                 const userResult = await getAllUsers();
@@ -46,23 +50,20 @@ const Login = () => {
             js.src = "https://connect.facebook.net/en_US/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
+        setIsLoading(false);
     }, []);
 
     const userValidation = async () => {
         try {
-            const response = await axios.post(
-                "http://localhost:8080/users/login",
-                {
-                    email: email,
-                    password: password,
-                }
-            );
-
+            setIsLoading(true);
+            const response = await axios.post(`${API_BASE_URL}/users/login`, {
+                email: email,
+                password: password,
+            });
             if (response.data) {
-                const { token } = response.data;
-
+                const token = response.data;
+                console.log(token);
                 localStorage.setItem("authToken", token);
-                localStorage.setItem("userEmail", email);
 
                 navigate("/");
             } else {
@@ -71,6 +72,8 @@ const Login = () => {
         } catch (error) {
             console.error("Error during login:", error);
             alert("Invalid email or password. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -106,6 +109,7 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            {isLoading && <Loader />}
             <div className="box-1">
                 <div className="box-1-logo">
                     <img

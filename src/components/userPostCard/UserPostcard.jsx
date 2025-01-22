@@ -25,6 +25,6 @@ const UserPostcard = () => {
             </div>
         </div>
     );
-};
+};  
 
 export default UserPostcard;

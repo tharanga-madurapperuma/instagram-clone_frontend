@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import instalogo from "../../assets/insta.png";
-import googlwplay from "../../assets/google.png";
-import appstore from "../../assets/apple.png";
 import { useNavigate } from "react-router-dom";
-import Data from "../../fetchData";
+import { addUser, getUserByEmail } from "../../Api/UserApi";
 import "../../App.css";
 import "./signUp.css";
+import Loader from "../../components/loader/Loader";
 
 const Signup = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     // images from public folder
     const instaLogo = "/assets/insta.png";
     const googlePlay = "/assets/google.png";
@@ -16,39 +15,83 @@ const Signup = () => {
     const navigation = useNavigate();
     const [gUser, setGUser] = useState();
     const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const saveUserData = async (email, password, firstName, lastName) => {
-        const response = await fetch("http://localhost:8080/users/register", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                firstName: firstName,
-                lastName: lastName,
-            }),
-        });
-        const data = await response.json();
-        console.log(data);
+        setIsLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/register`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                }),
+            });
+            const data = await response.json();
+            setGUser(data);
+        } catch (error) {
+            console.error("Error saving user data:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                setIsLoading(true);
                 const response = await fetch(
-                    "http://localhost:8080/users/getUserByEmail/{email}"
+                    `${API_BASE_URL}/users/getUserByEmail/{email}`
                 );
                 const data = await response.json();
                 setGUser(data);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setIsLoading(false);
             }
         };
-        fetchUserData();
+        if (email) fetchUserData();
     }, [email]);
+
+    const validateForm = (email, password) => {
+        const errors = {};
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email) {
+            errors.email = "Email is required.";
+        } else if (!emailRegex.test(email)) {
+            errors.email = "Invalid email format.";
+        }
+
+        // Password validation
+        if (!password) {
+            errors.password = "Password is required.";
+        } else if (password.length < 8) {
+            errors.password = "Password must be at least 8 characters long.";
+        } else if (!/[A-Z]/.test(password)) {
+            errors.password =
+                "Password must contain at least one uppercase letter.";
+        } else if (!/[a-z]/.test(password)) {
+            errors.password =
+                "Password must contain at least one lowercase letter.";
+        } else if (!/[0-9]/.test(password)) {
+            errors.password = "Password must contain at least one number.";
+        } else if (!/[!@#$%^&*]/.test(password)) {
+            errors.password =
+                "Password must contain at least one special character.";
+        }
+
+        return errors;
+    };
 
     const userValidation = async () => {
         const firstName = document.getElementById("firstName").value;
@@ -56,21 +99,25 @@ const Signup = () => {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
+        const formErrors = validateForm(email, password);
+        if (Object.keys(formErrors).length > 0) {
+            setErrors(formErrors);
+            return;
+        }
+
         try {
-            // Fetch user by email
-            const response = await fetch(Data.users.getUserByEmail + email);
-            if (response.ok) {
-                const data = await response.json();
-                if (data?.email === email) {
-                    alert("User already exists, Please login");
-                    return;
-                }
+            setIsLoading(true);
+            const response = await getUserByEmail(email);
+            if (response.data?.email === email) {
+                alert("User already exists, Please login");
+                return;
             }
         } catch (error) {
             console.error("Error fetching user data:", error);
+        } finally {
+            setIsLoading(false);
         }
 
-        // Save user if no existing user is found
         await saveUserData(email, password, firstName, lastName);
 
         const user = {
@@ -89,6 +136,7 @@ const Signup = () => {
 
     return (
         <div className="login-container">
+            {isLoading && <Loader />}
             <div className="box-3">
                 <div className="box-1-logo">
                     <img
@@ -104,6 +152,9 @@ const Signup = () => {
                         id="email"
                         placeholder="Email address"
                     />
+                    {errors.email && (
+                        <p className="error-text">{errors.email}</p>
+                    )}
                 </div>
                 <div>
                     <input
@@ -112,6 +163,9 @@ const Signup = () => {
                         id="password"
                         placeholder="Password"
                     />
+                    {errors.password && (
+                        <p className="error-text">{errors.password}</p>
+                    )}
                 </div>
                 <div>
                     <input
@@ -138,14 +192,17 @@ const Signup = () => {
                 <div>
                     <p className="instruction">
                         By signing up, you agree to our <b>Terms</b>,{" "}
-                        <b>Privacy Policy</b> and <b>Cookies Policy</b>.
+                        <b>Privacy Policy</b>, and <b>Cookies Policy</b>.
                     </p>
-                    <div className='login-button-box'>
-                    <button className='login-button' onClick={userValidation} >Sign up</button>
+                    <div className="login-button-box">
+                        <button
+                            className="login-button"
+                            onClick={userValidation}
+                        >
+                            Sign up
+                        </button>
+                    </div>
                 </div>
-            </div>
-                
-                
             </div>
             <div className="box-2">
                 <p className="account">

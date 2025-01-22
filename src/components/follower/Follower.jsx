@@ -3,6 +3,7 @@ import "./follower.css";
 import "../post/post.css";
 
 const Follower = ({ user }) => {
+    console.log(user);
     return (
         <div className="follower mt-3">
             <div className=" flex justify-between">
@@ -13,7 +14,7 @@ const Follower = ({ user }) => {
                                 src={
                                     !user.userImage
                                         ? "./assets/users/general.jpg"
-                                        : `./${user.userImage}`
+                                        : `${user.userImage}`
                                 }
                                 alt="Profile"
                             ></img>

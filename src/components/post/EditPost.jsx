@@ -1,53 +1,51 @@
-import React, { useEffect, useState } from "react";
-import Data from "../../fetchData";
+import React, { useState } from "react";
 import ProfileTemplate from "../profile/ProfileTemplate";
 import "./EditPost.css";
-import axios from "axios";
+import { editPost } from "../../Api/PostApi";
+import Loader from "../loader/Loader";
 
 const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
     const [description, setDescription] = useState(post.description);
+    const [isLoading, setIsLoading] = useState(false);
 
     console.log(description);
 
     const handleClicked = async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.put(
-                Data.posts.editPost + post.postId,
-                {
-                    description: description,
-                    userId: loggedUser.user_id,
-                    likeCount: post.likeCount,
-                    imageUrl: post.imageUrl, // Use fileUrl here
-                }
-            );
-
-            if (response.status === 200) {
-                alert("Post Edited successfully!");
-                setDescription("");
-                closeEditPostModal();
-                window.location.reload();
-            }
+            await editPost(post.postId, {
+                description: description,
+                userId: loggedUser.user_id,
+                likeCount: post.likeCount,
+                imageUrl: post.imageUrl, // Use fileUrl here
+            });
+            setDescription("");
+            closeEditPostModal();
+            window.location.reload();
         } catch (error) {
             console.error("Error creating post:", error);
             alert("Failed to create post. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div>
-            <div className="flex bg-slate-100 p-5 rounded-lg">
+        <div className="edit-post-container">
+            {isLoading && <Loader />}
+            <div className="flex newPostImageContainer-wrapper bg-slate-100 p-5 rounded-lg">
                 <div className="newPostImageContainer ">
                     <img className="newPostImage" src={post.imageUrl} alt="" />
                 </div>
 
-                <div className="flex flex-col w-[400px] h-full mt-5">
-                    <div className="flex items-start w-full">
+                <div className="flex flex-col w-[400px] h-full mt-5 edit-post-right-side">
+                    <div className="createPost-profile flex items-start w-full">
                         <ProfileTemplate user={loggedUser} />
                     </div>
                     <textarea
                         value={description}
                         rows={5}
-                        className="w-full bg-slate-100 mt-5 p-5 post-textarea"
+                        className="post-textarea w-full bg-slate-100 mt-5 p-5 post-textarea"
                         onChange={(e) => {
                             setDescription(e.target.value);
                         }}
@@ -60,7 +58,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
                     >
                         Post
                     </button>
-                    <p className="text-gray-500 text-xs mt-5">
+                    <p className="text-gray-500 text-xs mt-5 edit-post-copyright">
                         &copy; instagram clone, developed by Tharanga
                         Madurapperuma, Rusiru Erandaka and Harshana Rathnayaka.
                     </p>

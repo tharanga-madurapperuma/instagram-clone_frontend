@@ -7,6 +7,9 @@ import Profile from "./containers/profile/Profile";
 import Login from "./containers/login/Login";
 import SignUp from "./containers/signUp/SignUp";
 import Settings from "./containers/settings/Settings";
+import ProtectedRoute from "./Api/ProtectedRoute";
+import EditProfile from "./containers/editProfile/EditProfile";
+import NotFound from "./containers/notFound/NotFound";
 
 function App() {
     return (
@@ -14,14 +17,24 @@ function App() {
             <div>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/search" element={<Search />} />
-                        <Route path="/createPost" element={<CreatePost />} />
-                        <Route path="/profile" element={<Profile />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
-                        <Route path="/editProfile" element={<Profile />} />
-                        <Route path="/settings" element={<Settings />} />
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/search" element={<Search />} />
+                            <Route
+                                path="/createPost"
+                                element={<CreatePost />}
+                            />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/" element={<Home />} />
+                            <Route path="/editProfile" element={<Profile />} />
+                            <Route path="/settings" element={<Settings />} />
+                            <Route
+                                path="/editProfileDetails"
+                                element={<EditProfile />}
+                            />
+                        </Route>
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
             </div>
