@@ -4,6 +4,7 @@ import "../../App.css";
 import { getAllUsers } from "../../Api/UserApi";
 import axios from "axios";
 import Loader from "../../components/loader/Loader";
+import { FaSquareFacebook } from "react-icons/fa6";
 
 const Login = () => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -102,11 +103,7 @@ const Login = () => {
                     <div className="line-2"></div>
                 </div>
                 <div className="fb-box">
-                    <img
-                        src={facebook}
-                        alt="facebook logo"
-                        className="fb-logo"
-                    />
+                    <FaSquareFacebook className="login-fb-icon" />
                     <p className="log-fb">
                         <a className="fb-link" href="www.facebook.com">
                             Log in with Facebook
