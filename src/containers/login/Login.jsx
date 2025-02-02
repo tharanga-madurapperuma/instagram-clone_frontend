@@ -36,21 +36,23 @@ const Login = () => {
         // Initialize Facebook SDK
         window.fbAsyncInit = function () {
             window.FB.init({
-                appId: 1298521664790252, 
+                appId: 1298521664790252,
                 cookie: true,
                 xfbml: true,
-                version: "v16.0", 
+                version: "v16.0",
             });
         };
 
         // Load Facebook SDK
         (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
+            var js,
+                fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
+            js = d.createElement(s);
+            js.id = id;
             js.src = "https://connect.facebook.net/en_US/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
+        })(document, "script", "facebook-jssdk");
         setIsLoading(false);
     }, []);
 
@@ -86,7 +88,7 @@ const Login = () => {
 
                     // Send the accessToken to the backend for verification
                     axios
-                        .post("http://localhost:8080/users/facebook-login", {
+                        .post(`${API_BASE_URL}/users/facebook-login`, {
                             accessToken,
                         })
                         .then((res) => {
@@ -149,12 +151,13 @@ const Login = () => {
 
                     <div className="line-2"></div>
                 </div>
-                <div className="fb-box">
+                <div
+                    className="fb-box cursor-pointer"
+                    onClick={handleFacebookLogin}
+                >
                     <FaSquareFacebook className="login-fb-icon" />
-                    <p className="log-fb">
-                        <div className="fb-link" onClick={handleFacebookLogin}>
-                            Log in with Facebook
-                        </div>
+                    <p className="log-fb ">
+                        <div className="fb-link">Log in with Facebook</div>
                     </p>
                 </div>
                 <div className="forgotten-password-box">

@@ -192,7 +192,14 @@ const Post = ({ post, loggedUser }) => {
                                 : "top-right-dots_menu-inactive"
                         }
                     >
-                        <ul>
+                        <ul
+                            style={{
+                                display:
+                                    user?.user_id === loggedUser?.user_id
+                                        ? "block"
+                                        : "none",
+                            }}
+                        >
                             <li>
                                 <a
                                     onClick={() => {
@@ -354,7 +361,10 @@ const Post = ({ post, loggedUser }) => {
                             ? [...fetchComments]
                                   .reverse()
                                   ?.map((comment, index) => (
-                                      <Comment comment={comment} />
+                                      <Comment
+                                          comment={comment}
+                                          loggedUser={loggedUser}
+                                      />
                                   ))
                             : null}
                     </div>

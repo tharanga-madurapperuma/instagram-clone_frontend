@@ -3,9 +3,12 @@ import "./comment.css";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Loader from "../loader/Loader";
 import { getUserById } from "../../Api/UserApi";
-import { addLikedUsers, removeLikedUsers } from "../../Api/CommentApi";
+import {
+    addCommentLikedUsers,
+    removeCommentLikedUsers,
+} from "../../Api/CommentApi";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, loggedUser }) => {
     const [user, setUser] = useState();
     const [liked, setLiked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +22,7 @@ const Comment = ({ comment }) => {
 
         const checkLikeStatus = () => {
             comment.likedUsers.forEach((likedUser) => {
-                console.log(user?.user_id + " Liked User: " + likedUser);
-                if (likedUser === user?.user_id) {
+                if (likedUser === loggedUser?.user_id) {
                     setLiked(true);
                 }
             });
@@ -34,13 +36,13 @@ const Comment = ({ comment }) => {
     // This triggers when the like button is clicked
     const likeHandleClicked = async () => {
         setLiked(true);
-        await addLikedUsers(user?.user_id, comment.commentId);
+        await addCommentLikedUsers(loggedUser?.user_id, comment.commentId);
     };
 
     // This triggers when the unlike button is clicked
     const unLikeHandleClicked = async () => {
         setLiked(false);
-        await removeLikedUsers(user?.user_id, comment.commentId);
+        await removeCommentLikedUsers(loggedUser?.user_id, comment.commentId);
     };
 
     return (
@@ -64,7 +66,7 @@ const Comment = ({ comment }) => {
                     </div>
                 </div>
 
-                <div className="comment-like w-[5%]">
+                <div className="comment-like w-[5%] cursor-pointer">
                     {liked ? (
                         <FaHeart
                             onClick={() => {
