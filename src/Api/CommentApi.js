@@ -30,9 +30,9 @@ const apiRequest = async (method, endpoint, payload = {}) => {
 
         return response.data;
     } catch (error) {
-        if (error.code === "ERR_NETWORK" || error.response.status === 401) {
-            localStorage.removeItem("authToken");
-        }
+        // if (error.code === "ERR_NETWORK" || error.response.status === 401) {
+        //     localStorage.removeItem("authToken");
+        // }
         console.log(error.response?.data || error.message);
         throw error; // Propagate the error to be handled in the calling function
     }
@@ -63,14 +63,14 @@ export const getCommentByPostId = async (postId) => {
 };
 
 // API functions for add liked users
-export const addLikedUsers = async (userId, commentId) => {
+export const addCommentLikedUsers = async (userId, commentId) => {
     return await apiRequest("POST", `/addLikesComments/${userId}/${commentId}`);
 };
 
 // API functions for remove liked users
-export const removeLikedUsers = async (userId, commentId) => {
+export const removeCommentLikedUsers = async (userId, commentId) => {
     return await apiRequest(
-        "POST",
+        "DELETE",
         `/removeLikesComments/${userId}/${commentId}`
     );
 };
