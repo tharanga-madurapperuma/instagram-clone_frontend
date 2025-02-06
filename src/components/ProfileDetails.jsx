@@ -6,6 +6,7 @@ const ProfileDetails = ({ userId }) => {
     const settingIcon = "/assets/icons/Options.png";
     const [showFollowers, setShowFollowers] = useState(false);
     const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
 
     useEffect(() => {
         const fetchFollowers = async () => {
@@ -17,7 +18,17 @@ const ProfileDetails = ({ userId }) => {
             }
         };
 
+        const fetchFollowing = async () => {
+            try {
+                const response = await axios.get(`/users/${userId}/following`);
+                setFollowing(response.data);
+            } catch (error) {
+                console.error("Error fetching following:", error);
+            }
+        };
+
         fetchFollowers();
+        fetchFollowing();
     }, [userId]);
 
     return (
@@ -45,7 +56,7 @@ const ProfileDetails = ({ userId }) => {
                     >
                         <strong>{followers.length}</strong> followers
                     </button>
-                    <span><strong>884</strong> following</span>
+                    <span><strong>{following.length}</strong> following</span>
                 </div>
                 <div>
                     <h2 className="font-semibold">Jane Doe</h2>
