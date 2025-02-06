@@ -39,11 +39,11 @@ const ProfileDetails = ({ userId }) => {
                 </div>
                 <div className="flex space-x-10 mb-4">
                     <span><strong>542</strong> posts</span>
-                    <button 
+                    <button
                         onClick={() => setShowFollowers(true)}
                         className="hover:opacity-70"
                     >
-                        <strong>88.5k</strong> followers
+                        <strong>{followers.length}</strong> followers
                     </button>
                     <span><strong>884</strong> following</span>
                 </div>
