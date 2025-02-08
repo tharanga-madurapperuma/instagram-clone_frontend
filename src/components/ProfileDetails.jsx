@@ -1,50 +1,46 @@
+import React, { useState, useEffect } from "react";
+import { BiSearch, BiX } from "react-icons/bi";
+
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { BiSearch, BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { getUserByEmail } from "../Api/UserApi";
+import axios from "axios";
 
-const ProfileDetails = () => {
+const ProfileDetails = ({ userId }) => {
     const settingIcon = "/assets/icons/Options.png";
     const [showFollowers, setShowFollowers] = useState(false);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
     const navigation = useNavigate();
     const [user, setUser] = useState("Guest User");
     const [isLoading, setIsLoading] = useState(false);
 
-    const followers = [
-        {
-            id: 1,
-            username: "tharu_rd",
-            name: "Tharushi Ranasinghe",
-            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop",
-        },
-        {
-            id: 2,
-            username: "tharukaamasha",
-            name: "Tharuka Amasha",
-            avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop",
-        },
-        {
-            id: 3,
-            username: "w.msew",
-            name: "W.M Sew wasala",
-            avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=50&h=50&fit=crop",
-        },
-        {
-            id: 4,
-            username: "waruna_hashan_",
-            name: "Waruna Hashan",
-            avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=50&h=50&fit=crop",
-        },
-        {
-            id: 5,
-            username: ".mindii",
-            name: "Theekshana lakmindu",
-            avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop",
-        },
-    ];
-
     useEffect(() => {
+        const fetchFollowers = async () => {
+            try {
+                const response = await axios.get(`/users/${userId}/followers`);
+                setFollowers(response.data);
+            } catch (error) {
+                console.error("Error fetching followers:", error);
+            }
+        };
+
+        const fetchFollowing = async () => {
+            try {
+                const response = await axios.get(`/users/${userId}/following`);
+                setFollowing(response.data);
+            } catch (error) {
+                console.error("Error fetching following:", error);
+            }
+        };
+
+        fetchFollowers();
+        fetchFollowing();
+    }, [userId]);
+  
+   useEffect(() => {
         const getUserByToken = async () => {
             setIsLoading(true);
             const token = localStorage.getItem("authToken");
@@ -94,10 +90,10 @@ const ProfileDetails = () => {
                         onClick={() => setShowFollowers(true)}
                         className="hover:opacity-70"
                     >
-                        <strong>88.5k</strong> followers
+                        <strong>{followers.length}</strong> followers
                     </button>
                     <span>
-                        <strong>884</strong> following
+                        <strong>{following.length}</strong> following
                     </span>
                 </div>
                 <div>

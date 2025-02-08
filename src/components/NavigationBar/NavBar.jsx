@@ -117,7 +117,7 @@ const NavBar = () => {
         }, []);
 
     return (
-        <div className="flex flex-row ml-[-50px]">
+        <div className="flex flex-row">
         {isLoading && <Loader />}
             {screenWidth > 768 ? (
                 <div className="leftMenu justify-items-start text-gray-800 m-10">
