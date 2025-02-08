@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BiSearch, BiX } from "react-icons/bi";
+
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { BiSearch, BiX } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { getUserByEmail } from "../Api/UserApi";
 import axios from "axios";
 
 const ProfileDetails = ({ userId }) => {
@@ -7,6 +13,9 @@ const ProfileDetails = ({ userId }) => {
     const [showFollowers, setShowFollowers] = useState(false);
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
+    const navigation = useNavigate();
+    const [user, setUser] = useState("Guest User");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchFollowers = async () => {
@@ -30,39 +39,80 @@ const ProfileDetails = ({ userId }) => {
         fetchFollowers();
         fetchFollowing();
     }, [userId]);
+  
+   useEffect(() => {
+        const getUserByToken = async () => {
+            setIsLoading(true);
+            const token = localStorage.getItem("authToken");
+            const decode = jwtDecode(token);
+            const loggedUserEmail = decode.sub;
+
+            const response = await getUserByEmail(loggedUserEmail);
+            setUser(response);
+            setIsLoading(false);
+        };
+        getUserByToken();
+    });
 
     return (
         <div className="flex items-start space-x-20 mb-10 px-10 py-10">
             <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=faces"
+                src={
+                    user === "Guest User"
+                        ? "/assets/users/general.jpg"
+                        : user.userImage
+                }
                 alt="Profile"
                 className="w-40 h-40 rounded-full object-cover"
             />
             <div className="flex-1">
                 <div className="flex items-center space-x-4 mb-4">
-                    <h1 className="text-xl font-normal">janedoe</h1>
-                    <button className="px-4 py-1.5 bg-gray-100 rounded-md font-semibold">Edit profile</button>
-                    <img
-                        src={settingIcon}
-                        alt="settings"
-                        className="w-7 h-7"
-                    />
+                    <h1 className="text-xl font-normal">
+                        {user === "Guest User"
+                            ? "Guest User"
+                            : user?.firstName + " " + user?.lastName}
+                    </h1>
+                    <button
+                        className="px-4 py-1.5 bg-gray-100 rounded-md font-semibold"
+                        onClick={() => {
+                            navigation("/editProfileDetails");
+                        }}
+                    >
+                        Edit profile
+                    </button>
+                    <img src={settingIcon} alt="settings" className="w-7 h-7" />
                 </div>
                 <div className="flex space-x-10 mb-4">
-                    <span><strong>542</strong> posts</span>
+                    <span>
+                        <strong>542</strong> posts
+                    </span>
                     <button
                         onClick={() => setShowFollowers(true)}
                         className="hover:opacity-70"
                     >
                         <strong>{followers.length}</strong> followers
                     </button>
-                    <span><strong>{following.length}</strong> following</span>
+                    <span>
+                        <strong>{following.length}</strong> following
+                    </span>
                 </div>
                 <div>
-                    <h2 className="font-semibold">Jane Doe</h2>
-                    <p className="text-gray-700">Digital creator</p>
-                    <p className="mt-1">Capturing life's beautiful moments ✨</p>
-                    <p className="text-blue-900">www.janedoe.com</p>
+                    <h2 className="font-semibold">
+                        {user === "Guest User"
+                            ? "Guest User"
+                            : user?.firstName + " " + user?.lastName}
+                    </h2>
+                    <p className="text-gray-700">
+                        {user === "Guest User" ? "" : user?.caption}
+                    </p>
+                    <p className="mt-1">
+                        {!user?.slogan
+                            ? `Capturing life's beautiful moments ✨`
+                            : user?.slogan}
+                    </p>
+                    <p className="text-blue-900">
+                        {!user?.website ? "" : user?.website}
+                    </p>
                 </div>
             </div>
 
@@ -88,8 +138,11 @@ const ProfileDetails = ({ userId }) => {
                                 </div>
                             </div>
                             <div className="max-h-96 overflow-y-auto">
-                                {followers.map((follower, index) => (
-                                    <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50">
+                                {followers.map((follower) => (
+                                    <div
+                                        key={follower.id}
+                                        className="flex items-center justify-between p-2 hover:bg-gray-50"
+                                    >
                                         <div className="flex items-center space-x-3">
                                             <img
                                                 src={follower.avatar}
@@ -97,8 +150,12 @@ const ProfileDetails = ({ userId }) => {
                                                 className="w-12 h-12 rounded-full object-cover"
                                             />
                                             <div>
-                                                <p className="font-semibold">{follower.username}</p>
-                                                <p className="text-gray-500 text-sm">{follower.name}</p>
+                                                <p className="font-semibold">
+                                                    {follower.username}
+                                                </p>
+                                                <p className="text-gray-500 text-sm">
+                                                    {follower.name}
+                                                </p>
                                             </div>
                                         </div>
                                         <button className="px-6 py-1.5 rounded bg-gray-100 text-sm font-semibold">

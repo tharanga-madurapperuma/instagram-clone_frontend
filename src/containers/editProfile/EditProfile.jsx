@@ -207,6 +207,8 @@ const EditProfile = () => {
                 caption: caption,
                 userImage: fileUrl,
             });
+
+            navigation("/profile");
         } catch (error) {
             console.error("Error updating profile:", error);
             alert("Failed to update profile. Please try again.");

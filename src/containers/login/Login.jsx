@@ -6,6 +6,7 @@ import axios from "axios";
 import Loader from "../../components/loader/Loader";
 
 const Login = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,9 +18,7 @@ const Login = () => {
     const instaLogo = "/assets/insta.png";
     const facebook = "/assets/fb.png";
 
-    const Navigation = useNavigate();
     const [gUsers, setGUser] = useState();
-    var login = false;
 
     useEffect(() => {
         setIsLoading(true);
@@ -32,19 +31,35 @@ const Login = () => {
             }
         };
         fetchUserData();
+
+        // Initialize Facebook SDK
+        window.fbAsyncInit = function () {
+            window.FB.init({
+                appId: 1298521664790252, 
+                cookie: true,
+                xfbml: true,
+                version: "v16.0", 
+            });
+        };
+
+        // Load Facebook SDK
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
         setIsLoading(false);
     }, []);
 
     const userValidation = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.post(
-                "http://localhost:8080/users/login",
-                {
-                    email: email,
-                    password: password,
-                }
-            );
+            const response = await axios.post(`${API_BASE_URL}/users/login`, {
+                email: email,
+                password: password,
+            });
             if (response.data) {
                 const token = response.data;
                 console.log(token);
@@ -60,6 +75,36 @@ const Login = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleFacebookLogin = () => {
+        window.FB.login(
+            (response) => {
+                if (response.status === "connected") {
+                    const { accessToken } = response.authResponse;
+
+                    // Send the accessToken to the backend for verification
+                    axios
+                        .post("http://localhost:8080/users/facebook-login", {
+                            accessToken,
+                        })
+                        .then((res) => {
+                            const { token } = res.data;
+
+                            // Store the token and navigate to the homepage
+                            localStorage.setItem("authToken", token);
+                            navigate("/");
+                        })
+                        .catch((error) => {
+                            console.error("Facebook login error:", error);
+                            alert("Facebook login failed.");
+                        });
+                } else {
+                    alert("User canceled login or did not fully authorize.");
+                }
+            },
+            { scope: "public_profile,email" }
+        );
     };
 
     return (
@@ -110,9 +155,9 @@ const Login = () => {
                         className="fb-logo"
                     />
                     <p className="log-fb">
-                        <a className="fb-link" href="www.facebook.com">
+                        <div className="fb-link" onClick={handleFacebookLogin}>
                             Log in with Facebook
-                        </a>
+                        </div>
                     </p>
                 </div>
                 <div className="forgotten-password-box">
