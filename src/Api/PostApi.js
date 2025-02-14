@@ -82,3 +82,11 @@ export const deletePost = async (postId) => {
 export const editPost = async (postId, post) => {
     return await apiRequest("PUT", `/editPost/${postId}`, post);
 };
+
+export const savePost = async (postId, userId) => {
+    return await apiRequest("POST", `/savePost/${postId}/${userId}`);
+};
+
+export const getSavedPosts = async (userId) => {
+    return await apiRequest("GET", `/getSavedPosts/${userId}`);
+};
