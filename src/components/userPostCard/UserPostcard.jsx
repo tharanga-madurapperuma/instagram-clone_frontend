@@ -3,13 +3,14 @@ import { AiFillHeart } from "react-icons/ai";
 import { FaRegComment as FarComment } from "react-icons/fa";
 import "./UserPostCard.css";
 
-const UserPostcard = () => {
+const UserPostcard = ({ post }) => {
+    console.log(post);
     return (
         <div className="p-1">
             <div className="post w-80 h-80 m-1 relative">
                 <img
                     className="cursor-pointer"
-                    src="https://images.pexels.com/photos/29529568/pexels-photo-29529568/free-photo-of-traditional-chinese-dumplings-with-soy-sauce.jpeg"
+                    src={post.imageUrl}
                     alt="post 1"
                 />
                 <div className="userPost-overlay">
@@ -25,6 +26,6 @@ const UserPostcard = () => {
             </div>
         </div>
     );
-};  
+};
 
 export default UserPostcard;

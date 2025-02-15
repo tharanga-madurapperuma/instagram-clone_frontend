@@ -53,40 +53,82 @@ const Home = () => {
         };
     }, []); // Empty array ensures the effect runs only on mount and unmount
 
-    useEffect(() => {
-        setIsLoading(true);
-        // Get all users, stories and posts
-        const fetchUsers = async () => {
-            const response = await getAllUsers();
-            setUsers(response);
-        };
+    // useEffect(() => {
+    //     setIsLoading(true);
+    //     // Get all users, stories and posts
+    //     const fetchUsers = async () => {
+    //         const response = await getAllUsers();
+    //         setUsers(response);
+    //     };
 
-        // get all stories
-        const fetchStories = async () => {
-            const response = await getAllStories();
-            setStories(response);
-        };
+    //     // get all stories
+    //     const fetchStories = async () => {
+    //         const response = await getAllStories();
+    //         setStories(response);
+    //     };
 
-        // get all posts
-        const fetchPosts = async () => {
-            const response = await getAllPosts();
-            setPosts(response);
-        };
-        const fetchLoggedUser = async () => {
+    //     // get all posts
+    //     const fetchPosts = async () => {
+    //         const response = await getAllPosts();
+    //         setPosts(response);
+    //     };
+    //     const fetchLoggedUser = async () => {
+    //         const token = localStorage.getItem("authToken");
+    //         const decode = jwtDecode(token);
+    //         const loggedUserEmail = decode.sub;
+
+    //         const response = await getUserByEmail(loggedUserEmail);
+    //         setLoggedUser(response);
+    //     };
+
+    //     fetchUsers();
+    //     fetchStories();
+    //     fetchPosts();
+    //     fetchLoggedUser();
+    //     setIsLoading(false);
+    // }, []);
+
+    // Fetch Data Function
+    const fetchData = async () => {
+        try {
+            setIsLoading(true);
+
+            // Fetch users, stories, and posts
+            const [usersResponse, storiesResponse, postsResponse] =
+                await Promise.all([
+                    getAllUsers(),
+                    getAllStories(),
+                    getAllPosts(),
+                ]);
+
+            setUsers(usersResponse);
+            setStories(storiesResponse);
+            setPosts(postsResponse);
+
+            // Fetch Logged-in User
             const token = localStorage.getItem("authToken");
+            if (!token) throw new Error("No auth token found");
+
             const decode = jwtDecode(token);
             const loggedUserEmail = decode.sub;
 
-            const response = await getUserByEmail(loggedUserEmail);
-            setLoggedUser(response);
-        };
+            const userResponse = await getUserByEmail(loggedUserEmail);
+            if (!userResponse) throw new Error("User not found");
 
-        fetchUsers();
-        fetchStories();
-        fetchPosts();
-        fetchLoggedUser();
-        setIsLoading(false);
-    }, []);
+            setLoggedUser(userResponse);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            localStorage.removeItem("authToken");
+            navigation("/login"); // Redirect to login if authentication fails
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch Data on Component Mount
+    useEffect(() => {
+        fetchData();
+    }, [navigation]); // Include navigation to avoid stale closures
 
     useEffect(() => {
         setModalIsOpen(false);

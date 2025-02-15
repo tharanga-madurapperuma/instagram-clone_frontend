@@ -31,8 +31,8 @@ const apiRequest = async (method, endpoint, payload = {}) => {
         return response.data;
     } catch (error) {
         if (error.code === "ERR_NETWORK" || error.response.status === 401) {
-            localStorage.removeItem("authToken");
-            window.location.reload();
+            //localStorage.removeItem("authToken");
+            //window.location.reload();
         }
         console.log(error.response?.data || error.message);
         throw error; // Propagate the error to be handled in the calling function
@@ -81,12 +81,4 @@ export const deletePost = async (postId) => {
 // API functions for edit post
 export const editPost = async (postId, post) => {
     return await apiRequest("PUT", `/editPost/${postId}`, post);
-};
-
-export const savePost = async (postId, userId) => {
-    return await apiRequest("POST", `/savePost/${postId}/${userId}`);
-};
-
-export const getSavedPosts = async (userId) => {
-    return await apiRequest("GET", `/getSavedPosts/${userId}`);
 };

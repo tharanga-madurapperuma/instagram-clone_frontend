@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BiSearch, BiX } from "react-icons/bi";
-
 import { jwtDecode } from "jwt-decode";
-import React, { useEffect, useState } from "react";
 import { BiSearch, BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { getUserByEmail } from "../Api/UserApi";
@@ -39,20 +36,46 @@ const ProfileDetails = ({ userId }) => {
         fetchFollowers();
         fetchFollowing();
     }, [userId]);
-  
-   useEffect(() => {
+
+    useEffect(() => {
         const getUserByToken = async () => {
             setIsLoading(true);
-            const token = localStorage.getItem("authToken");
-            const decode = jwtDecode(token);
-            const loggedUserEmail = decode.sub;
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    console.error("No auth token found");
+                    navigation("/login"); // Redirect to login if token is missing
+                    return;
+                }
 
-            const response = await getUserByEmail(loggedUserEmail);
-            setUser(response);
-            setIsLoading(false);
+                const decode = jwtDecode(token);
+                const loggedUserEmail = decode?.sub;
+
+                if (!loggedUserEmail) {
+                    console.error("Invalid token");
+                    localStorage.removeItem("authToken"); // Remove invalid token
+                    navigation("/login");
+                    return;
+                }
+
+                const response = await getUserByEmail(loggedUserEmail);
+                if (!response) {
+                    console.error("User not found");
+                    navigation("/login");
+                    return;
+                }
+
+                setUser(response);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+                localStorage.removeItem("authToken");
+                navigation("/login"); // Redirect user to login on error
+            } finally {
+                setIsLoading(false);
+            }
         };
         getUserByToken();
-    });
+    }, [navigation]);
 
     return (
         <div className="flex items-start space-x-20 mb-10 px-10 py-10">

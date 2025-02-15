@@ -91,3 +91,11 @@ export const removeLikes = async (userId, postId) => {
 export const sendMail = async (email) => {
     return await apiRequest("POST", `/registration/${email}`);
 };
+
+export const savePost = async (postId, userId) => {
+    return await apiRequest("POST", `/users/savePost/${postId}/${userId}`);
+};
+
+export const getSavedPosts = async (userId) => {
+    return await apiRequest("GET", `/users/getSavedPosts/${userId}`);
+};
