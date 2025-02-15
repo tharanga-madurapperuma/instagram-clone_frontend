@@ -53,6 +53,10 @@ export const getPostById = async (postId) => {
     return await apiRequest("GET", `/getPostById/${postId}`);
 };
 
+export const getPostsByUserId = async (userId) => {
+    return await apiRequest("GET", `/getPostByUserId/${userId}`);
+};
+
 // API functions for add post
 export const addPost = async (post) => {
     return await apiRequest("POST", "/addPost", post);
