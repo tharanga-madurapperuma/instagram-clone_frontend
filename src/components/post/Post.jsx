@@ -11,7 +11,12 @@ import EditPost from "./EditPost";
 import Loader from "../loader/Loader";
 import { GrSave } from "react-icons/gr";
 import Comment from "../comment/Comment";
-import { addLikes, getUserById, removeLikes } from "../../Api/UserApi";
+import {
+    addLikes,
+    getUserById,
+    removeLikes,
+    savePost,
+} from "../../Api/UserApi";
 import { addComment, getCommentByPostId } from "../../Api/CommentApi";
 import { addStory } from "../../Api/StoryApi";
 import {
@@ -19,6 +24,7 @@ import {
     deletePost,
     incrementLikeCount,
 } from "../../Api/PostApi";
+import { toast, ToastContainer, Zoom } from "react-toastify";
 
 const Post = ({ post, loggedUser }) => {
     const [comment, setComment] = useState();
@@ -34,6 +40,35 @@ const Post = ({ post, loggedUser }) => {
     const [fetchComments, setFetchComments] = useState([]);
     const [showComment, setShowComment] = useState(false);
     const [reloadComments, setReloadComments] = useState(false);
+
+    // toastify notifications
+    const faliedSave = () => {
+        toast.error("Post is already saved!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+    const savedSucces = () => {
+        savePost(loggedUser.user_id, post.postId);
+        toast.success("Post saved successfully!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
 
     useEffect(() => {
         setIsLoading(true);
@@ -172,9 +207,24 @@ const Post = ({ post, loggedUser }) => {
         }
     };
 
+    const savePosts = async () => {
+        if (!loggedUser || !post) return;
+
+        const isAlreadySaved = loggedUser.savedPosts.some(
+            (postId) => postId === post.postId
+        );
+
+        if (isAlreadySaved) {
+            faliedSave();
+        } else {
+            savedSucces();
+        }
+    };
+
     return (
         <div className=" feedSection_post">
             {isLoading && <Loader />}
+            <ToastContainer />
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
                     <ProfileTemplatePost user={user} post={post} />
@@ -241,7 +291,6 @@ const Post = ({ post, loggedUser }) => {
                     </div>
                 </div>
             </div>
-
             <div className="post_image my-5">
                 <div className="image-outline flex justify-center">
                     <img
@@ -305,7 +354,10 @@ const Post = ({ post, loggedUser }) => {
                         <p className="share-text">Share this post as story</p>
                     </div>
                     <div className="bottom-icons-right">
-                        <GrSave className="save-handle" />
+                        <GrSave
+                            className="save-handle cursor-pointer"
+                            onClick={savePosts}
+                        />
                     </div>
                 </div>
                 <div className="bottom-like-count">
