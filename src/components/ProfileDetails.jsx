@@ -4,8 +4,10 @@ import { BiSearch, BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { getUserByEmail } from "../Api/UserApi";
 import axios from "axios";
+import "./profileDetails.css";
+import { getPostById, getPostsByUserId } from "../Api/PostApi";
 
-const ProfileDetails = ({ userId }) => {
+const ProfileDetails = () => {
     const settingIcon = "/assets/icons/Options.png";
     const [showFollowers, setShowFollowers] = useState(false);
     const [followers, setFollowers] = useState([]);
@@ -13,11 +15,14 @@ const ProfileDetails = ({ userId }) => {
     const navigation = useNavigate();
     const [user, setUser] = useState("Guest User");
     const [isLoading, setIsLoading] = useState(false);
+    const [count, setCount] = useState();
 
     useEffect(() => {
         const fetchFollowers = async () => {
             try {
-                const response = await axios.get(`/users/${userId}/followers`);
+                const response = await axios.get(
+                    `/users/${user.user_id}/followers`
+                );
                 setFollowers(response.data);
             } catch (error) {
                 console.error("Error fetching followers:", error);
@@ -26,7 +31,9 @@ const ProfileDetails = ({ userId }) => {
 
         const fetchFollowing = async () => {
             try {
-                const response = await axios.get(`/users/${userId}/following`);
+                const response = await axios.get(
+                    `/users/${user.user_id}/following`
+                );
                 setFollowing(response.data);
             } catch (error) {
                 console.error("Error fetching following:", error);
@@ -35,50 +42,51 @@ const ProfileDetails = ({ userId }) => {
 
         fetchFollowers();
         fetchFollowing();
-    }, [userId]);
+    }, [user]);
 
     useEffect(() => {
-        const getUserByToken = async () => {
-            setIsLoading(true);
+        const getPostCount = async () => {
             try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    console.error("No auth token found");
-                    navigation("/login"); // Redirect to login if token is missing
-                    return;
-                }
-
-                const decode = jwtDecode(token);
-                const loggedUserEmail = decode?.sub;
-
-                if (!loggedUserEmail) {
-                    console.error("Invalid token");
-                    localStorage.removeItem("authToken"); // Remove invalid token
-                    navigation("/login");
-                    return;
-                }
-
-                const response = await getUserByEmail(loggedUserEmail);
-                if (!response) {
-                    console.error("User not found");
-                    navigation("/login");
-                    return;
-                }
-
-                setUser(response);
+                const response = await getPostsByUserId(user.user_id);
+                setCount(response.length);
             } catch (error) {
-                console.error("Error fetching user:", error);
-                localStorage.removeItem("authToken");
-                navigation("/login"); // Redirect user to login on error
-            } finally {
-                setIsLoading(false);
+                console.error("Error fetching posts:", error);
             }
         };
-        getUserByToken();
+        getPostCount();
+    }, [user]);
+
+    const fetchData = async () => {
+        try {
+            setIsLoading(true);
+
+            // Fetch Logged-in User
+            const token = localStorage.getItem("authToken");
+            if (!token) throw new Error("No auth token found");
+
+            const decode = jwtDecode(token);
+            const loggedUserEmail = decode.sub;
+
+            const userResponse = await getUserByEmail(loggedUserEmail);
+            if (!userResponse) throw new Error("User not found");
+            console.log(userResponse);
+            setUser(userResponse);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            localStorage.removeItem("authToken");
+            navigation("/login"); // Redirect to login if authentication fails
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch Data on Component Mount
+    useEffect(() => {
+        fetchData();
     }, [navigation]);
 
     return (
-        <div className="flex items-start space-x-20 mb-10 px-10 py-10">
+        <div className="flex items-start space-x-20 mb-10 px-10 py-10 w-[100%] profileDetails-top">
             <img
                 src={
                     user === "Guest User"
@@ -89,8 +97,8 @@ const ProfileDetails = ({ userId }) => {
                 className="w-40 h-40 rounded-full object-cover"
             />
             <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-4">
-                    <h1 className="text-xl font-normal">
+                <div className="flex items-center space-x-4 mb-4 profileDetails-header">
+                    <h1 className="text-xl font-normal profileDetails-username">
                         {user === "Guest User"
                             ? "Guest User"
                             : user?.firstName + " " + user?.lastName}
@@ -107,7 +115,7 @@ const ProfileDetails = ({ userId }) => {
                 </div>
                 <div className="flex space-x-10 mb-4">
                     <span>
-                        <strong>542</strong> posts
+                        <strong>{count}</strong> posts
                     </span>
                     <button
                         onClick={() => setShowFollowers(true)}
@@ -120,11 +128,6 @@ const ProfileDetails = ({ userId }) => {
                     </span>
                 </div>
                 <div>
-                    <h2 className="font-semibold">
-                        {user === "Guest User"
-                            ? "Guest User"
-                            : user?.firstName + " " + user?.lastName}
-                    </h2>
                     <p className="text-gray-700">
                         {user === "Guest User" ? "" : user?.caption}
                     </p>
