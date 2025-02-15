@@ -57,6 +57,9 @@ const Login = () => {
     }, []);
 
     const userValidation = async () => {
+        if (email === "" || password === "") {
+            return false;
+        }
         try {
             setIsLoading(true);
             const response = await axios.post(`${API_BASE_URL}/users/login`, {
@@ -110,6 +113,12 @@ const Login = () => {
         );
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            userValidation();
+        }
+    };
+
     return (
         <div className="login-container">
             {isLoading && <Loader />}
@@ -137,6 +146,7 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 <div className="login-button-box">
