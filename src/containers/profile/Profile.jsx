@@ -5,7 +5,7 @@ import NavBar from "../../components/NavigationBar/NavBar";
 
 const Profile = () => {
     return (
-        <div className="px-20">
+        <div>
             <div className="flex flex-row">
                 <div>
                     <NavBar />

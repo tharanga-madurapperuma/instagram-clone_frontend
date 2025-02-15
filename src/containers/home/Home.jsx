@@ -228,7 +228,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
-                            navigation("/settings");
+                            navigation("/editProfileDetails");
                         }}
                     >
                         <IoSettingsOutline className="home_icons" />
@@ -300,7 +300,7 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
-                                navigation("/settings");
+                                navigation("/editProfileDetails");
                             }}
                         >
                             <IoSettingsOutline className="home_icons" />
