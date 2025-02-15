@@ -127,10 +127,6 @@ const Signup = () => {
             lastName: lastName,
         };
 
-        localStorage.setItem("userEmail", email);
-        let loggedUser = JSON.stringify(user);
-        localStorage.setItem("user", loggedUser);
-
         navigation("/login");
     };
 
