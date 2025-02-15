@@ -319,9 +319,8 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount - 1);
                                     setIsLiked(false);
-                                    setIsLoading(true);
+
                                     await decrementLikeCount(post.postId);
-                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle-fill"
                             />
@@ -330,9 +329,8 @@ const Post = ({ post, loggedUser }) => {
                                 onClick={async () => {
                                     setLikeCount((prevCount) => prevCount + 1);
                                     setIsLiked(true);
-                                    setIsLoading(true);
+
                                     await incrementLikeCount(post.postId);
-                                    setIsLoading(false);
                                 }}
                                 className="mr-3 heart-handle"
                             />
