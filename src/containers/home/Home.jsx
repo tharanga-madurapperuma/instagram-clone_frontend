@@ -21,6 +21,7 @@ import { getAllUsers, getUserByEmail } from "../../Api/UserApi";
 import { getAllStories } from "../../Api/StoryApi";
 import { getAllPosts } from "../../Api/PostApi";
 import { jwtDecode } from "jwt-decode";
+import ProfileTemplate from "../../components/profile/ProfileTemplate";
 
 const Home = () => {
     // logo Image
@@ -39,6 +40,7 @@ const Home = () => {
     const [opacity, setOpacity] = useState(0);
     const scrollableDivRef = useRef(null); // Reference to the scrollable div
     const [isLoading, setIsLoading] = useState(false);
+    const [followerOpen, setFollowerOpen] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -219,7 +221,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
-                            navigation("/profile");
+                            navigation(`/profile/${LOGGED_USER?.user_id}`);
                         }}
                     >
                         <CgProfile className="home_icons" />
@@ -292,7 +294,7 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
-                                navigation("/profile");
+                                navigation(`/profile/${LOGGED_USER?.user_id}`);
                             }}
                         >
                             <CgProfile className="home_icons" />
@@ -348,8 +350,49 @@ const Home = () => {
                         <div>
                             <img src={logo} alt="logo" />
                         </div>
-                        <div>
-                            <AiOutlineUsergroupAdd className="small-screen-follower-icon" />
+                        <div
+                            onClick={() => {
+                                followerOpen
+                                    ? setFollowerOpen(false)
+                                    : setFollowerOpen(true);
+                            }}
+                        >
+                            {followerOpen ? (
+                                <IoClose className="home_icons followerClose-smallScreen" />
+                            ) : (
+                                <AiOutlineUsergroupAdd className="small-screen-follower-icon cursor-pointer" />
+                            )}
+                        </div>
+                        <div
+                            className="followers justify-items-center m-5"
+                            style={
+                                followerOpen
+                                    ? {
+                                          display: "block",
+                                          position: "absolute",
+                                          top: "50px",
+                                          right: "-20px",
+                                          width: "50vw",
+                                          backgroundColor: "rgb(240, 240,240)",
+                                          padding: "0 20px",
+                                          transition: "all 1s ease",
+                                      }
+                                    : { display: "none" }
+                            }
+                        >
+                            {/* All users*/}
+                            <div className="mt-4">
+                                <ProfileTemplate user={LOGGED_USER} />
+                            </div>
+                            <div className="w-full h-[1px] bg-slate-400 my-3 rounded-md"></div>
+                            {users
+                                .filter(
+                                    (user) =>
+                                        user.user_id !== LOGGED_USER?.user_id
+                                )
+                                .map((user) => (
+                                    <Follower user={user} key={user.user_id} />
+                                ))}
                         </div>
                     </div>
                 </>
@@ -382,9 +425,15 @@ const Home = () => {
             </div>
             <div className="followers justify-items-center m-5">
                 {/* All users*/}
-                {users.map((user) => (
-                    <Follower user={user} key={user.user_id} />
-                ))}
+                <div className="mt-4">
+                    <ProfileTemplate user={LOGGED_USER} />
+                </div>
+                <div className="w-full h-[1px] bg-slate-400 my-3"></div>
+                {users
+                    .filter((user) => user.user_id !== LOGGED_USER?.user_id)
+                    .map((user) => (
+                        <Follower user={user} key={user.user_id} />
+                    ))}
             </div>
         </div>
     );

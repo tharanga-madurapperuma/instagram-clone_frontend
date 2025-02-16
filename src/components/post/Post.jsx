@@ -56,7 +56,6 @@ const Post = ({ post, loggedUser }) => {
         });
     };
     const savedSucces = () => {
-        savePost(loggedUser.user_id, post.postId);
         toast.success("Post saved successfully!", {
             position: "top-center",
             autoClose: 3000,
@@ -210,21 +209,22 @@ const Post = ({ post, loggedUser }) => {
     const savePosts = async () => {
         if (!loggedUser || !post) return;
 
-        const isAlreadySaved = loggedUser.savedPosts.some(
-            (postId) => postId === post.postId
-        );
+        const response = await getUserById(loggedUser.user_id);
+        const isAlreadySaved = response.savedPosts?.includes(post.postId);
 
         if (isAlreadySaved) {
-            faliedSave();
+            faliedSave(); // Notify user that post is already saved
         } else {
-            savedSucces();
+            await savePost(loggedUser.user_id, post.postId); // Save the post
+            savedSucces(); // Notify user that post is saved successfully
         }
     };
 
     return (
         <div className=" feedSection_post">
-            {isLoading && <Loader />}
             <ToastContainer />
+            {isLoading && <Loader />}
+
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
                     <ProfileTemplatePost user={user} post={post} />
