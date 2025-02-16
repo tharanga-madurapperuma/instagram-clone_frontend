@@ -25,7 +25,10 @@ function App() {
                                 path="/createPost"
                                 element={<CreatePost />}
                             />
-                            <Route path="/profile" element={<Profile />} />
+                            <Route
+                                path="/profile/:userId"
+                                element={<Profile />}
+                            />
                             <Route path="/" element={<Home />} />
                             <Route path="/editProfile" element={<Profile />} />
                             <Route path="/settings" element={<Settings />} />
