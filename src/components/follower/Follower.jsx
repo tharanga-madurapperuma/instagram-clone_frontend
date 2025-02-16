@@ -1,11 +1,17 @@
 import React from "react";
 import "./follower.css";
 import "../post/post.css";
+import { useNavigate } from "react-router-dom";
 
 const Follower = ({ user }) => {
-    console.log(user);
+    const navigate = useNavigate();
     return (
-        <div className="follower mt-3">
+        <div
+            className="follower mt-3 cursor-pointer "
+            onClick={() => {
+                navigate(`/profile/${user.user_id}`);
+            }}
+        >
             <div className=" flex justify-between">
                 <div className="top-left_content flex">
                     <div className="content-image">
