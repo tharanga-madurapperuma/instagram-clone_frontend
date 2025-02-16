@@ -69,6 +69,34 @@ const Post = ({ post, loggedUser }) => {
         });
     };
 
+    const unsuccessStory = () => {
+        toast.warn("Story Shared Failed!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+
+    const successStory = () => {
+        toast.info("Story Shared Succesfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+
     useEffect(() => {
         setIsLoading(true);
         const fetchData = async () => {
@@ -104,12 +132,8 @@ const Post = ({ post, loggedUser }) => {
     };
 
     // share post to story
-    const shareClicked = () => {
-        const confirm = window.confirm(
-            "Do you want to share this post as story?"
-        );
-
-        if (confirm) {
+    const shareClicked = async () => {
+        if (true) {
             const handleStoryUpload = async () => {
                 setIsLoading(true);
                 try {
@@ -121,11 +145,12 @@ const Post = ({ post, loggedUser }) => {
                         watched: false,
                     };
 
-                    const response = addStory(story);
+                    const response = await addStory(story);
+                    await successStory();
                     window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
-                    alert("Failed to share story. Please try again.");
+                    unsuccessStory();
                 } finally {
                     setIsLoading(false);
                 }

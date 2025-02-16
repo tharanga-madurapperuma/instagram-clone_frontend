@@ -6,6 +6,7 @@ import FileResizer from "react-image-file-resizer";
 import { addPost } from "../../Api/PostApi";
 import axios from "axios";
 import Loader from "../../components/loader/Loader";
+import { toast, ToastContainer, Zoom } from "react-toastify";
 
 ReactModal.setAppElement("#root");
 
@@ -19,6 +20,34 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
     const [file, setFile] = useState("");
     const [description, setDescription] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const unsuccessPost = () => {
+        toast.error("Post Creation failed Failed!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+
+    const successPost = () => {
+        toast.info("Post Created Succesfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
 
     // Use effect to handle open and close modal
     useEffect(() => {
@@ -103,10 +132,11 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             setFile(null);
             setDescription("");
             onClose();
+            await successPost();
             window.location.reload();
         } catch (error) {
             console.error("Error creating post:", error);
-            alert("Failed to create post. Please try again.");
+            unsuccessPost();
         } finally {
             setIsLoading(false);
         }
@@ -162,6 +192,7 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             overlayClassName="overlay"
             shouldCloseOnOverlayClick={true}
         >
+            <ToastContainer />
             {isLoading && <Loader />}
             <div className="flex flex-col items-center">
                 <div className="mb-[8px]">
