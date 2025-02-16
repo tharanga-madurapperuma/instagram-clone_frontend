@@ -84,12 +84,12 @@ const ProfileDetails = () => {
     useEffect(() => {
         fetchData();
     }, [navigation]);
-
+    console.log(user);
     return (
         <div className="flex items-start space-x-20 mb-10 px-10 py-10 w-[100%] profileDetails-top">
             <img
                 src={
-                    user === "Guest User"
+                    user.userImage === null
                         ? "/assets/users/general.jpg"
                         : user.userImage
                 }
