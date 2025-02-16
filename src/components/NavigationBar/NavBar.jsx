@@ -158,7 +158,7 @@ const NavBar = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
-                            navigation("/profile");
+                            navigation(`/profile/${LOGGED_USER?.user_id}`);
                         }}
                     >
                         <CgProfile className="home_icons" />
@@ -221,7 +221,7 @@ const NavBar = () => {
                         <div
                             className=""
                             onClick={() => {
-                                navigation("/profile");
+                                navigation(`/profile/${LOGGED_USER?.user_id}`);
                             }}
                         >
                             <CgProfile className="home_icons" />

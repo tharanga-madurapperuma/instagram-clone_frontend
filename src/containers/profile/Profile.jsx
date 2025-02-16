@@ -2,8 +2,10 @@ import React from "react";
 import ProfileDetails from "../../components/ProfileDetails";
 import UserPost from "../../components/UserPost";
 import NavBar from "../../components/NavigationBar/NavBar";
+import { useParams } from "react-router-dom";
 
 const Profile = () => {
+    const userId = useParams().userId;
     return (
         <div>
             <div className="flex flex-row">
@@ -12,10 +14,10 @@ const Profile = () => {
                 </div>
                 <div className="flex flex-col">
                     <div>
-                        <ProfileDetails />
+                        <ProfileDetails userProfileId={userId} />
                     </div>
                     <div>
-                        <UserPost />
+                        <UserPost userProfileId={userId} />
                     </div>
                 </div>
             </div>

@@ -1,9 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProfileTemplate = ({ user }) => {
-    console.log(user);
+    const navigate = useNavigate();
+
     return (
-        <div className="top-left_content flex">
+        <div
+            className="top-left_content flex cursor-pointer"
+            onClick={() => {
+                navigate(`/profile/${user.user_id}`);
+            }}
+        >
             <div className="flex items-center justify-center">
                 <div className="image">
                     <img
