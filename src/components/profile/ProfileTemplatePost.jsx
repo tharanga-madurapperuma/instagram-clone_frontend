@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProfileTemplatePost = ({ user, post }) => {
     const [displayTime, setDisplayTime] = useState("");
+    const navigate = useNavigate();
 
     const getFormattedDateTime = () => {
         const now = new Date();
@@ -40,7 +42,12 @@ const ProfileTemplatePost = ({ user, post }) => {
     }, []);
 
     return (
-        <div className="top-left_content flex">
+        <div
+            className="top-left_content flex cursor-pointer"
+            onClick={() => {
+                navigate(`/profile/${user.user_id}`);
+            }}
+        >
             <div className="flex items-center justify-center">
                 <div className="image">
                     <img

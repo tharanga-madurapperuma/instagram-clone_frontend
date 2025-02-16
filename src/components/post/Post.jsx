@@ -56,9 +56,36 @@ const Post = ({ post, loggedUser }) => {
         });
     };
     const savedSucces = () => {
-        savePost(loggedUser.user_id, post.postId);
         toast.success("Post saved successfully!", {
             position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+
+    const unsuccessStory = () => {
+        toast.warn("Story Shared Failed!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
+
+    const successStory = () => {
+        toast.info("Story Shared Succesfully!", {
+            position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
             closeOnClick: false,
@@ -105,12 +132,8 @@ const Post = ({ post, loggedUser }) => {
     };
 
     // share post to story
-    const shareClicked = () => {
-        const confirm = window.confirm(
-            "Do you want to share this post as story?"
-        );
-
-        if (confirm) {
+    const shareClicked = async () => {
+        if (true) {
             const handleStoryUpload = async () => {
                 setIsLoading(true);
                 try {
@@ -122,11 +145,12 @@ const Post = ({ post, loggedUser }) => {
                         watched: false,
                     };
 
-                    const response = addStory(story);
+                    const response = await addStory(story);
+                    await successStory();
                     window.location.reload();
                 } catch (error) {
                     console.error("Error creating story:", error);
-                    alert("Failed to share story. Please try again.");
+                    unsuccessStory();
                 } finally {
                     setIsLoading(false);
                 }
@@ -210,21 +234,22 @@ const Post = ({ post, loggedUser }) => {
     const savePosts = async () => {
         if (!loggedUser || !post) return;
 
-        const isAlreadySaved = loggedUser.savedPosts.some(
-            (postId) => postId === post.postId
-        );
+        const response = await getUserById(loggedUser.user_id);
+        const isAlreadySaved = response.savedPosts?.includes(post.postId);
 
         if (isAlreadySaved) {
-            faliedSave();
+            faliedSave(); // Notify user that post is already saved
         } else {
-            savedSucces();
+            await savePost(loggedUser.user_id, post.postId); // Save the post
+            savedSucces(); // Notify user that post is saved successfully
         }
     };
 
     return (
         <div className=" feedSection_post">
-            {isLoading && <Loader />}
             <ToastContainer />
+            {isLoading && <Loader />}
+
             <div className="post_top flex justify-between items-center">
                 <div className="top-left_content flex">
                     <ProfileTemplatePost user={user} post={post} />

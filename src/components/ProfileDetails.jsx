@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { BiSearch, BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { getUserByEmail } from "../Api/UserApi";
+import { getUserByEmail, getUserById } from "../Api/UserApi";
 import axios from "axios";
 import "./profileDetails.css";
-import { getPostById, getPostsByUserId } from "../Api/PostApi";
+import { getPostsByUserId } from "../Api/PostApi";
 
-const ProfileDetails = () => {
+const ProfileDetails = ({ userProfileId }) => {
     const settingIcon = "/assets/icons/Options.png";
     const [showFollowers, setShowFollowers] = useState(false);
     const [followers, setFollowers] = useState([]);
@@ -16,12 +16,13 @@ const ProfileDetails = () => {
     const [user, setUser] = useState("Guest User");
     const [isLoading, setIsLoading] = useState(false);
     const [count, setCount] = useState();
+    const [displayUser, setDisplayUser] = useState();
 
     useEffect(() => {
         const fetchFollowers = async () => {
             try {
                 const response = await axios.get(
-                    `/users/${user.user_id}/followers`
+                    `/users/${displayUser?.user_id}/followers`
                 );
                 setFollowers(response.data);
             } catch (error) {
@@ -32,7 +33,7 @@ const ProfileDetails = () => {
         const fetchFollowing = async () => {
             try {
                 const response = await axios.get(
-                    `/users/${user.user_id}/following`
+                    `/users/${displayUser?.user_id}/following`
                 );
                 setFollowing(response.data);
             } catch (error) {
@@ -47,7 +48,7 @@ const ProfileDetails = () => {
     useEffect(() => {
         const getPostCount = async () => {
             try {
-                const response = await getPostsByUserId(user.user_id);
+                const response = await getPostsByUserId(displayUser?.user_id);
                 setCount(response.length);
             } catch (error) {
                 console.error("Error fetching posts:", error);
@@ -69,7 +70,7 @@ const ProfileDetails = () => {
 
             const userResponse = await getUserByEmail(loggedUserEmail);
             if (!userResponse) throw new Error("User not found");
-            console.log(userResponse);
+
             setUser(userResponse);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -80,18 +81,29 @@ const ProfileDetails = () => {
         }
     };
 
+    const checkUser = async () => {
+        if (userProfileId === user.user_id) {
+            setDisplayUser(user);
+        } else {
+            const response = await getUserById(userProfileId);
+
+            setDisplayUser(response);
+        }
+    };
+
     // Fetch Data on Component Mount
     useEffect(() => {
         fetchData();
+        checkUser();
     }, [navigation]);
 
     return (
         <div className="flex items-start space-x-20 mb-10 px-10 py-10 w-[100%] profileDetails-top">
             <img
                 src={
-                    user === "Guest User"
+                    displayUser?.userImage === null
                         ? "/assets/users/general.jpg"
-                        : user.userImage
+                        : displayUser?.userImage
                 }
                 alt="Profile"
                 className="w-40 h-40 rounded-full object-cover"
@@ -99,19 +111,29 @@ const ProfileDetails = () => {
             <div className="flex-1">
                 <div className="flex items-center space-x-4 mb-4 profileDetails-header">
                     <h1 className="text-xl font-normal profileDetails-username">
-                        {user === "Guest User"
+                        {displayUser === "Guest User"
                             ? "Guest User"
-                            : user?.firstName + " " + user?.lastName}
+                            : displayUser?.firstName +
+                              " " +
+                              displayUser?.lastName}
                     </h1>
-                    <button
-                        className="px-4 py-1.5 bg-gray-100 rounded-md font-semibold"
-                        onClick={() => {
-                            navigation("/editProfileDetails");
-                        }}
-                    >
-                        Edit profile
-                    </button>
-                    <img src={settingIcon} alt="settings" className="w-7 h-7" />
+                    {user?.user_id === userProfileId ? (
+                        <>
+                            <button
+                                className="px-4 py-1.5 bg-gray-100 rounded-md font-semibold"
+                                onClick={() => {
+                                    navigation("/editProfileDetails");
+                                }}
+                            >
+                                Edit profile
+                            </button>
+                            <img
+                                src={settingIcon}
+                                alt="settings"
+                                className="w-7 h-7"
+                            />
+                        </>
+                    ) : null}
                 </div>
                 <div className="flex space-x-10 mb-4">
                     <span>
@@ -129,15 +151,17 @@ const ProfileDetails = () => {
                 </div>
                 <div>
                     <p className="text-gray-700">
-                        {user === "Guest User" ? "" : user?.caption}
+                        {displayUser === "Guest User"
+                            ? ""
+                            : displayUser?.caption}
                     </p>
                     <p className="mt-1">
-                        {!user?.slogan
+                        {!displayUser?.slogan
                             ? `Capturing life's beautiful moments ✨`
-                            : user?.slogan}
+                            : displayUser?.slogan}
                     </p>
                     <p className="text-blue-900">
-                        {!user?.website ? "" : user?.website}
+                        {!displayUser?.website ? "" : displayUser?.website}
                     </p>
                 </div>
             </div>

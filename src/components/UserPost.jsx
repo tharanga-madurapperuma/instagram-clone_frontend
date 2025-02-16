@@ -7,7 +7,7 @@ import { getSavedPosts, getUserByEmail } from "../Api/UserApi";
 import { getAllPosts } from "../Api/PostApi";
 import Loader from "./loader/Loader";
 
-const UserPost = () => {
+const UserPost = ({ userProfileId }) => {
     const [loggedUser, setLoggedUser] = useState();
     const [activeTab, setActiveTab] = useState("POSTS");
     const [posts, setPosts] = useState([]);
@@ -15,7 +15,6 @@ const UserPost = () => {
     const [savedPostsId, setSavedPostsId] = useState([]);
     const [savedPosts, setSavedPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
     useEffect(() => {
         const getLoggedUser = async () => {
             setIsLoading(true);
@@ -36,8 +35,6 @@ const UserPost = () => {
     }, []);
 
     useEffect(() => {
-        if (!loggedUser) return; // Prevents running when loggedUser is undefined
-
         const getUserPosts = async () => {
             setIsLoading(true);
             try {
@@ -45,7 +42,7 @@ const UserPost = () => {
                 setAllPosts(response);
 
                 const userPosts = response.filter(
-                    (post) => post.userId === loggedUser.user_id
+                    (post) => post.userId === userProfileId
                 );
                 setPosts(userPosts);
             } catch (error) {
@@ -57,7 +54,7 @@ const UserPost = () => {
         const getSavedPost = async () => {
             setIsLoading(true);
             try {
-                const response = await getSavedPosts(loggedUser.user_id);
+                const response = await getSavedPosts(userProfileId);
                 setSavedPostsId(response);
             } catch (error) {
                 console.error("Error fetching saved posts:", error);
@@ -101,29 +98,35 @@ const UserPost = () => {
         <div>
             {isLoading && <Loader />}
             <div className="flex justify-center space-x-10 border-t relative">
-                {tabs.map((item) => (
-                    <div
-                        onClick={() => setActiveTab(item.tab)}
-                        className={`${
-                            activeTab === item.tab
-                                ? "border-t border-black"
-                                : "opacity-60"
-                        } flex items-center cursor-pointer py-2 text-sm`}
-                    >
-                        <p>{item.icon}</p>
-
-                        <p className="ml-3">{item.tab}</p>
-                    </div>
-                ))}
+                {tabs
+                    .filter(
+                        (item) =>
+                            item.tab === "POSTS" ||
+                            loggedUser?.user_id === userProfileId
+                    )
+                    .map((item, index) => (
+                        <div
+                            key={index}
+                            onClick={() => setActiveTab(item.tab)}
+                            className={`${
+                                activeTab === item.tab
+                                    ? "border-t border-black"
+                                    : "opacity-60"
+                            } flex items-center cursor-pointer py-2 text-sm`}
+                        >
+                            <p>{item.icon}</p>
+                            <p className="ml-3">{item.tab}</p>
+                        </div>
+                    ))}
             </div>
             <div>
                 <div className="flex flex-wrap justify-center">
                     {activeTab === "POSTS"
                         ? posts.map((post, index) => (
-                              <UserPostcard post={post} />
+                              <UserPostcard key={index} post={post} />
                           ))
                         : savedPosts.map((post, index) => (
-                              <UserPostcard post={post} />
+                              <UserPostcard key={index} post={post} />
                           ))}
                 </div>
             </div>

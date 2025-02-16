@@ -66,6 +66,16 @@
     color: rgb(95, 95, 95);
 }
 
+.followerClose-smallScreen {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 2rem;
+    z-index: 100;
+}
+
 @media (max-width: 480px) {
     /* Mobile */
     .leftMenu {
@@ -74,7 +84,7 @@
     }
 
     .followers {
-        display: none;
+        width: 80vw !important;
     }
 
     .feedSection {
@@ -158,7 +168,7 @@
     }
 
     .followers {
-        display: none;
+        width: 60vw !important;
     }
 
     .feedSection {
