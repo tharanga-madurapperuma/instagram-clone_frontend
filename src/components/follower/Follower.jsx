@@ -122,7 +122,7 @@ const Follower = ({ user, loggedUser, closeFolloweMenu }) => {
                             <img
                                 src={
                                     !user?.userImage
-                                        ? "./assets/users/general.jpg"
+                                        ? "/assets/users/general.jpg"
                                         : `${user?.userImage}`
                                 }
                                 alt="Profile"

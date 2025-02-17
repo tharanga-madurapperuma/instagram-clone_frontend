@@ -144,11 +144,11 @@
     position: absolute;
     top: 30px;
     right: 0;
-    background-color: rgb(222, 222, 222);
     padding: 5px 20px;
     border-radius: 10px;
     text-align: center;
     color: rgb(35, 35, 35);
+    background-color: transparent;
 }
 
 .top-right-dots_menu-active li a {

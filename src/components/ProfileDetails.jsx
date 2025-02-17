@@ -164,7 +164,14 @@ const ProfileDetails = ({ userProfileId }) => {
                             : displayUser?.slogan}
                     </p>
                     <p className="text-blue-900">
-                        {!displayUser?.website ? "" : displayUser?.website}
+                        <a
+                            className="text-blue-900 "
+                            target="_blank"
+                            rel="noreferrer"
+                            href={displayUser?.website}
+                        >
+                            {!displayUser?.website ? "" : displayUser?.website}
+                        </a>
                     </p>
                 </div>
             </div>
