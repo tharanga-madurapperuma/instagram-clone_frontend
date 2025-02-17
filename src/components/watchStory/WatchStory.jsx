@@ -6,12 +6,28 @@ import { CiMenuKebab } from "react-icons/ci";
 import { getUserById } from "../../Api/UserApi";
 import { deleteStory } from "../../Api/StoryApi";
 import Loader from "../loader/Loader";
+import { toast, Zoom } from "react-toastify";
 
-const WatchStory = ({ story, timeOut }) => {
+const WatchStory = ({ story, timeOut, shared }) => {
     const [progress, setProgress] = useState(0);
     const [user, setUser] = useState();
     const [deleteClicked, setDeleteClicked] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    // notification
+    const deleteSuccess = () => {
+        toast.success("Successfully Deleted..!", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Zoom,
+        });
+    };
 
     useEffect(() => {
         setIsLoading(true);
@@ -49,7 +65,10 @@ const WatchStory = ({ story, timeOut }) => {
     const handleDelete = async () => {
         try {
             const response = await deleteStory(story.storyId);
-            window.location.reload();
+            deleteSuccess();
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            toast.dismiss();
+            shared();
         } catch (error) {
             console.error("Error deleting story:", error);
             alert("Failed to delete story. Please try again.");

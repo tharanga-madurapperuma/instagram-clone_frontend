@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import "./story.css";
 import WatchStory from "../watchStory/WatchStory";
 import ReactModal from "react-modal";
-import { markedWatched } from "../../Api/StoryApi";
-import Loader from "../loader/Loader";
+import { addWatchedUser } from "../../Api/StoryApi";
 
-const Story = ({ story }) => {
-    const [watched, setWatched] = useState(story.watched);
+const Story = ({ story, shared, loggedUser }) => {
+    const [watchedUsers, setWatchedUsers] = useState(story.watchedUsers);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const timeOut = 8000;
+    const [watched, setWatched] = useState(false);
+    const timeOut = 5000;
 
     // after user clicked the story
     const storyCliked = async () => {
-        const response = await markedWatched(story.storyId);
-
-        if (response) {
-            setWatched(true);
-            setIsModalOpen(true);
-        }
+        setWatchedUsers([...watchedUsers, loggedUser]);
+        setWatched(true);
+        setIsModalOpen(true);
+        await addWatchedUser(story.storyId, loggedUser.user_id);
 
         setTimeout(() => {
             setIsModalOpen(false);
@@ -27,6 +25,20 @@ const Story = ({ story }) => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    useEffect(() => {
+        // const getWatchedAllUsers = async () => {
+        //     const response = await getWatchedusers(story.storyId);
+        //     setWatchedUsers(response);
+        // };
+
+        // getWatchedAllUsers();
+        if (watchedUsers.find((user) => user === loggedUser?.user_id)) {
+            setWatched(true);
+        } else {
+            setWatched(false);
+        }
+    }, [loggedUser]);
 
     return (
         <div className="story m-2 mt-10">
@@ -55,7 +67,11 @@ const Story = ({ story }) => {
                     shouldCloseOnOverlayClick={true}
                 >
                     {/* WatchStory Component */}
-                    <WatchStory story={story} timeOut={timeOut} />
+                    <WatchStory
+                        story={story}
+                        timeOut={timeOut}
+                        shared={shared}
+                    />
                 </ReactModal>
             </div>
         </div>
