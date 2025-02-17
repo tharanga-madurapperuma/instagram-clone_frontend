@@ -4,6 +4,7 @@ import { addUser, getUserByEmail } from "../../Api/UserApi";
 import "../../App.css";
 import "./signUp.css";
 import Loader from "../../components/loader/Loader";
+import { algoliasearch } from "algoliasearch";
 
 const Signup = () => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -17,6 +18,13 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
+
+    // Algolia credentials
+    // const APP_ID = process.env.REACT_APP_ALGOLIA_ID;
+    // const WRITE_KEY = process.env.REACT_APP_ALGOLIA_WRITE_API_KEY;
+    // const INDEX_NAME = "instagram-clone";
+
+    // const writeClient = algoliasearch(APP_ID, WRITE_KEY);
 
     const saveUserData = async (email, password, firstName, lastName) => {
         setIsLoading(true);
@@ -34,6 +42,7 @@ const Signup = () => {
                     lastName: lastName,
                 }),
             });
+
             const data = await response.json();
             setGUser(data);
         } catch (error) {
@@ -93,6 +102,35 @@ const Signup = () => {
         return errors;
     };
 
+    // const updateAlgoliRecord = async (email) => {
+    //     try {
+    //         setIsLoading(true);
+    //         const response = await getUserByEmail(email);
+
+    //         const record = {
+    //             user_id: response?.user_id,
+    //             caption: response?.caption,
+    //             firstName: response?.firstName,
+    //             lastName: response?.lastName,
+    //             userImage: response?.userImage,
+    //         };
+
+    //         const { taskID } = await writeClient.saveObject({
+    //             INDEX_NAME,
+    //             body: record,
+    //         });
+
+    //         await writeClient.waitForTask({
+    //             INDEX_NAME,
+    //             taskID,
+    //         });
+    //     } catch (error) {
+    //         console.error(error);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
+
     const userValidation = async () => {
         const firstName = document.getElementById("firstName").value;
         const lastName = document.getElementById("lastName").value;
@@ -119,6 +157,7 @@ const Signup = () => {
         }
 
         await saveUserData(email, password, firstName, lastName);
+        //await updateAlgoliRecord(email);
 
         const user = {
             email: email,
