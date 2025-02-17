@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { BiSearch, BiX } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { getUserByEmail, getUserById } from "../Api/UserApi";
-import axios from "axios";
+import {
+    getFollowers,
+    getFollowings,
+    getUserByEmail,
+    getUserById,
+} from "../Api/UserApi";
 import "./profileDetails.css";
 import { getPostsByUserId } from "../Api/PostApi";
 
@@ -20,22 +24,20 @@ const ProfileDetails = ({ userProfileId }) => {
 
     useEffect(() => {
         const fetchFollowers = async () => {
+            if (!displayUser?.user_id) return;
             try {
-                const response = await axios.get(
-                    `/users/${displayUser?.user_id}/followers`
-                );
-                setFollowers(response.data);
+                const response = await getFollowers(displayUser?.user_id);
+                setFollowers(response);
             } catch (error) {
                 console.error("Error fetching followers:", error);
             }
         };
 
         const fetchFollowing = async () => {
+            if (!displayUser?.user_id) return;
             try {
-                const response = await axios.get(
-                    `/users/${displayUser?.user_id}/following`
-                );
-                setFollowing(response.data);
+                const response = await getFollowings(displayUser?.user_id);
+                setFollowing(response);
             } catch (error) {
                 console.error("Error fetching following:", error);
             }
@@ -43,10 +45,11 @@ const ProfileDetails = ({ userProfileId }) => {
 
         fetchFollowers();
         fetchFollowing();
-    }, [user]);
+    }, [user, displayUser]);
 
     useEffect(() => {
         const getPostCount = async () => {
+            if (!displayUser?.user_id) return;
             try {
                 const response = await getPostsByUserId(displayUser?.user_id);
                 setCount(response.length);
@@ -168,7 +171,7 @@ const ProfileDetails = ({ userProfileId }) => {
 
             {/* Followers Modal */}
             {showFollowers && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 w-full">
                     <div className="bg-white rounded-xl w-full max-w-md">
                         <div className="border-b p-4 flex justify-between items-center">
                             <h2 className="text-xl font-semibold">Followers</h2>
