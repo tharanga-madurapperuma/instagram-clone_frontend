@@ -145,10 +145,10 @@ const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
                         watched: false,
                     };
 
-                    const response = await addStory(story);
                     successStory();
                     await new Promise((resolve) => setTimeout(resolve, 3000));
                     toast.dismiss();
+                    const response = await addStory(story);
                     shared();
                 } catch (error) {
                     console.error("Error creating story:", error);
@@ -268,12 +268,40 @@ const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
                         className="top-right-dots_icon"
                         onClick={dotClicked}
                     />
+                    {menuClicked ? (
+                        <div
+                            className="top-right-dots_menu-active"
+                            style={{
+                                backgroundColor: "rgb(222,222,222)",
+                            }}
+                        >
+                            <ul>
+                                <li>
+                                    <a
+                                        href={post?.imageUrl}
+                                        target="_blank"
+                                        onClick={() => {
+                                            setMenuClicked(false);
+                                        }}
+                                    >
+                                        View
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    ) : null}
                     <div
                         className={
                             menuClicked
                                 ? "top-right-dots_menu-active"
                                 : "top-right-dots_menu-inactive"
                         }
+                        style={{
+                            backgroundColor:
+                                user?.user_id === loggedUser?.user_id
+                                    ? "rgb(222,222,222)"
+                                    : "transparent",
+                        }}
                     >
                         <ul
                             style={{
@@ -281,6 +309,10 @@ const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
                                     user?.user_id === loggedUser?.user_id
                                         ? "block"
                                         : "none",
+                                backgroundColor:
+                                    user?.user_id === loggedUser?.user_id
+                                        ? "rgb(222,222,222)"
+                                        : "white",
                             }}
                         >
                             <li>
@@ -309,7 +341,7 @@ const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
                                     />
                                 </ReactModal>
                             </li>
-                            <hr></hr>
+                            <div className="h-[1px] w-full bg-slate-500 my-1"></div>
                             <li>
                                 <a
                                     onClick={async () => {
@@ -319,6 +351,18 @@ const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
                                     }}
                                 >
                                     Delete
+                                </a>
+                            </li>
+                            <div className="h-[1px] w-full bg-slate-400 my-1"></div>
+                            <li>
+                                <a
+                                    href={post?.imageUrl}
+                                    target="_blank"
+                                    onClick={() => {
+                                        setMenuClicked(false);
+                                    }}
+                                >
+                                    View
                                 </a>
                             </li>
                         </ul>
