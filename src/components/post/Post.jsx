@@ -26,7 +26,7 @@ import {
 } from "../../Api/PostApi";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 
-const Post = ({ post, loggedUser, shared }) => {
+const Post = ({ post, loggedUser, shared, reloadingFeed }) => {
     const [comment, setComment] = useState();
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
@@ -305,6 +305,7 @@ const Post = ({ post, loggedUser, shared }) => {
                                         post={post}
                                         loggedUser={loggedUser}
                                         closeEditPostModal={closeEditPostModal}
+                                        reloadingFeed={reloadingFeed}
                                     />
                                 </ReactModal>
                             </li>
@@ -314,7 +315,7 @@ const Post = ({ post, loggedUser, shared }) => {
                                     onClick={async () => {
                                         await deletePost(post.postId);
                                         setMenuClicked(false);
-                                        window.location.reload();
+                                        reloadingFeed();
                                     }}
                                 >
                                     Delete

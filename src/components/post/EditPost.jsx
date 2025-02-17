@@ -4,7 +4,7 @@ import "./EditPost.css";
 import { editPost } from "../../Api/PostApi";
 import Loader from "../loader/Loader";
 
-const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
+const EditPost = ({ post, loggedUser, closeEditPostModal, reloadingFeed }) => {
     const [description, setDescription] = useState(post.description);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,7 +21,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
             });
             setDescription("");
             closeEditPostModal();
-            window.location.reload();
+            reloadingFeed();
         } catch (error) {
             console.error("Error creating post:", error);
             alert("Failed to create post. Please try again.");
@@ -38,7 +38,7 @@ const EditPost = ({ post, loggedUser, closeEditPostModal }) => {
                     <img className="newPostImage" src={post.imageUrl} alt="" />
                 </div>
 
-                <div className="flex flex-col w-[400px] h-full mt-5 edit-post-right-side">
+                <div className="flex flex-col w-full h-full mt-5 edit-post-right-side">
                     <div className="createPost-profile flex items-start w-full">
                         <ProfileTemplate user={loggedUser} />
                     </div>

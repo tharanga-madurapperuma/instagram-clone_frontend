@@ -235,7 +235,7 @@ const CreatePost = ({ open, onClose, loggedUser, reloadingFeed }) => {
                             />
                         </div>
 
-                        <div className="newPostContainer flex flex-col w-[400px] h-full mt-5 ">
+                        <div className="newPostContainer flex flex-col w-full h-full mt-5 ">
                             <div className="createPost-profile flex items-start w-full">
                                 <ProfileTemplate user={loggedUser} />
                             </div>

@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ProfileTemplate = ({ user }) => {
+const ProfileTemplate = ({ user, closeFolloweMenu }) => {
     const navigate = useNavigate();
 
     return (
         <div
             className="top-left_content flex cursor-pointer"
             onClick={() => {
+                closeFolloweMenu();
                 navigate(`/profile/${user.user_id}`);
             }}
         >

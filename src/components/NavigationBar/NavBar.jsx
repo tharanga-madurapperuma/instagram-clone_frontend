@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import CreatePost from "../../containers/post/CreatePost";
@@ -18,6 +18,8 @@ import { LuLogOut } from "react-icons/lu";
 import { TiThMenu } from "react-icons/ti";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import "./navbar.css";
+import ProfileTemplate from "../profile/ProfileTemplate";
+import Follower from "../follower/Follower";
 
 const NavBar = () => {
     const logo = "/assets/Logo.png";
@@ -35,6 +37,7 @@ const NavBar = () => {
     const [opacity, setOpacity] = useState(0);
     const scrollableDivRef = useRef(null); // Reference to the scrollable div
     const [isLoading, setIsLoading] = useState(false);
+    const [followerOpen, setFollowerOpen] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -119,6 +122,16 @@ const NavBar = () => {
             }
         };
     }, []);
+    const randomUsers = useMemo(() => {
+        return users
+            .filter((user) => user.user_id !== LOGGED_USER?.user_id)
+            .sort(() => Math.random() - 0.5) // Shuffle once
+            .slice(0, 10); // Select 10 users
+    }, [users]); // Only re-run when `users` change
+
+    const closeFolloweMenu = () => {
+        setFollowerOpen(false);
+    };
 
     return (
         <div className="flex flex-row w-[30%] navabr-container">
@@ -276,8 +289,52 @@ const NavBar = () => {
                         <div>
                             <img src={logo} alt="logo" />
                         </div>
-                        <div>
-                            <AiOutlineUsergroupAdd className="small-screen-follower-icon" />
+                        <div
+                            onClick={() => {
+                                followerOpen
+                                    ? setFollowerOpen(false)
+                                    : setFollowerOpen(true);
+                            }}
+                        >
+                            {followerOpen ? (
+                                <IoClose className="home_icons followerClose-smallScreen" />
+                            ) : (
+                                <AiOutlineUsergroupAdd className="small-screen-follower-icon cursor-pointer" />
+                            )}
+                        </div>
+                        <div
+                            className="followers justify-items-center m-5"
+                            style={
+                                followerOpen
+                                    ? {
+                                          display: "block",
+                                          position: "absolute",
+                                          top: "50px",
+                                          right: "-20px",
+                                          width: "50vw",
+                                          backgroundColor: "rgb(240, 240,240)",
+                                          padding: "0 20px",
+                                          transition: "all 1s ease",
+                                      }
+                                    : { display: "none" }
+                            }
+                        >
+                            {/* All users*/}
+                            <div className="mt-4">
+                                <ProfileTemplate
+                                    user={LOGGED_USER}
+                                    closeFolloweMenu={closeFolloweMenu}
+                                />
+                            </div>
+                            <div className="w-full h-[1px] bg-slate-400 my-3 rounded-md"></div>
+                            {randomUsers?.map((user) => (
+                                <Follower
+                                    user={user}
+                                    loggedUser={LOGGED_USER}
+                                    key={user.user_id}
+                                    closeFolloweMenu={closeFolloweMenu}
+                                />
+                            ))}
                         </div>
                     </div>
                 </>

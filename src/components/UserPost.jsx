@@ -15,6 +15,7 @@ const UserPost = ({ userProfileId }) => {
     const [savedPostsId, setSavedPostsId] = useState([]);
     const [savedPosts, setSavedPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
         const getLoggedUser = async () => {
             setIsLoading(true);
@@ -64,7 +65,7 @@ const UserPost = ({ userProfileId }) => {
 
         getUserPosts();
         getSavedPost();
-    }, [loggedUser]); // Runs only when loggedUser updates
+    }, [loggedUser, userProfileId]); // Runs only when loggedUser updates
 
     useEffect(() => {
         if (savedPostsId.length === 0 || allPosts.length === 0) return;
@@ -80,7 +81,7 @@ const UserPost = ({ userProfileId }) => {
         };
 
         getSavedPost();
-    }, [savedPostsId, allPosts]); // Runs when either savedPostsId or allPosts updates
+    }, [savedPostsId, allPosts, userProfileId]); // Runs when either savedPostsId or allPosts updates
 
     const tabs = [
         {

@@ -7,7 +7,7 @@ import { followUser, unfollowUser } from "../../Api/FollowAPi";
 import Loader from "../loader/Loader";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 
-const Follower = ({ user, loggedUser }) => {
+const Follower = ({ user, loggedUser, closeFolloweMenu }) => {
     const navigate = useNavigate();
     const [followings, setFollowings] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -113,6 +113,7 @@ const Follower = ({ user, loggedUser }) => {
                 <div
                     className="top-left_content flex"
                     onClick={() => {
+                        closeFolloweMenu();
                         navigate(`/profile/${user?.user_id}`);
                     }}
                 >

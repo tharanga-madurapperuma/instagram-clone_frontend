@@ -204,6 +204,10 @@ const Home = () => {
         setSharedPost((prev) => !prev); // Toggle the sharedPost state
     };
 
+    const closeFolloweMenu = () => {
+        setFollowerOpen(false);
+    };
+
     return (
         <div className="flex flex-row">
             {isLoading && <Loader />}
@@ -232,6 +236,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
+                            setMenuOpen(false);
                             navigation("/search");
                         }}
                     >
@@ -241,6 +246,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
+                            setMenuOpen(false);
                             setModalIsOpen(true);
                         }}
                     >
@@ -258,6 +264,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
+                            setMenuOpen(false);
                             navigation(`/profile/${LOGGED_USER?.user_id}`);
                         }}
                     >
@@ -267,6 +274,7 @@ const Home = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
+                            setMenuOpen(false);
                             navigation("/editProfileDetails");
                         }}
                     >
@@ -306,6 +314,7 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
+                                setMenuOpen(false);
                                 navigation("/");
                             }}
                         >
@@ -314,6 +323,7 @@ const Home = () => {
                         <div
                             className="home_icons_container"
                             onClick={() => {
+                                setMenuOpen(false);
                                 navigation("/search");
                             }}
                         >
@@ -322,8 +332,8 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
-                                setModalIsOpen(true);
                                 setMenuOpen(false);
+                                setModalIsOpen(true);
                             }}
                         >
                             <CgAddR className="home_icons cursor-pointer" />
@@ -331,6 +341,7 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
+                                setMenuOpen(false);
                                 navigation(`/profile/${LOGGED_USER?.user_id}`);
                             }}
                         >
@@ -339,6 +350,7 @@ const Home = () => {
                         <div
                             className=""
                             onClick={() => {
+                                setMenuOpen(false);
                                 navigation("/editProfileDetails");
                             }}
                         >
@@ -366,6 +378,7 @@ const Home = () => {
                         onOpen={() => {
                             setMenuOpen(false);
                         }}
+                        reloadingFeed={reloadingFeed}
                     />
                     <div
                         className="small-screen-navbar flex justify-between items-center w-[100vw] h-10"
@@ -422,11 +435,12 @@ const Home = () => {
                                 <ProfileTemplate user={LOGGED_USER} />
                             </div>
                             <div className="w-full h-[1px] bg-slate-400 my-3 rounded-md"></div>
-                            {randomUsers.map((user) => (
+                            {randomUsers?.map((user) => (
                                 <Follower
                                     user={user}
                                     loggedUser={LOGGED_USER}
                                     key={user.user_id}
+                                    closeFolloweMenu={closeFolloweMenu}
                                 />
                             ))}
                         </div>
@@ -461,6 +475,7 @@ const Home = () => {
                             key={post.postId}
                             loggedUser={LOGGED_USER}
                             shared={shared}
+                            reloadingFeed={reloadingFeed}
                         />
                     ))}
                 </div>
