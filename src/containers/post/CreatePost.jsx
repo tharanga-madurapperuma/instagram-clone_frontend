@@ -154,8 +154,8 @@ const CreatePost = ({ open, onClose, loggedUser, reloadingFeed }) => {
 
             FileResizer.imageFileResizer(
                 file,
-                1000, // Target width
-                1000, // Target height
+                600, // Target width
+                600, // Target height
                 outputFormat, // Dynamically set output format
                 100, // Quality percentage
                 0, // Rotation (0 degrees)

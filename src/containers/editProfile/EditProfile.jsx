@@ -38,6 +38,8 @@ const EditProfile = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [caption, setCaption] = useState("");
+    const [slogan, setSlogan] = useState("");
+    const [website, setWebsite] = useState("");
     const [file, setFile] = useState(null);
 
     useEffect(() => {
@@ -189,6 +191,8 @@ const EditProfile = () => {
             lastName === LOGGED_USER?.lastName &&
             email === LOGGED_USER?.email &&
             caption === LOGGED_USER?.caption &&
+            slogan === LOGGED_USER?.slogan &&
+            website === LOGGED_USER?.website &&
             !file
         ) {
             navigation(`/profile/${LOGGED_USER?.user_id}`);
@@ -218,6 +222,8 @@ const EditProfile = () => {
                     lastName: lastName,
                     email: email,
                     caption: caption,
+                    slogan: slogan,
+                    website: website,
                     userImage: fileUrl,
                     followers: LOGGED_USER?.followers,
                     following: LOGGED_USER?.following,
@@ -231,6 +237,8 @@ const EditProfile = () => {
                     lastName: lastName,
                     email: email,
                     caption: caption,
+                    slogan: slogan,
+                    website: website,
                     userImage: LOGGED_USER?.userImage,
                     followers: LOGGED_USER?.followers,
                     following: LOGGED_USER?.following,
@@ -451,6 +459,22 @@ const EditProfile = () => {
                                 value={caption}
                                 onChange={(e) => {
                                     setCaption(e.target.value);
+                                }}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Slogan"
+                                value={slogan}
+                                onChange={(e) => {
+                                    setSlogan(e.target.value);
+                                }}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Website"
+                                value={website}
+                                onChange={(e) => {
+                                    setWebsite(e.target.value);
                                 }}
                             />
                             <input
