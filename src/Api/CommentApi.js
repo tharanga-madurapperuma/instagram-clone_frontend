@@ -26,7 +26,6 @@ const apiRequest = async (method, endpoint, payload = {}) => {
             headers,
             data: payload, // For PUT, POST requests
         });
-        console.log("API request successful:", response.data);
 
         return response.data;
     } catch (error) {

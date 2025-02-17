@@ -26,7 +26,6 @@ const apiRequest = async (method, endpoint, payload = {}) => {
             headers,
             data: payload, // For PUT, POST requests
         });
-        console.log("API request successful:", response.data);
 
         return response.data;
     } catch (error) {
@@ -58,8 +57,12 @@ export const addStory = async (story) => {
 };
 
 // API functions for marked watched
-export const markedWatched = async (storyId) => {
-    return await apiRequest("PUT", `/watchedStory/${storyId}`);
+export const addWatchedUser = async (storyId, userId) => {
+    return await apiRequest("POST", `/addWatchedUser/${storyId}/${userId}`);
+};
+
+export const getWatchedusers = async (storyId) => {
+    return await apiRequest("GET", `/watchedStory/${storyId}`);
 };
 
 // API functions for delete story
