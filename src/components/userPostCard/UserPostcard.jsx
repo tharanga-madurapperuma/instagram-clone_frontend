@@ -4,7 +4,6 @@ import { FaRegComment as FarComment } from "react-icons/fa";
 import "./UserPostCard.css";
 
 const UserPostcard = ({ post }) => {
-    console.log(post);
     return (
         <div className="p-1">
             <div className="post w-80 h-80 m-1 relative">
