@@ -184,34 +184,64 @@ const EditProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (
+            firstName === LOGGED_USER?.firstName &&
+            lastName === LOGGED_USER?.lastName &&
+            email === LOGGED_USER?.email &&
+            caption === LOGGED_USER?.caption &&
+            !file
+        ) {
+            navigation(`/profile/${LOGGED_USER?.user_id}`);
+            return;
+        }
         try {
             setIsLoading(true);
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file); // Append the file with the key 'image'
+                formData.append("upload_preset", "instagram-clone_users");
+                formData.append("cloud_name", { CLOUDINARY_CLOUD_NAME });
+                const CLOUD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-            const formData = new FormData();
-            formData.append("file", file); // Append the file with the key 'image'
-            formData.append("upload_preset", "instagram-clone_users");
-            formData.append("cloud_name", { CLOUDINARY_CLOUD_NAME });
-            const CLOUD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+                const response_cloudinary = await axios.post(
+                    CLOUD_URL,
+                    formData
+                );
 
-            const response_cloudinary = await axios.post(CLOUD_URL, formData);
+                // get file url from cloudinary and assign it to fileUrl
+                let fileUrl = response_cloudinary.data.secure_url;
+                setProfileImage(fileUrl);
 
-            // get file url from cloudinary and assign it to fileUrl
-            let fileUrl = response_cloudinary.data.secure_url;
-            setProfileImage(fileUrl);
+                // Update user details
+                await updateUser(LOGGED_USER.user_id, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    caption: caption,
+                    userImage: fileUrl,
+                    followers: LOGGED_USER?.followers,
+                    following: LOGGED_USER?.following,
+                    likedPosts: LOGGED_USER?.likedPosts,
+                    savedPosts: LOGGED_USER?.savedPosts,
+                });
+            } else {
+                // Update user details without changing the profile image
+                await updateUser(LOGGED_USER.user_id, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    caption: caption,
+                    userImage: LOGGED_USER?.userImage,
+                    followers: LOGGED_USER?.followers,
+                    following: LOGGED_USER?.following,
+                    likedPosts: LOGGED_USER?.likedPosts,
+                    savedPosts: LOGGED_USER?.savedPosts,
+                });
+            }
 
-            // Update user details
-            await updateUser(LOGGED_USER.user_id, {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                caption: caption,
-                userImage: fileUrl,
-            });
-
-            navigation("/profile");
+            navigation(`/profile/${LOGGED_USER?.user_id}`);
         } catch (error) {
             console.error("Error updating profile:", error);
-            alert("Failed to update profile. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -254,7 +284,7 @@ const EditProfile = () => {
                     <div
                         className="flex flex-row my-10 cursor-pointer items-center home_icons_container"
                         onClick={() => {
-                            navigation("/profile");
+                            navigation(`/profile/${LOGGED_USER?.user_id}`);
                         }}
                     >
                         <CgProfile className="home_icons" />
@@ -317,7 +347,7 @@ const EditProfile = () => {
                         <div
                             className=""
                             onClick={() => {
-                                navigation("/profile");
+                                navigation(`/profile/${LOGGED_USER?.user_id}`);
                             }}
                         >
                             <CgProfile className="home_icons" />
