@@ -22,6 +22,7 @@ import { getAllStories } from "../../Api/StoryApi";
 import { getAllPosts } from "../../Api/PostApi";
 import { jwtDecode } from "jwt-decode";
 import ProfileTemplate from "../../components/profile/ProfileTemplate";
+import { useMemo } from "react";
 
 const Home = () => {
     // logo Image
@@ -41,6 +42,8 @@ const Home = () => {
     const scrollableDivRef = useRef(null); // Reference to the scrollable div
     const [isLoading, setIsLoading] = useState(false);
     const [followerOpen, setFollowerOpen] = useState(false);
+    const [sharedPost, setSharedPost] = useState(false);
+    const [reloadPosts, setReloadPosts] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -133,6 +136,24 @@ const Home = () => {
     }, [navigation]); // Include navigation to avoid stale closures
 
     useEffect(() => {
+        const getAllStoriesUpdate = async () => {
+            const response = await getAllStories();
+            setStories(response);
+        };
+
+        getAllStoriesUpdate();
+    }, [sharedPost]);
+
+    useEffect(() => {
+        const getUpdatedFeed = async () => {
+            const response = await getAllPosts();
+            setPosts(response);
+        };
+
+        getUpdatedFeed();
+    }, [reloadPosts]);
+
+    useEffect(() => {
         setModalIsOpen(false);
         setCloseModal(true);
     }, [closeModal]);
@@ -167,6 +188,21 @@ const Home = () => {
             }
         };
     }, []);
+
+    const reloadingFeed = () => {
+        setReloadPosts((prev) => !prev);
+    };
+
+    const randomUsers = useMemo(() => {
+        return users
+            .filter((user) => user.user_id !== LOGGED_USER?.user_id)
+            .sort(() => Math.random() - 0.5) // Shuffle once
+            .slice(0, 10); // Select 10 users
+    }, [users]); // Only re-run when `users` change
+
+    const shared = () => {
+        setSharedPost((prev) => !prev); // Toggle the sharedPost state
+    };
 
     return (
         <div className="flex flex-row">
@@ -216,6 +252,7 @@ const Home = () => {
                                 setCloseModal(false);
                             }}
                             loggedUser={LOGGED_USER}
+                            reloadingFeed={reloadingFeed}
                         />
                     </div>
                     <div
@@ -385,14 +422,13 @@ const Home = () => {
                                 <ProfileTemplate user={LOGGED_USER} />
                             </div>
                             <div className="w-full h-[1px] bg-slate-400 my-3 rounded-md"></div>
-                            {users
-                                .filter(
-                                    (user) =>
-                                        user.user_id !== LOGGED_USER?.user_id
-                                )
-                                .map((user) => (
-                                    <Follower user={user} key={user.user_id} />
-                                ))}
+                            {randomUsers.map((user) => (
+                                <Follower
+                                    user={user}
+                                    loggedUser={LOGGED_USER}
+                                    key={user.user_id}
+                                />
+                            ))}
                         </div>
                     </div>
                 </>
@@ -410,7 +446,12 @@ const Home = () => {
                 {/* feed section */}
                 <div className="feedSection_story flex flex-row justify-items-start ">
                     {[...stories].reverse().map((story) => (
-                        <Story story={story} key={story.storyId} />
+                        <Story
+                            story={story}
+                            key={story.storyId}
+                            shared={shared}
+                            loggedUser={LOGGED_USER}
+                        />
                     ))}
                 </div>
                 <div className="feedSection_post post-background">
@@ -419,6 +460,7 @@ const Home = () => {
                             post={post}
                             key={post.postId}
                             loggedUser={LOGGED_USER}
+                            shared={shared}
                         />
                     ))}
                 </div>
@@ -429,11 +471,13 @@ const Home = () => {
                     <ProfileTemplate user={LOGGED_USER} />
                 </div>
                 <div className="w-full h-[1px] bg-slate-400 my-3"></div>
-                {users
-                    .filter((user) => user.user_id !== LOGGED_USER?.user_id)
-                    .map((user) => (
-                        <Follower user={user} key={user.user_id} />
-                    ))}
+                {randomUsers.map((user) => (
+                    <Follower
+                        user={user}
+                        key={user.user_id}
+                        loggedUser={LOGGED_USER}
+                    />
+                ))}
             </div>
         </div>
     );

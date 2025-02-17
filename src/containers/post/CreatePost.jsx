@@ -10,7 +10,7 @@ import { toast, ToastContainer, Zoom } from "react-toastify";
 
 ReactModal.setAppElement("#root");
 
-const CreatePost = ({ open, onClose, loggedUser }) => {
+const CreatePost = ({ open, onClose, loggedUser, reloadingFeed }) => {
     // images from public folder
     const dragDrop = "/assets/icons/dragDrop.png";
 
@@ -132,11 +132,15 @@ const CreatePost = ({ open, onClose, loggedUser }) => {
             setFile(null);
             setDescription("");
             onClose();
-            await successPost();
-            window.location.reload();
+            successPost();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            toast.dismiss();
+            reloadingFeed();
         } catch (error) {
             console.error("Error creating post:", error);
             unsuccessPost();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            toast.dismiss();
         } finally {
             setIsLoading(false);
         }
