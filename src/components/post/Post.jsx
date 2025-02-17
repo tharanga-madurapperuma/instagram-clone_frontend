@@ -26,7 +26,7 @@ import {
 } from "../../Api/PostApi";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 
-const Post = ({ post, loggedUser }) => {
+const Post = ({ post, loggedUser, shared }) => {
     const [comment, setComment] = useState();
     const [showPicker, setShowPicker] = useState(false);
     const [user, setUser] = useState();
@@ -70,7 +70,7 @@ const Post = ({ post, loggedUser }) => {
     };
 
     const unsuccessStory = () => {
-        toast.warn("Story Shared Failed!", {
+        toast.error("Story Shared Failed!", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -146,11 +146,15 @@ const Post = ({ post, loggedUser }) => {
                     };
 
                     const response = await addStory(story);
-                    await successStory();
-                    window.location.reload();
+                    successStory();
+                    await new Promise((resolve) => setTimeout(resolve, 3000));
+                    toast.dismiss();
+                    shared();
                 } catch (error) {
                     console.error("Error creating story:", error);
                     unsuccessStory();
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                    toast.dismiss();
                 } finally {
                     setIsLoading(false);
                 }
@@ -239,9 +243,13 @@ const Post = ({ post, loggedUser }) => {
 
         if (isAlreadySaved) {
             faliedSave(); // Notify user that post is already saved
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            toast.dismiss();
         } else {
             await savePost(loggedUser.user_id, post.postId); // Save the post
             savedSucces(); // Notify user that post is saved successfully
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            toast.dismiss();
         }
     };
 
@@ -292,7 +300,7 @@ const Post = ({ post, loggedUser }) => {
                                     overlayClassName="modal-overlay"
                                     shouldCloseOnOverlayClick={true}
                                 >
-                                    {/* WatchStory Component */}
+                                    {/* WatchPost Component */}
                                     <EditPost
                                         post={post}
                                         loggedUser={loggedUser}
